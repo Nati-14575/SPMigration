@@ -369,7 +369,7 @@ namespace SPMigration.Controllers
 
         /// <summary>
         /// Creates the groups (with members and subgroups) from the attached JSON file on the IAM side.
-        /// unitId is applied to every group. Use dryRun=true to only build payloads.
+        /// unitId is applied to every group. Use dryRun=true to download the generated payloads as iam-groups-payload.json instead of posting.
         /// </summary>
         [HttpPost("iam-groups")]
         public async Task<IActionResult> CreateIamGroups(
@@ -394,7 +394,22 @@ namespace SPMigration.Controllers
                 if (input == null || input.Count == 0)
                     return BadRequest(new { error = "Input contains no groups." });
 
-                return Ok(await iamGroups.RunAsync(input, unitId, dryRun, ct));
+                var report = await iamGroups.RunAsync(input, unitId, dryRun, ct);
+
+                if (dryRun)
+                {
+                    // Dry run: return the generated payloads as a downloadable JSON file.
+                    var bytes = JsonSerializer.SerializeToUtf8Bytes(report.Payloads, new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                    });
+                    return File(bytes, "application/json", "iam-groups-payload.json");
+                }
+
+                return Ok(report);
             }
             catch (Exception ex)
             {
