@@ -1,0 +1,2641 @@
+[
+  {
+    "Name": "moa all management",
+    "Path": "Ministry of Agriculture",
+    "Description": "የግብርና ሚ/ር ከፍተኛ ና መካከለኛ አመራሮች",
+    "Level": 1,
+    "Guid": "6a7843ef-9778-4b5a-b6a0-9ecb051b859b"
+  },
+  {
+    "Name": "MoA",
+    "Path": "Ministry of Agriculture",
+    "Description": " ",
+    "Level": 1,
+    "Guid": "57988d13-a2fc-4595-8dcd-a2c2d7744c71"
+  },
+  {
+    "Name": "moa Top management",
+    "Path": "Ministry of Agriculture",
+    "Description": "የግብርና ሚ/ር ከፍተኛ  አመራሮች",
+    "Level": 1,
+    "Guid": "4b5d7a74-5516-4732-9b8a-64c79ffad528"
+  },
+  {
+    "Name": "Ministry of Agriculture",
+    "Path": "Ministry of Agriculture",
+    "Description": "ክቡር ግብርና ሚኒስቴር ሚኒስትር",
+    "Level": 1,
+    "Guid": "fe710cec-08f2-4a89-9a00-63a119305cc7"
+  },
+  {
+    "Name": "Agriculture and Holitculture Development sector",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector",
+    "Description": "ክቡር እርሻና ሆልቲካልቸር  ልማት ዘርፍ ሚ/ር ዴኤታ",
+    "Level": 2,
+    "Guid": "c5c93715-7f90-43eb-aa7e-a4865bf22c1d"
+  },
+  {
+    "Name": "Agricultural Investment and Input sector​",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​",
+    "Description": "ክብርት የግብርና ኢንቨስትመንት እና የግብዓት አቅርቦት ዘርፍ ሚ/ር ዴኤታ",
+    "Level": 2,
+    "Guid": "a49cc321-65a0-4413-b43c-53b25538bcb8"
+  },
+  {
+    "Name": "Livestock Resource Development Sector",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector",
+    "Description": "ክቡር የእንስሳትና የአሳ ሀብት ልማት ዘርፍ ሚ/ር ዴኤታ",
+    "Level": 2,
+    "Guid": "88b19704-ed43-4891-a385-4b44e9ba83f8"
+  },
+  {
+    "Name": "Management Chief Executives",
+    "Path": "Ministry of Agriculture/Management Chief Executives",
+    "Description": "ስራ አመራር  ዋና ሥራ አስፈፃሚ",
+    "Level": 2,
+    "Guid": "642932fd-3569-4c62-9dfc-f57ec73f3758"
+  },
+  {
+    "Name": "Minister Office",
+    "Path": "Ministry of Agriculture/Minister Office",
+    "Description": "ሚኒስቴር ጽ/ቤት  ",
+    "Level": 2,
+    "Guid": "c95130fe-397c-460c-b674-6f6a72d535d3"
+  },
+  {
+    "Name": "Natural resource development sector",
+    "Path": "Ministry of Agriculture/Natural resource development sector",
+    "Description": "ክቡር የተፈጥሮ ሀብት ልማት  ዘርፍ ሚ/ር ዴኤታ",
+    "Level": 2,
+    "Guid": "99f9382b-1d88-4409-89f0-1169350dbe48"
+  },
+  {
+    "Name": "Ministery  Secretary",
+    "Path": "Ministry of Agriculture/Ministery  Secretary",
+    "Description": null,
+    "Level": 2,
+    "Guid": "dc5dc209-83c8-4a53-a03c-8753381c8566"
+  },
+  {
+    "Name": "all Agriculture and Holitculture Development sector employees",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector",
+    "Description": null,
+    "Level": 2,
+    "Guid": "275a2bb5-0019-48bf-80e4-7dc69e3dfe49"
+  },
+  {
+    "Name": "All Agriculture and Horticulture Employee",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector",
+    "Description": null,
+    "Level": 2,
+    "Guid": "e5168c73-ae9a-47b8-8b58-60f27b5d9703"
+  },
+  {
+    "Name": "All Projects",
+    "Path": "Ministry of Agriculture/All Projects",
+    "Description": "ሁሉም ፕሮጀክቶች",
+    "Level": 2,
+    "Guid": "b6e594c1-855e-42ba-b48f-bc4e8606e1da"
+  },
+  {
+    "Name": "All Lead Executives and Executives",
+    "Path": "Ministry of Agriculture/All Lead Executives and Executives",
+    "Description": "ሁሉም መሪ ስራ አስፈፃሚዎች እና ስራ አስፈፃሚዎች",
+    "Level": 2,
+    "Guid": "a1333e54-6b86-4cda-bdde-547b1bb36a8e"
+  },
+  {
+    "Name": "All MoA Regular Employee",
+    "Path": "Ministry of Agriculture/All MoA Regular Employee",
+    "Description": "ሁሉም የግብርና ሚኒስቴር መደበኛ ሰራተኞች",
+    "Level": 2,
+    "Guid": "bf3e7f90-934e-46e0-89c8-8516cc419424"
+  },
+  {
+    "Name": "All MoA Project Employee",
+    "Path": "Ministry of Agriculture/All MoA Project Employee",
+    "Description": "ሁሉም የግብርና  ሚኒስቴር  ፕሮጀክት ሰራተኞች",
+    "Level": 2,
+    "Guid": "e92f3671-8548-4e76-8d37-df10e0810782"
+  },
+  {
+    "Name": "Lead Executive of Urban Agriculture development",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Urban Agriculture development",
+    "Description": "ከተማ ግብርና ልማት መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "38a50dba-66ae-4448-b2e9-832f87962900"
+  },
+  {
+    "Name": "Audit Excutives",
+    "Path": "Ministry of Agriculture/Minister Office/Audit Excutives",
+    "Description": "ኦዲት ሥራ አስፈፃሚ",
+    "Level": 3,
+    "Guid": "88e37040-3e81-4eed-a5fb-fa996afe64c8"
+  },
+  {
+    "Name": "Ethics and Anti-corruption Excutives",
+    "Path": "Ministry of Agriculture/Minister Office/Ethics and Anti-corruption Excutives",
+    "Description": "ሥነ ምግባር እና የፀረ-ሙስና ሥራ አስፈፃሚ",
+    "Level": 3,
+    "Guid": "511129f6-672b-46c3-8520-b91225127a8b"
+  },
+  {
+    "Name": "Legal Service Executive",
+    "Path": "Ministry of Agriculture/Minister Office/Legal Service Executive",
+    "Description": "ህግ አገልግሎት ሥራ አስፈፃሚ",
+    "Level": 3,
+    "Guid": "f5457da0-cf12-48b3-a548-bd5cdd874ac0"
+  },
+  {
+    "Name": "protocol service team",
+    "Path": "Ministry of Agriculture/Minister Office/Protocol service team",
+    "Description": null,
+    "Level": 3,
+    "Guid": "3412498e-652a-4c53-be9c-076015e22b2f"
+  },
+  {
+    "Name": "Agricultural and Horticulture extension lead executives",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Agricultural and Horticulture extension lead executives",
+    "Description": "እርሻና ሆርቲካልቸር ኤክስቴንሽን መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "0ced9993-ad22-48d2-90ef-744b82df0fed"
+  },
+  {
+    "Name": "cotton development lead excutives",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/cotton development lead excutives",
+    "Description": "ጥጥ ልማት መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "d777d29f-ff5f-49b6-8aed-46c6f641ec06"
+  },
+  {
+    "Name": "Crop Development Lead Executives",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives",
+    "Description": "ሰብል ልማት መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "43fe8266-38f3-4ece-bb61-111731796efd"
+  },
+  {
+    "Name": "Horticulture Development  lead  executive",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive",
+    "Description": "ሆርቲካልቸር ልማት መሪ ሥራ አስፈፃሚ",
+    "Level": 3,
+    "Guid": "cc17be85-0593-43b5-ab3a-84acb6415d33"
+  },
+  {
+    "Name": "plant protection lead excutives",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/plant protection lead excutives",
+    "Description": "የዕፅዋት ጥበቃ መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "ade40ba6-5ffa-43f4-bcb5-bb8dec59ca16"
+  },
+  {
+    "Name": "Lead executive of Agricultural investment and product marketing",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead executive of Agricultural investment and product marketing",
+    "Description": "ግብርና ኢንቨስትመንትና ምርት ግብይት መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "2501aa49-3e48-43e2-af8f-772924c86389"
+  },
+  {
+    "Name": "Lead Executive of Agricultural Mechanization",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Agricultural Mechanization",
+    "Description": "ግብርና ሜካናይዜሽን መሪ ሥራ አስፈጻሚ                               ",
+    "Level": 3,
+    "Guid": "e6436459-88ed-4e7d-90a3-014a22b2ec1c"
+  },
+  {
+    "Name": "Lead Executive of Supply chain",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Supply chain",
+    "Description": "ግብርና ግብዓት አቅርቦት መሪ ስራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "c2b3f333-9fbb-4c97-bb6a-d1f3e0936901"
+  },
+  {
+    "Name": "Feed Resource Development Lead Executive",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive",
+    "Description": "መኖ ሀብት ልማት መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "6625c6ea-4a88-441a-a6f0-1fe5358d5e3f"
+  },
+  {
+    "Name": "livestock and fishery resource development lead excutives",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives",
+    "Description": "እንስሳትና ዓሳ ሀብት ልማት መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "3cb9fff2-31dd-4760-b467-bf3fceded190"
+  },
+  {
+    "Name": "Animal health and veterinary public health lead executive",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive",
+    "Description": "እንስሳት ጤናና ቬተርናሪ ፐብሊክ ሂልዝ መሪ ሥራ አስፈጻሚ ",
+    "Level": 3,
+    "Guid": "c1600e3c-d6df-4b6f-923a-c0a0fd00daf5"
+  },
+  {
+    "Name": "Basic Service Executive",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Basic Service Executive",
+    "Description": "የመሠረታዊ አገልግሎት ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "d1cf49db-9af6-4cfa-b717-91081469d14a"
+  },
+  {
+    "Name": "Competency and Human Resource Management Executive",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Competency and Human Resource Management Executive",
+    "Description": "ብቃትና የሰው ሀብት አስተዳደር ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "c3bbd1aa-1057-46ff-a90f-1d40dcda1c59"
+  },
+  {
+    "Name": "Finance executive",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Finance executive",
+    "Description": "ፋይናንስ  ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "78e1cb9f-9f1b-4d29-93be-3df3cba36f22"
+  },
+  {
+    "Name": "Information Communication Technology Executive",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Information Communication Technology Executive",
+    "Description": "ኢንፎርሜሽንና ኮሙኒኬሽን ቴክኖሎጂ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "814c1e00-118c-40f6-a1de-2b280614aca9"
+  },
+  {
+    "Name": "Procurement Excutive",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Procurement Excutive",
+    "Description": "ግዥ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "9ca3acc7-46d3-4a4c-b852-1547042079bf"
+  },
+  {
+    "Name": "Strategic Affair Executives",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives",
+    "Description": "ስትራቴጂክ ጉዳዮች ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "f085bbc1-e937-466e-9245-3f3d551d3272"
+  },
+  {
+    "Name": "Women and Social Affairs  Inclusive executive",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Women and Social Affairs  Inclusive executive",
+    "Description": " ሴቶችና ማኅበራዊ ጉዳዮች አካትቶ ትግበራ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "27aa3eff-35cf-423f-ab2b-e1f48de08960"
+  },
+  {
+    "Name": "Food and Nutrition Office",
+    "Path": "Ministry of Agriculture/Minister Office/Food and Nutrition Office",
+    "Description": "ምግብ እና  ስርዓት ምግብ ጽ/ቤት ",
+    "Level": 3,
+    "Guid": "5a31d7c6-3216-4875-9c21-5114464b4a69"
+  },
+  {
+    "Name": "Food security Coordination office",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office",
+    "Description": "ምግብ ዋስትና ማስተባበሪያ ጽ/ቤት",
+    "Level": 3,
+    "Guid": "facf1d18-8f2f-43cf-9b94-da6322047c7b"
+  },
+  {
+    "Name": "Public Relation and Communication Excutive",
+    "Path": "Ministry of Agriculture/Minister Office/Public Relation and Communication Excutive",
+    "Description": "ህዝብ ግንኙነት እና ኮሙኒኬሽን ስራ አስፈፃሚ",
+    "Level": 3,
+    "Guid": "97aa1eb3-c6e3-49c7-8085-d3f6fc2ee3c1"
+  },
+  {
+    "Name": "Natural Resources Management lead executive",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive",
+    "Description": "ተፈጥሮ ሀብት ልማት፣ ጥበቃና አጠቃቀም መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "35609375-12cf-46ff-b6e6-46a66286b0e9"
+  },
+  {
+    "Name": "Rural Land Administration and use Lead Excutives",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Rural Land Administration and use Lead Excutives",
+    "Description": "ገጠር መሬት አስተዳደርና አጠቃቀም መሪ ስራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "890bae09-8a00-4bdc-9526-5277704ef399"
+  },
+  {
+    "Name": "Smallholder Irigation development lead excutives",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Smallholder Irigation development lead excutives",
+    "Description": "አነስተኛ ይዞታ መስኖ ልማት መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "2c08082d-68cb-4e19-b91e-d483a4633d66"
+  },
+  {
+    "Name": "Soil Resource Development Lead Excutives",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Soil Resource Development Lead Excutives",
+    "Description": "አፈር ሀብት ልማት መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "3da65e9c-e73b-48bc-b879-7e0a9dbaf545"
+  },
+  {
+    "Name": "Investment and Agricultural Input sector advisors",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Investment and Agricultural Input sector advisors",
+    "Description": "ግብርና ግብዓት ግብይት  ዘርፍ  ሚ/ር ዴኤታ ጽ/ቤት    አማካሪዎች",
+    "Level": 3,
+    "Guid": "79995077-814b-49b4-93cc-9c7a0959bad7"
+  },
+  {
+    "Name": "Investment and Agricultural Input sector secretary",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Investment and Agricultural Input sector secretary",
+    "Description": "ግብርና ግብዓት ግብይት  ዘርፍ  ሚ/ር ዴኤታ  ፀኃፊ",
+    "Level": 3,
+    "Guid": "444949f5-662a-42ba-99e2-4369166f1728"
+  },
+  {
+    "Name": "Livestock and fishery development extension lead excutive",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Livestock and fishery development extension lead excutive",
+    "Description": "እንስሳትና ዓሳ ልማት ኤክስቴንሽን መሪ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "4b51d48c-d9bd-4463-9822-e866525defda"
+  },
+  {
+    "Name": "Management Chief Executives secretary",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Management Chief Executives secretary",
+    "Description": null,
+    "Level": 3,
+    "Guid": "b92c515b-7852-40df-988f-fa595c0b65a7"
+  },
+  {
+    "Name": "Management Chief Executives advisory",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Management Chief Executives advisory",
+    "Description": "ዋና ሥራ አመራር አማካሪዎች",
+    "Level": 3,
+    "Guid": "6b7c5f6a-f0d7-4812-9a7a-f1c1d9cae1c5"
+  },
+  {
+    "Name": "Institutional Reform Excutives",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Institutional Reform Excutives",
+    "Description": "ተቋማዊ ለውጥ ሥራ አስፈጻሚ",
+    "Level": 3,
+    "Guid": "8aaf1ec8-977f-4d33-a852-1dc8ebbbf6cb"
+  },
+  {
+    "Name": "Natural resource development sector secretary",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural resource development sector secretary",
+    "Description": null,
+    "Level": 3,
+    "Guid": "26740d44-06a1-4a69-97dc-892f1632022a"
+  },
+  {
+    "Name": "Natural resource development sector advisory",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural resource development sector advisory",
+    "Description": "ተፈጥሮ ሃብት ልማት ዘርፍ አማካሪ",
+    "Level": 3,
+    "Guid": "b8257e5b-9c51-4973-9fb6-7b1796baf5d7"
+  },
+  {
+    "Name": "All employee in CHRME",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Competency and Human Resource Management Executive",
+    "Description": null,
+    "Level": 3,
+    "Guid": "758d63ce-ff36-43e2-9707-17d8117666c0"
+  },
+  {
+    "Name": "All Management Chief Executive Executives",
+    "Path": "Ministry of Agriculture/Management Chief Executives/All Management Chief Executive Executives",
+    "Description": " ሁሉም የዋና ስራ አመራር ሥራ አስፈፃሚ ሥራ አስፈፃሚዎች",
+    "Level": 3,
+    "Guid": "151efecb-9537-4dbd-9c1c-a51d9a527dc8"
+  },
+  {
+    "Name": "All Investment and Agriculture Sector Lead Executives",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/All Investment and Agriculture Sector Lead Executives",
+    "Description": "ሁሉም የግብርና ኢንቨስትመንት እና የግብዓት አቅርቦት ዘርፍ መሪ ሥራ አስፈፃሚዎች",
+    "Level": 3,
+    "Guid": "a4ebdb6b-ffaa-42ba-9e8f-140a217ed2f4"
+  },
+  {
+    "Name": "all finance excutives team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Finance executive",
+    "Description": null,
+    "Level": 3,
+    "Guid": "51f12f81-ee7a-4d2f-b6da-be8fbe80563a"
+  },
+  {
+    "Name": "All Regular information Communication Technology Employee",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Information Communication Technology Executive",
+    "Description": "ሁሉም የኢንፎርሜሽንና ኮሙኒኬሽን ቴክኖሎጂ ሥራ አስፈጻሚ መደበኛ ሰራተኞች",
+    "Level": 3,
+    "Guid": "d18581d6-c9b1-485d-b11a-9c7fa000c1b6"
+  },
+  {
+    "Name": "All Minister’s Office Executives and Offices",
+    "Path": "Ministry of Agriculture/Minister Office/All Minister’s Office Executives and Offices",
+    "Description": "ሁሉም የሚ/ር ጽ/ቤት ሥራ አስፈፃሚዎች እና ጽ/ቤቶች",
+    "Level": 3,
+    "Guid": "4b79c63d-da79-4091-b664-a4c15bda4266"
+  },
+  {
+    "Name": "All Audit Excutives Employee",
+    "Path": "Ministry of Agriculture/Minister Office/Audit Excutives",
+    "Description": "ሁሉም የኦዲት ሥራ አስፈጻሚ ሰራተኞች",
+    "Level": 3,
+    "Guid": "de88f085-e3f5-4b59-a59a-5e7e22afec1d"
+  },
+  {
+    "Name": "All Ethics and Anti-corruption Excutives",
+    "Path": "Ministry of Agriculture/Minister Office/Ethics and Anti-corruption Excutives",
+    "Description": "ሁሉም የሥነ-ምግባር መከታተያ ሰራተኞች",
+    "Level": 3,
+    "Guid": "1af7e393-394e-41b1-bfea-e4f94b848adc"
+  },
+  {
+    "Name": "All Food and Nutrition Office employee",
+    "Path": "Ministry of Agriculture/Minister Office/Food and Nutrition Office",
+    "Description": "ሁሉም የምግብና ሥርዓተ ምግብ ጽ/ቤት ሰራተኞች",
+    "Level": 3,
+    "Guid": "5fba8c85-a210-4ddd-86c0-e15cfb68daa3"
+  },
+  {
+    "Name": "All Food security Coordination office Employee",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office",
+    "Description": "ሁሉም የምግብ ዋስትና ማስተባበሪያ ጽ/ቤትሰራተኞች",
+    "Level": 3,
+    "Guid": "8e25f794-7183-4f19-bd56-d1be22b558ad"
+  },
+  {
+    "Name": "All Legal Service Executive Employee",
+    "Path": "Ministry of Agriculture/Minister Office/Legal Service Executive",
+    "Description": "ሁሉም ህግ አገልግሎት ሰራተኞች",
+    "Level": 3,
+    "Guid": "d520b8b0-8756-43a4-8708-a536a0104cc4"
+  },
+  {
+    "Name": "All Public Relation Excutives Employee",
+    "Path": "Ministry of Agriculture/Minister Office/Public Relation and Communication Excutive",
+    "Description": "ሁሉም የህዝብ ግንኙነትና ኮሙኒኬሽን ሰራተኞች",
+    "Level": 3,
+    "Guid": "5852d303-8228-41f8-a818-e14777383fcc"
+  },
+  {
+    "Name": "Livestock Resource Development Sector Advisor",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Livestock Resource Development Sector Advisor",
+    "Description": "እንስሳትና አሳ ሀብት ልማት ዘርፍ አማካሪ",
+    "Level": 3,
+    "Guid": "f4fabaed-4c65-467e-a2e1-c8f4a3fe8870"
+  },
+  {
+    "Name": "All Feed Resource Development Lead Executive Employee",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive",
+    "Description": null,
+    "Level": 3,
+    "Guid": "141e07bf-08e6-451a-84c4-d150f0254bc1"
+  },
+  {
+    "Name": "All livestock and fishery resource development lead excutives Em",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives",
+    "Description": null,
+    "Level": 3,
+    "Guid": "9b105a68-a546-4327-abd7-b6dc7eebb82a"
+  },
+  {
+    "Name": "All livestock health and veterinary public health lead excutive",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive",
+    "Description": null,
+    "Level": 3,
+    "Guid": "716ccb9f-685c-4b6e-a9f4-5b0d833e6667"
+  },
+  {
+    "Name": "All Livestock Resource Development Sector Lead Executives",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/All Livestock Resource Development Sector Lead Executives",
+    "Description": "ሁሉም የእንስሳትና የአሳ ሀብት ልማት ዘርፍ መሪ ሥራ አስፈፃሚዎች",
+    "Level": 3,
+    "Guid": "f6c90da3-cd42-4320-a37d-a3d442d6ac4f"
+  },
+  {
+    "Name": "All Livestock and fishery development extension lead excutive em",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Livestock and fishery development extension lead excutive",
+    "Description": null,
+    "Level": 3,
+    "Guid": "25924acf-b125-4611-bae4-05950579b4df"
+  },
+  {
+    "Name": "All Natural Resource Development Sector Lead Executives",
+    "Path": "Ministry of Agriculture/Natural resource development sector/All Natural Resource Development Sector Lead Executives",
+    "Description": "ሁሉም የተፈጥሮ ሀብት ልማት  ዘርፍ መሪ ሥራ አስፈጻሚዎች",
+    "Level": 3,
+    "Guid": "dffb6e21-2dfb-4c68-a70c-63e6ae71afb3"
+  },
+  {
+    "Name": "All Natural Resources Management lead executive Employee",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive",
+    "Description": null,
+    "Level": 3,
+    "Guid": "8784c4b9-174d-4b2d-90d1-01d684005bcf"
+  },
+  {
+    "Name": "All Rural Land Administration and use Lead Excutives employee",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Rural Land Administration and use Lead Excutives",
+    "Description": null,
+    "Level": 3,
+    "Guid": "b4ecb207-f393-482a-b52a-6714d563da18"
+  },
+  {
+    "Name": "All Smallholder Irigation development lead excutives employee",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Smallholder Irigation development lead excutives",
+    "Description": null,
+    "Level": 3,
+    "Guid": "47877c3c-36d0-4372-9462-4314819018f4"
+  },
+  {
+    "Name": "All soil resource development lead excutives Employee",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Soil Resource Development Lead Excutives",
+    "Description": null,
+    "Level": 3,
+    "Guid": "f42cf3b9-7213-42be-a605-179b3d1be869"
+  },
+  {
+    "Name": "Food System Resilience Program (FSRP)",
+    "Path": "Ministry of Agriculture/Minister Office/Food System Resilience Program (FSRP)",
+    "Description": "ምግብ ስርዓት ማጠናከሪያ ፕሮግራም ",
+    "Level": 3,
+    "Guid": "cc7c29b1-c51b-41c1-ace5-1b2ac2e590d4"
+  },
+  {
+    "Name": "All Food System Resilience Program (FSRP) employee",
+    "Path": "Ministry of Agriculture/Minister Office/Food System Resilience Program (FSRP)",
+    "Description": null,
+    "Level": 3,
+    "Guid": "bb890f2e-5ce5-456c-8235-fc79de39678b"
+  },
+  {
+    "Name": "Climate  Resilient Wheat Value Chain Development { CREW} Project",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Climate  Resilient Wheat Value Chain Development { CREW} Project",
+    "Description": "አየር ንብረት የሚቋቋም የስንዴ እሴት ሰንሰለት ልማት ፕሮጀክት",
+    "Level": 3,
+    "Guid": "cca2aef4-7f63-4bb2-ba81-7506078c52b8"
+  },
+  {
+    "Name": "Italian Development Cooperation Agriculture value chain project",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Italian Development Cooperation Agriculture value chain project",
+    "Description": "ግብርና እሴት ሰንሰለት ልማት ፕሮጀክት",
+    "Level": 3,
+    "Guid": "9187657f-9699-43a4-b8f5-1bced6261915"
+  },
+  {
+    "Name": "Rural Economic Development and Food Security (REDFS)",
+    "Path": "Ministry of Agriculture/Minister Office/Rural Economic Development and Food Security (REDFS)",
+    "Description": null,
+    "Level": 3,
+    "Guid": "2362ba78-907b-4381-92d8-1635dc093b52"
+  },
+  {
+    "Name": "All Agricultural and Investment product Marketing Lead Excutive",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead executive of Agricultural investment and product marketing",
+    "Description": "ሁሉም የግብርና ኢንቨስትመንትና ምርት ግብይት መሪ ሥራ አስፈጻሚ ሠራተኞች",
+    "Level": 3,
+    "Guid": "d1a419e9-5f9e-462c-ae4a-95eff29397d3"
+  },
+  {
+    "Name": "Minister’s Office Secretary",
+    "Path": "Ministry of Agriculture/Minister Office/Minister’s Office Secretary",
+    "Description": null,
+    "Level": 3,
+    "Guid": "50f4c75f-53c0-4952-9964-873424c10a90"
+  },
+  {
+    "Name": "All Alive Project Group",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Alive Project",
+    "Description": null,
+    "Level": 3,
+    "Guid": "98b6fe3f-b37a-4d7c-8351-43539d27cd72"
+  },
+  {
+    "Name": "DRIVE and BREFONS",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/DRIVE and BREFONS",
+    "Description": "አደጋ ስጋት ቅነሳና አካታች የኢኮኖሚ እሴት ማሻሻያ እና የአርብቶ አደር የምግብና ስርዓተ ምግብ ደህንነት ማሻሻያ ፕሮጀክት",
+    "Level": 3,
+    "Guid": "76fc7cbb-b4cf-4f89-ae54-d588b84a3338"
+  },
+  {
+    "Name": "All Agricultural Mechnazation Lead Excutives Team Memebers",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Agricultural Mechanization",
+    "Description": "ሁሉም ግብርና ሜካናይዜሽን መሪ ሥራ አስፈጻሚ ሠራተኞች",
+    "Level": 3,
+    "Guid": "b9892cfc-9574-45f4-b59b-66ee8e4e8752"
+  },
+  {
+    "Name": "all agricultural and Horticulture extension execitives employee",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Agricultural and Horticulture extension lead executives",
+    "Description": null,
+    "Level": 3,
+    "Guid": "e2e47f5e-3bd4-42c5-a60c-553a09798b68"
+  },
+  {
+    "Name": "All Input supply Lead Excutives team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Supply chain",
+    "Description": null,
+    "Level": 3,
+    "Guid": "62ef9425-0d41-497a-b026-dfd1679e57cf"
+  },
+  {
+    "Name": "all cotton development lead excutives employee",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/cotton development lead excutives",
+    "Description": null,
+    "Level": 3,
+    "Guid": "ea0405e1-8863-43b9-8831-15aed3508e32"
+  },
+  {
+    "Name": "All urban Agriculture and Devlopment Lead excutive",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Urban Agriculture development",
+    "Description": null,
+    "Level": 3,
+    "Guid": "e0ab23ec-92c8-4d7f-aaf3-a19d2aeb905d"
+  },
+  {
+    "Name": "all crop development lead executives employees",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives",
+    "Description": null,
+    "Level": 3,
+    "Guid": "fe89e27e-e51a-4962-b1ba-0a2463babf2e"
+  },
+  {
+    "Name": "all horticulture lead executives Employees",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive",
+    "Description": null,
+    "Level": 3,
+    "Guid": "6fd2db23-7e45-41be-aebe-da59a2ed16b4"
+  },
+  {
+    "Name": "all plant protection lead excutives employees",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/plant protection lead excutives",
+    "Description": null,
+    "Level": 3,
+    "Guid": "2f22cd0e-6de8-4c57-8ae7-4afe7a129275"
+  },
+  {
+    "Name": "Agriculture and Holitculture Development sector Admin Assistant",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Agriculture and Holitculture Development sector Admin Assistant",
+    "Description": null,
+    "Level": 3,
+    "Guid": "600866c7-fa5e-46dd-a975-98543a20709f"
+  },
+  {
+    "Name": "LFSDP",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/LFSDP",
+    "Description": "ብሔራዊ እንስሳትና ዓሳ ሀብት ልማት ፕሮጀክት",
+    "Level": 3,
+    "Guid": "b5a5f661-d248-4850-9c24-f7d730e5ac63"
+  },
+  {
+    "Name": "All LFSDP Emp",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/LFSDP",
+    "Description": null,
+    "Level": 3,
+    "Guid": "192b1cdc-d7dc-48d6-abae-e01580487608"
+  },
+  {
+    "Name": "DRSLP-AICS",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/DRSLP-AICS",
+    "Description": null,
+    "Level": 3,
+    "Guid": "dffd7d40-2403-4763-8d06-9c8195585cc7"
+  },
+  {
+    "Name": "All DRSLP-AICS Emp",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/DRSLP-AICS",
+    "Description": null,
+    "Level": 3,
+    "Guid": "6f371bd2-79c1-463a-94bd-34cbe62ed507"
+  },
+  {
+    "Name": "Participatory Agriculture and Climate Transformation Program",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Participatory Agriculture and Climate Transformation Program",
+    "Description": "ተሳትፎአዊ ግብርናና አየር ንብረት ሽግግር (PACT) ፕሮግራም",
+    "Level": 3,
+    "Guid": "41806caf-8a50-4d8e-9f3e-cecf46f94dd5"
+  },
+  {
+    "Name": "Sustainable Land Use Management Project (SLMP)",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Sustainable Land Use Management Project (SLMP)",
+    "Description": "ዘላቂ መሬት አያያዝ ፕሮጀክት",
+    "Level": 3,
+    "Guid": "cf845f2b-d78f-4771-b39d-3b0dd7a0fe73"
+  },
+  {
+    "Name": "ALL PACT employee",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Participatory Agriculture and Climate Transformation Program",
+    "Description": null,
+    "Level": 3,
+    "Guid": "3dfabea2-c99f-44fc-a490-0c85a60cb4bb"
+  },
+  {
+    "Name": "Livestock Resource Development Sector Secretary",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Livestock Resource Development Sector Secretary",
+    "Description": null,
+    "Level": 3,
+    "Guid": "75e2b78c-c49a-448e-a268-75b5f10a8f46"
+  },
+  {
+    "Name": "National Avocado Program",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/National Avocado Program",
+    "Description": "ብሄራዊ አቮካዶ ልማት ፕሮግራም",
+    "Level": 3,
+    "Guid": "5c789a04-be27-455b-815c-67c9bbe1c05c"
+  },
+  {
+    "Name": "Climate Resilient Green Economy Projects",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Climate Resilient Green Economy Projects",
+    "Description": "ለአየር ንብረት ለውጥ የማይበገር አረግጓዴ ኢኮኖሚ ፕሮጀክቶች",
+    "Level": 3,
+    "Guid": "3dffc83c-76d5-4d5f-b92a-b80097059437"
+  },
+  {
+    "Name": "Strengthening Drought Resilience project",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Strengthening Drought Resilience project",
+    "Description": "ድርቅ መቋቋም አቅም ግንባታ ፕሮጀክት",
+    "Level": 3,
+    "Guid": "33ac5504-a2a3-41ae-bfd1-7afcb118f7a4"
+  },
+  {
+    "Name": "Intern Department 2",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Intern Department 2",
+    "Description": null,
+    "Level": 3,
+    "Guid": "1ee8d798-d684-451a-b2f0-d7e897a3bcc0"
+  },
+  {
+    "Name": "all intern team2",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Intern Department 2",
+    "Description": null,
+    "Level": 3,
+    "Guid": "96beedd0-0eef-4999-ae25-5b107b893985"
+  },
+  {
+    "Name": "Rural Finance Service Unit",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Rural Finance Service Unit",
+    "Description": null,
+    "Level": 3,
+    "Guid": "3aa35c96-7647-4212-af64-0534f014ce95"
+  },
+  {
+    "Name": "all rural finance service unit team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Rural Finance Service Unit",
+    "Description": null,
+    "Level": 3,
+    "Guid": "59c7d9f5-4f98-42b9-96dd-9f7228bc8fa0"
+  },
+  {
+    "Name": "Smallholder irrigation development and expansion (SHIDEP)",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Smallholder irrigation development and expansion (SHIDEP)",
+    "Description": null,
+    "Level": 3,
+    "Guid": "c2e4ca94-06fd-42b5-818c-066a481fbee0"
+  },
+  {
+    "Name": "Agriculture and Holticulture Development sector's Lead Excutives",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Agriculture and Holticulture Development sector's Lead Excutives",
+    "Description": "እርሻና ሆልቲካልቸር  ልማት ዘርፍ መሪ ስራ አስፈፃሚዎች",
+    "Level": 3,
+    "Guid": "8b90e727-3496-476e-8d1f-b79aec76101f"
+  },
+  {
+    "Name": "MOA COOP",
+    "Path": "Ministry of Agriculture/Management Chief Executives/MOA COOP",
+    "Description": "ግብርና ሚ/ር እና ተጠሪ ተቋማት ሸማቾች ህብረት ስራ ማህበር",
+    "Level": 3,
+    "Guid": "1bf87476-c620-4ef3-9a88-429375904b4d"
+  },
+  {
+    "Name": "Intern3 department",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Intern3 department",
+    "Description": null,
+    "Level": 3,
+    "Guid": "6c0b619b-6d3b-4e17-b759-e54cbb25e73a"
+  },
+  {
+    "Name": "all intern3 department",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Intern3 department",
+    "Description": null,
+    "Level": 3,
+    "Guid": "99188019-da9a-425e-a9d2-6fcac8202ba3"
+  },
+  {
+    "Name": "MOA credit and saving institution",
+    "Path": "Ministry of Agriculture/Management Chief Executives/MOA credit and saving institution",
+    "Description": "ግብርና ሚኒስቴር ብድር እና ቁጠባ ተቋም",
+    "Level": 3,
+    "Guid": "544049f5-23c5-496f-b74f-ab25de84a12e"
+  },
+  {
+    "Name": "Inclusive and Sustainable Value Chains Development Project",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Inclusive and Sustainable Value Chains Development Project",
+    "Description": null,
+    "Level": 3,
+    "Guid": "0b664374-233a-44ee-ba84-f904d35f4e6f"
+  },
+  {
+    "Name": "All Italian Development Cooperation Agriculture value chain Emp",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Italian Development Cooperation Agriculture value chain project",
+    "Description": null,
+    "Level": 3,
+    "Guid": "61649efe-3c76-4183-b2d6-860f54da6fd3"
+  },
+  {
+    "Name": "policy and strategy study and Research Lead Executives",
+    "Path": "Ministry of Agriculture/Minister Office/policy and strategy study and Research Lead Executives",
+    "Description": "ፖሊሲ እና ስትራቴጂ ጥናት እና ምርምር  መሪ ሥራ አስፈፃሚ",
+    "Level": 3,
+    "Guid": "47de1e18-2fe3-48c8-82d2-8be639babc2b"
+  },
+  {
+    "Name": "Development Response to Displacement impact Project Phase II",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Development Response to Displacement impact Project Phase II",
+    "Description": "ስደተኞች ተፅዕኖ ምላሽ የልማት ፕሮጀክት ምዕራፍ ሁለት",
+    "Level": 3,
+    "Guid": "e7fb8056-b856-497f-9f76-a99f6cb6c6ee"
+  },
+  {
+    "Name": "All Agriculture and Holitculture Development secto Executives",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/All Agriculture and Holitculture Development secto Executives",
+    "Description": "ሁሉም እርሻና ሆልቲካልቸር  ልማት ዘርፍ መሪ ሥራ አስፈፃሚዎች",
+    "Level": 3,
+    "Guid": "b2d32bb7-826f-445d-9852-349ad957205c"
+  },
+  {
+    "Name": "Minister advisors",
+    "Path": "Ministry of Agriculture/Minister Office/Minister advisors",
+    "Description": "\t\tሚኒስትሩ አማካሪዎች",
+    "Level": 3,
+    "Guid": "cfba2e2f-627c-4841-b262-889760c17cff"
+  },
+  {
+    "Name": "Project Coordination Unit (PCU)",
+    "Path": "Ministry of Agriculture/Minister Office/Project Coordination Unit (PCU)",
+    "Description": null,
+    "Level": 3,
+    "Guid": "604e8e0d-6801-4874-aef5-3a7e4fb340f0"
+  },
+  {
+    "Name": "Livestock MRV capacity Building grant Activity Implementation",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Livestock MRV capacity Building grant Activity Implementation",
+    "Description": null,
+    "Level": 3,
+    "Guid": "244db4cd-c370-498f-b9a7-fcc9377e40c9"
+  },
+  {
+    "Name": "Ministry of Agriculture Conference Center Management",
+    "Path": "Ministry of Agriculture/Minister Office/Ministry of Agriculture Conference Center Management",
+    "Description": null,
+    "Level": 3,
+    "Guid": "b90fb4bd-9ec3-4e1e-9780-df01d1d52dcc"
+  },
+  {
+    "Name": "All Conference Member",
+    "Path": "Ministry of Agriculture/Minister Office/Ministry of Agriculture Conference Center Management",
+    "Description": null,
+    "Level": 3,
+    "Guid": "371ea66c-31b8-4782-bffb-5bdd308ac2c4"
+  },
+  {
+    "Name": "Demonstration Desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Agricultural and Horticulture extension lead executives/Demonstration Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "b93fd764-9c07-4d81-b3aa-b137ce3883f3"
+  },
+  {
+    "Name": "Regular Pest Diagnostics Laboratory Desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/plant protection lead excutives/Regular Pest Diagnostics Laboratory Desk",
+    "Description": "የተባይ ዲያግኖስቲክስ ላቦራቶሪ ዴስክ ",
+    "Level": 4,
+    "Guid": "18a00d09-9d8a-4d0b-90f3-e5bc6ca59943"
+  },
+  {
+    "Name": "Agricultural and Holitculture Investiment product Marketing Desk",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead executive of Agricultural investment and product marketing/Agricultural and Holitculture Investiment product Marketing Desk",
+    "Description": "እርሻና ሆርቲካልችር ኢንቨስትመንት ምርት ግብይት ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "d4412894-1864-4495-bf4a-448e98d4595f"
+  },
+  {
+    "Name": "Agricultural Contract Implementation Desk",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead executive of Agricultural investment and product marketing/Agricultural Contract Implementation Desk",
+    "Description": "ግብርና ውል አፈጻጸም ዴስክ  ኃላፊ",
+    "Level": 4,
+    "Guid": "fc013551-c4c0-4f3d-a695-8de452fe85e8"
+  },
+  {
+    "Name": "Livestock and Fish Investiment Output Market Desk Head",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead executive of Agricultural investment and product marketing/Livestock and Fish Investiment Output Market Desk Head",
+    "Description": "እንስሳት ዓሳ ኢንቨስትመንት ክትትልና ድጋፍ ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "828fb019-3ad3-4a4b-8c01-25175600c5f4"
+  },
+  {
+    "Name": "Livestock and fishery development extension",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Livestock and fishery development extension lead excutive/Livestock and fishery development extension",
+    "Description": null,
+    "Level": 4,
+    "Guid": "f7b769ef-766a-4230-b415-b628cd3d929a"
+  },
+  {
+    "Name": "Information Technology team lead",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Information Communication Technology Executive/Information Technology team lead",
+    "Description": "ኢንፎርሜሽን ቴክኖሎጂ ቡድን መሪ",
+    "Level": 4,
+    "Guid": "9f92774d-147c-495b-a1b4-95d49baa4000"
+  },
+  {
+    "Name": "Network database and maintenance team lead",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Information Communication Technology Executive/Network database and maintenance team lead",
+    "Description": "የኔትዎርክ ዳታቤዝ  እና ጥገና ቡድን መሪ",
+    "Level": 4,
+    "Guid": "8c7f13ae-3bbd-4734-b784-7ebef95acb55"
+  },
+  {
+    "Name": "Institutional Reform",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Institutional Reform Excutives/Institutional Reform",
+    "Description": null,
+    "Level": 4,
+    "Guid": "84ffe1d9-08af-4dd3-837f-6fb18d4bcae7"
+  },
+  {
+    "Name": "Food and Nutrition  Research and Capacity Buliding desk",
+    "Path": "Ministry of Agriculture/Minister Office/Food and Nutrition Office/Food and Nutrition  Research and Capacity Buliding desk",
+    "Description": "የምግብና ሥርዓተ ምግብ ጥናትና አቅም ግንባታ ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "081bbc9c-20e9-4959-9459-ef857d8d5e8d"
+  },
+  {
+    "Name": "Food Safety and Quality Desk",
+    "Path": "Ministry of Agriculture/Minister Office/Food and Nutrition Office/Food Safety and Quality Desk",
+    "Description": "የምግብ ደህንነትና ጥራት ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "c5c2c4f3-da9c-4c46-a676-c19bd4d618b1"
+  },
+  {
+    "Name": "Family Livehood improvement desk",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office/Family Livehood improvement desk",
+    "Description": "የቤተሰብ ኑሮ ማሻሻያ ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "46a71bda-a49d-49d5-bd36-7932d32aed92"
+  },
+  {
+    "Name": "procurementFinance and Property Administration desk",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office/procurementFinance and Property Administration desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "b7b0d968-ac6e-4fbe-88c6-b96af8c2758e"
+  },
+  {
+    "Name": "Library and documentation team",
+    "Path": "Ministry of Agriculture/Minister Office/Public Relation and Communication Excutive/Library and documentation team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "97c78d49-7a75-462f-87ff-a0b3fc64f648"
+  },
+  {
+    "Name": "public relation and communication team",
+    "Path": "Ministry of Agriculture/Minister Office/Public Relation and Communication Excutive/public relation and communication team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "b7938735-eaf1-4ecf-a1e9-31c40e8327e0"
+  },
+  {
+    "Name": "Soil Health and fertility improvement Desk",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Soil Resource Development Lead Excutives/Soil Health and fertility improvement Desk",
+    "Description": "አፈር ጤንነትና ለምነት ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "3d6df7c8-d9d6-408e-9167-a57f26389e53"
+  },
+  {
+    "Name": "Information Communication Technology Executive Project Team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Information Communication Technology Executive/Information Communication Technology Executive Project Team",
+    "Description": "አማርኛ ዲስክሪፕሽን",
+    "Level": 4,
+    "Guid": "51f30ff9-e813-4e0d-afa1-3d4c39e3f45a"
+  },
+  {
+    "Name": "Budget preparation and monitoring team leader",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Finance executive/Budget preparation and monitoring team leader",
+    "Description": null,
+    "Level": 4,
+    "Guid": "6e5c969e-6cb9-4cb6-b9e0-31b1312e8c40"
+  },
+  {
+    "Name": "finance operation  team leader",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Finance executive/finance operation  team leader",
+    "Description": null,
+    "Level": 4,
+    "Guid": "e22cc2f2-e738-4899-b0ba-fa5da2f7d9ce"
+  },
+  {
+    "Name": "Financial executive secretary",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Finance executive/Financial executive secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "41cf7070-631e-419e-8a6f-f623da62b4d7"
+  },
+  {
+    "Name": "Strategic Affair Executives secretary",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/Strategic Affair Executives secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "ce55c8a1-f958-4345-a44c-f32e70170985"
+  },
+  {
+    "Name": "soil resource development lead excutives secretary",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Soil Resource Development Lead Excutives/soil resource development lead excutives secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "226a8085-0472-4ad6-823d-20ee81e904ca"
+  },
+  {
+    "Name": "Agricultural and Horticulture extension lead secretary",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Agricultural and Horticulture extension lead executives/Agricultural and Horticulture extension lead secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "f005c940-669c-4149-9e13-45acb8a2c67d"
+  },
+  {
+    "Name": "Agricultural extension development partners Linkage desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Agricultural and Horticulture extension lead executives/Agricultural extension development partners Linkage desk",
+    "Description": "ኤክስቴንሽን ልማት አጋር አካላት ግንኙነት ዴስክ",
+    "Level": 4,
+    "Guid": "5e49818e-fe1f-40d1-890c-25dc13fb2533"
+  },
+  {
+    "Name": "Cotton Crop Development Desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/cotton development lead excutives/Cotton Crop Development Desk",
+    "Description": "ጥጥ ሰብል ልማት ዴስክ",
+    "Level": 4,
+    "Guid": "1e322008-a942-4f83-a34e-c9e785e3fbc9"
+  },
+  {
+    "Name": "Cotton Value Chain Development Desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/cotton development lead excutives/Cotton Value Chain Development Desk",
+    "Description": "ጥጥ እሴት ሰንሰለት ልማት ዴስክ",
+    "Level": 4,
+    "Guid": "58167a5b-6c21-450c-b004-26254c9a07ac"
+  },
+  {
+    "Name": "Cotton Product Handling Desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/cotton development lead excutives/Cotton Product Handling Desk",
+    "Description": "ጥጥ ምርት አያያዝ ዴስክ",
+    "Level": 4,
+    "Guid": "0b8f99f9-34bc-43a2-a5ba-829a65fcc000"
+  },
+  {
+    "Name": "crop development lead executives secretary",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives/crop development lead executives secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "e80f19cb-b4b2-4de7-b81f-6414bc60c595"
+  },
+  {
+    "Name": "plant protection lead excutives secretary",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/plant protection lead excutives/plant protection lead excutives secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "20f51bc7-4947-4174-a121-b675adef3017"
+  },
+  {
+    "Name": "horticulture lead executives secretary",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/horticulture lead executives secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "2d6e15a0-3a0c-4718-8db8-220e2c6c4ec5"
+  },
+  {
+    "Name": "Agricultural and Investment product Marketing Lead Excutives sec",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead executive of Agricultural investment and product marketing/Agricultural and Investment product Marketing Lead Excutives sec",
+    "Description": "ግብርና ኢንቨስትመንትና ምርት ግብይት መሪ ሥራ አስፈጻሚ ኤክስክዩቲቭ ሴክሬታሪ I",
+    "Level": 4,
+    "Guid": "fac6a53c-ed8e-4632-a296-fa32537f5b76"
+  },
+  {
+    "Name": "migratory pest desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/plant protection lead excutives/migratory pest desk",
+    "Description": "ተዛማች ወራሪ ተባዮች ጥናት አሰሳና መከላከል ደስክ",
+    "Level": 4,
+    "Guid": "288e5630-917d-4ae7-a2ae-7b782fc2a38d"
+  },
+  {
+    "Name": "Survey and prevention desk of regular pests desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/plant protection lead excutives/Survey and prevention desk of regular pests desk",
+    "Description": "መደበኛ ተባዮች ጥናት አሰሳና መከላከል ዴስክ",
+    "Level": 4,
+    "Guid": "254742e5-8749-4360-bd71-37e92aa229b7"
+  },
+  {
+    "Name": "weed study  supervision and protection desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/plant protection lead excutives/weed study  supervision and protection desk",
+    "Description": "መጤ ወራሪ አረሞች ጥናት ቅኝትና መከላከል ዴስክ",
+    "Level": 4,
+    "Guid": "06b1f828-61fb-405c-b67e-d3cbb37882b7"
+  },
+  {
+    "Name": "Flower development desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/Flower development desk",
+    "Description": "አበባ ልማት ዴስክ",
+    "Level": 4,
+    "Guid": "db09ff1e-3361-415f-a31e-bbb82993d320"
+  },
+  {
+    "Name": "Fruit Development Desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/Fruit Development Desk",
+    "Description": "ፍራፍሬ ልማት ዴስክ",
+    "Level": 4,
+    "Guid": "bfe6d8e9-a36c-483f-8cf0-166aa9b5f3a3"
+  },
+  {
+    "Name": "Vegetable and Herb Developmetn Desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/Vegetable and Herb Developmetn Desk",
+    "Description": "አትክልትና ዕፀ-ጣዕም ልማት ዴስክ",
+    "Level": 4,
+    "Guid": "bdce29bc-6bea-4798-b753-cc670fef1372"
+  },
+  {
+    "Name": "root and enset development  desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/root and enset development  desk",
+    "Description": "ስራስርና እንሰት ልማት ዴስክ",
+    "Level": 4,
+    "Guid": "78c5abee-76d5-4b6a-8cf8-ebf0d1427b82"
+  },
+  {
+    "Name": "Oil Crop Development and Post-Harvesting",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives/Oil Crop Development and Post-Harvesting",
+    "Description": "ቅባትና ጭረት ሰብሎች ልማትና ድህረ ምርት ዴስክ ",
+    "Level": 4,
+    "Guid": "6050526d-9527-4849-9ea8-660757524a94"
+  },
+  {
+    "Name": "Cereal crops development and post harvest desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives/Cereal crops development and post harvest desk",
+    "Description": "ብርዕና አገዳ ሰብሎች ልማትና ድህረ ምርት ዴስክ",
+    "Level": 4,
+    "Guid": "212a82d8-6b8e-43a5-9c74-0a5c449d74bb"
+  },
+  {
+    "Name": "extension communication and digital extension desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Agricultural and Horticulture extension lead executives/extension communication and digital extension desk",
+    "Description": "ኤክስቴንሽን ኮሚዩኑኬሽና የዲጂታል ኤክስቴንሽን ዴስክ",
+    "Level": 4,
+    "Guid": "b9d47e8d-b69a-47fe-a6a8-b92fa5950ca6"
+  },
+  {
+    "Name": "Input supply Lead Excutives secretary",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Supply chain/Input supply Lead Excutives secretary",
+    "Description": "ኤክስክዩቲቭ ሴክሬታሪ I",
+    "Level": 4,
+    "Guid": "01a193e2-8f46-4f76-9044-8dd2f0832045"
+  },
+  {
+    "Name": "Biological Input supply desk",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Supply chain/Biological Input supply desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "bf75e5ae-acdb-4811-99b1-80eb6c86c87a"
+  },
+  {
+    "Name": "Chemical Input supply desk",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Supply chain/Chemical Input supply desk",
+    "Description": "ግብርና ኬሚካል ግብዓት አቅርቦት ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "5874acac-5cd8-44ce-92e6-e77231bd50ad"
+  },
+  {
+    "Name": "Crop Production Mechanization and Technology Desk",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Agricultural Mechanization/Crop Production Mechanization and Technology Desk",
+    "Description": "ሰብል ልማት መካናይዜሺንና ቴክኖሎጅ አቅርቦት ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "bdd5c72b-82bc-4608-a245-8f888ef727c7"
+  },
+  {
+    "Name": "Agricultural Mechnazation Lead Excutives secretary",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Agricultural Mechanization/Agricultural Mechnazation Lead Excutives secretary",
+    "Description": "ግብርና ሜካናይዜሽን መሪ ሥራ አስፈጻሚ ኤክስክዩቲቭ ሴክሬታሪ I",
+    "Level": 4,
+    "Guid": "4b29bd10-83b6-49d7-89e5-db082a101cd0"
+  },
+  {
+    "Name": "livestock health and veterinary public health lead excutive secr",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/livestock health and veterinary public health lead excutive secr",
+    "Description": null,
+    "Level": 4,
+    "Guid": "f37901e9-078d-4a57-9288-4ac796af4eb0"
+  },
+  {
+    "Name": "Disease prevention and control  desk",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/Disease prevention and control  desk",
+    "Description": "በሽታ መከላከል እና ቁጥጥር",
+    "Level": 4,
+    "Guid": "e7c51e75-8017-43ab-aa7d-cb77fa309853"
+  },
+  {
+    "Name": "Epidemiology desk",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/Epidemiology desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "3a9abc06-2582-419e-b9ec-93c44fc42e26"
+  },
+  {
+    "Name": "Veterinary Public Health Desk",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/Veterinary Public Health Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "64f3c190-c3cb-4e0e-843b-4bb1453ed7ea"
+  },
+  {
+    "Name": "livestock and fishery resource development lead excutives secret",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/livestock and fishery resource development lead excutives secret",
+    "Description": null,
+    "Level": 4,
+    "Guid": "2432503f-dc59-4cd5-a3d0-c7820bb84854"
+  },
+  {
+    "Name": "Meat Hide and Skin resource development desk",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Meat Hide and Skin resource development desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "2f966ca0-c8b0-49ff-b880-af6b5648ab55"
+  },
+  {
+    "Name": "Dairy Resource  Development Desk",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Dairy Resource  Development Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "ad4cef20-5357-4a8f-babe-bc1c838d442e"
+  },
+  {
+    "Name": "Poultry Resource Development Desk",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Poultry Resource Development Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "0eb9b39b-3a47-42e5-839a-a4b07bd8c961"
+  },
+  {
+    "Name": "Fishery Resource Development Desk",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Fishery Resource Development Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "3b745633-7fd8-465a-9255-95393816c9cf"
+  },
+  {
+    "Name": "Apiculture and Silk Resource Development",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Apiculture and Silk Resource Development",
+    "Description": null,
+    "Level": 4,
+    "Guid": "b1dd0655-f206-4ced-8c02-5f78c3188ef9"
+  },
+  {
+    "Name": "feed resource development lead excutives secretary",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive/feed resource development lead excutives secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "c45cb9af-11d1-4163-8ec4-5173f459298b"
+  },
+  {
+    "Name": "Natural Pasture and Rangeland Development and Management Desk",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive/Natural Pasture and Rangeland Development and Management Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "c592e73f-11f5-447c-b59f-e053ba325c9f"
+  },
+  {
+    "Name": "Improved Forage  Development Desk",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive/Improved Forage  Development Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "743ecbcb-cf6f-4ced-a6da-5a765e0cc4fb"
+  },
+  {
+    "Name": "Competency and Human Resource Management Executive secretary",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Competency and Human Resource Management Executive/Competency and Human Resource Management Executive secretary",
+    "Description": "የብቃት እና ሰው ሀብት ልማት ቡድን",
+    "Level": 4,
+    "Guid": "85927e86-78bb-4efc-b08f-aca9c304cc8b"
+  },
+  {
+    "Name": "Human Resource Management team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Competency and Human Resource Management Executive/Human Resource Management team",
+    "Description": "ሰው ሀብት አስተዳደር ቡድን",
+    "Level": 4,
+    "Guid": "442a7b45-18ca-4034-90d1-fccaef2f1b9d"
+  },
+  {
+    "Name": "Human resource skills and development team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Competency and Human Resource Management Executive/Human resource skills and development team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "37cbbad3-fa8f-45db-8449-934bce7afe17"
+  },
+  {
+    "Name": "Record and Documentation Team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Competency and Human Resource Management Executive/Record and Documentation Team",
+    "Description": "ሪከርድና ማህደር ቡድን",
+    "Level": 4,
+    "Guid": "c57c885c-9dc1-4807-99b0-4c93b640b187"
+  },
+  {
+    "Name": "Basic Service Executive secretary",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Basic Service Executive/Basic Service Executive secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "1034a246-3dd7-4cd5-9818-1a6da2e3d8d8"
+  },
+  {
+    "Name": "Property management team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Basic Service Executive/Property management team",
+    "Description": "የንብረት አስተዳደር ቡድን",
+    "Level": 4,
+    "Guid": "62fc25dc-67a4-47e3-a9d8-02504d5ecb56"
+  },
+  {
+    "Name": "climate change team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/climate change team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "c217660d-8a27-4fac-a106-87a88063b3a0"
+  },
+  {
+    "Name": "plan budget Monitoring and Evaluation team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/plan budget Monitoring and Evaluation team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "bd480f43-b4d5-4210-831d-8a54726f5a58"
+  },
+  {
+    "Name": "Project management partnership and resource Mobilization team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/Project management partnership and resource Mobilization team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "f7830a40-9e4b-4bda-b327-61586df51184"
+  },
+  {
+    "Name": "Statistics and Information Team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/Statistics and Information Team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "4d73251b-1ee9-4baa-8867-dbc51e5ad3c3"
+  },
+  {
+    "Name": "Procurement Team Lead",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Procurement Excutive/Procurement Team Lead",
+    "Description": "የግዥ ቡድን መሪ",
+    "Level": 4,
+    "Guid": "ce5a784e-f0cb-49f4-b719-65ee850c979a"
+  },
+  {
+    "Name": "financial analyst team lead",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Finance executive/financial analyst team lead",
+    "Description": null,
+    "Level": 4,
+    "Guid": "482d43b2-defd-4d19-bc33-6779257438a3"
+  },
+  {
+    "Name": "Rural Land Administration and use Lead Excutives secretary",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Rural Land Administration and use Lead Excutives/Rural Land Administration and use Lead Excutives secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "0f0111d9-a311-4070-9584-c96d60bdbaa6"
+  },
+  {
+    "Name": "Rural Land Administration and use Monitoring and Evaluation Desk",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Rural Land Administration and use Lead Excutives/Rural Land Administration and use Monitoring and Evaluation Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "8d4ea44f-a38c-480d-b24b-4242e4cd63d8"
+  },
+  {
+    "Name": "Land Administration Geo-Spacial Desk",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Rural Land Administration and use Lead Excutives/Land Administration Geo-Spacial Desk",
+    "Description": "ገጠር መሬት አስተዳደርና ጂኦስፓሽያል ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "c8918949-9cba-4e9b-b7cf-17a85ebae187"
+  },
+  {
+    "Name": "Land Use Desk",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Rural Land Administration and use Lead Excutives/Land Use Desk",
+    "Description": "መሬት አጠቃቀም ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "4d6bfb94-5c7f-4bb5-91cf-5b61bda43419"
+  },
+  {
+    "Name": "Smallholder Irigation development lead excutives secretary",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Smallholder Irigation development lead excutives/Smallholder Irigation development lead excutives secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "48f5e9ff-8504-4c67-8cb1-6f6da6ecb103"
+  },
+  {
+    "Name": "Design and Construction Desk",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Smallholder Irigation development lead excutives/Design and Construction Desk",
+    "Description": "የመስኖ ዲዛይንና ግንባታ ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "d2cf28ae-ae60-444d-9f9d-b73d6eb79b03"
+  },
+  {
+    "Name": "schema administration and water management  desk",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Smallholder Irigation development lead excutives/schema administration and water management  desk",
+    "Description": "የመስኖ አስተዳደርና ውሃ አጠቃቀም ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "f3841031-0f12-41be-8533-3c8e118b673c"
+  },
+  {
+    "Name": "soil survey and map preparation desk",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Soil Resource Development Lead Excutives/soil survey and map preparation desk",
+    "Description": "የአፈር ቅየሳና ካርታ ዝግጅት ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "a3ecca9e-dedf-4f1c-941f-e739b5e4e53f"
+  },
+  {
+    "Name": "Natural Resources Management lead executive secretary",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive/Natural Resources Management lead executive secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "0899be8e-e01e-4f2b-9725-00607540fce3"
+  },
+  {
+    "Name": "Water Shead managment desk",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive/Water Shead managment desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "7401eb15-ff78-47e9-922e-9eed12f03965"
+  },
+  {
+    "Name": "Biological soil and water conservation and agro forestry desk",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive/Biological soil and water conservation and agro forestry desk",
+    "Description": "ስነ-ሕይወታዊ አፈርና ውሀ ጥበቃና ጥምር ደን እርሻ ዴስክ ሃላፊ",
+    "Level": 4,
+    "Guid": "d1648be0-f3d9-44f3-85ea-b0338353a310"
+  },
+  {
+    "Name": "Public work coordination unit desk",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive/Public work coordination unit desk",
+    "Description": "ማህበረሰብ ሥራዎች ማስተባበሪያ ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "904b7807-b5a1-4e53-a946-83a0bcf56363"
+  },
+  {
+    "Name": "General service team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Basic Service Executive/General service team",
+    "Description": "ጠቅላላ አገልግሎት ቡድን",
+    "Level": 4,
+    "Guid": "52b281a4-6831-43fd-a253-868f5a2d1397"
+  },
+  {
+    "Name": "Vehicle Maintenance team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Basic Service Executive/Vehicle  Mintenance team",
+    "Description": "የተሽከርካሪ ጥገና ቡድን",
+    "Level": 4,
+    "Guid": "2e6d3226-9435-4db2-a935-1522d395ac8d"
+  },
+  {
+    "Name": "Transport service team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Basic Service Executive/Transport service team",
+    "Description": "ለትራንስፖርት ስምሪት አገልግሎት",
+    "Level": 4,
+    "Guid": "c10f8404-10ac-4a84-b0ed-d57ff3d62c3b"
+  },
+  {
+    "Name": "Audit team",
+    "Path": "Ministry of Agriculture/Minister Office/Audit Excutives/Audit team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "91c92ccb-b2ef-4b42-bc53-61097ac040af"
+  },
+  {
+    "Name": "Legal Officers",
+    "Path": "Ministry of Agriculture/Minister Office/Legal Service Executive/Legal Officers",
+    "Description": null,
+    "Level": 4,
+    "Guid": "24a98c4b-ecfe-413e-ac53-f9cb1f26fa29"
+  },
+  {
+    "Name": "Ethics & Anti-corruption Officers",
+    "Path": "Ministry of Agriculture/Minister Office/Ethics and Anti-corruption Excutives/Ethics & Anti-corruption Officers",
+    "Description": null,
+    "Level": 4,
+    "Guid": "f53644ff-98e3-411f-bde8-72b6182c08b2"
+  },
+  {
+    "Name": "Food and Nutriton Project team",
+    "Path": "Ministry of Agriculture/Minister Office/Food and Nutrition Office/Food and Nutriton Project team",
+    "Description": "ሥርዓተ ምግብ ተኮር ግብርና አቅም ግንባታ ፕሮጀክት",
+    "Level": 4,
+    "Guid": "72b7e4ab-089e-4536-8b8c-7d16b0a0f685"
+  },
+  {
+    "Name": "Safety Net Program Desk",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office/Safety Net Program Desk",
+    "Description": "የሴፍቲኔት ፕሮግራም ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "76e0317b-2808-4b24-935a-12d070094da2"
+  },
+  {
+    "Name": "Productive Safety Net Programme (PSNP)",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office/Productive Safety Net Programme (PSNP)",
+    "Description": "ልማታዊ ሴፍትኔት ፕሮግራም",
+    "Level": 4,
+    "Guid": "6fe38fd5-4794-4a03-a194-6915c568118a"
+  },
+  {
+    "Name": "Food System Resilience Program (FSRP) Members",
+    "Path": "Ministry of Agriculture/Minister Office/Food System Resilience Program (FSRP)/Food System Resilience Program (FSRP) Members",
+    "Description": null,
+    "Level": 4,
+    "Guid": "fe5f3f2d-1e36-4be1-8f78-d3d3e882d132"
+  },
+  {
+    "Name": "All Productive Safety Net Programme (PSNP) employee",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office/Productive Safety Net Programme (PSNP)",
+    "Description": null,
+    "Level": 4,
+    "Guid": "b75935d4-6f26-42a1-b925-04f91b258157"
+  },
+  {
+    "Name": "Climate  Resilient Wheat Value Chain Development Project members",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Climate  Resilient Wheat Value Chain Development { CREW} Project/Climate  Resilient Wheat Value Chain Development Project members",
+    "Description": null,
+    "Level": 4,
+    "Guid": "328bc530-beb3-4912-83bb-2fd18d751478"
+  },
+  {
+    "Name": "Rural Economic Development & Food Security (RED&FS) team",
+    "Path": "Ministry of Agriculture/Minister Office/Rural Economic Development and Food Security (REDFS)/Rural Economic Development & Food Security (RED&FS) team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "9c58257a-962a-42d3-af6d-bd5959c71f39"
+  },
+  {
+    "Name": "Development Response to Displacement impact Phase DRDIP Employee",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Development Response to Displacement impact Project Phase II/Development Response to Displacement impact Phase DRDIP Employee",
+    "Description": "የስደተኞች ተፅዕኖ ምላሽ የልማት ፕሮጀክት ምዕራፍ ሁለት ሰራተኞች",
+    "Level": 4,
+    "Guid": "cfbd41b5-e636-4cad-b3f8-6feb62fc4f6d"
+  },
+  {
+    "Name": "Irrigation administration amd water usage  desk",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead executive of Agricultural investment and product marketing/Irrigation administration amd water usage  desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "f2c8e8be-6e03-4861-992d-66bd2d61c4a0"
+  },
+  {
+    "Name": "LFSDP Members",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/LFSDP/LFSDP Members",
+    "Description": null,
+    "Level": 4,
+    "Guid": "f07f2ef9-6337-4466-9efe-f28af27f1e81"
+  },
+  {
+    "Name": "Food security Coordination office Secretary",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office/Food security Coordination office Secretary",
+    "Description": "  የምግብ ዋስትና ማስተባበሪያ ጽ/ቤት ፀሀፊ",
+    "Level": 4,
+    "Guid": "b6c64b7a-238f-4eee-a2ad-5a2431566a83"
+  },
+  {
+    "Name": "All Poultry Resource Development Employee",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Poultry Resource Development Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "16eb9cfe-2fac-4e7c-9a8d-9ea926b4f4b2"
+  },
+  {
+    "Name": "All Meat Hide and skin resource development",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Meat Hide and Skin resource development desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "3a0537f8-e599-45a9-9d35-1ad7ca1742cc"
+  },
+  {
+    "Name": "All Disease protection control Employee",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/Disease prevention and control  desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "cdb3d6a2-0e66-401e-90ae-1ff87e1a2746"
+  },
+  {
+    "Name": "All Epidemiology Employee",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/Epidemiology desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "1490c13d-fc24-4269-bd7f-12fe3d4489ea"
+  },
+  {
+    "Name": "All veterinary public Health Employee",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/Veterinary Public Health Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "111013bc-bb54-4da2-8219-fb98d27ac041"
+  },
+  {
+    "Name": "All Natural grazing development and management team members",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive/Natural Pasture and Rangeland Development and Management Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "1280c47b-bf9e-4394-a672-f8263baefbd1"
+  },
+  {
+    "Name": "All Improved feed plant development",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive/Improved Forage  Development Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "a8a1c1f8-fb07-4c8f-b2f3-1cdb70888a06"
+  },
+  {
+    "Name": "All Agriculture industry by product and feed usage",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive/Agriculture industry by product and feed usage desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "d4a437e4-22c0-447e-a74e-bf545a8f32ff"
+  },
+  {
+    "Name": "Agriculture industry by product and feed usage desk",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive/Agriculture industry by product and feed usage desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "259cb905-a4a3-469b-9fa2-df1a9232333f"
+  },
+  {
+    "Name": "All Bee and silk resource development desk Emp",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Apiculture and Silk Resource Development",
+    "Description": null,
+    "Level": 4,
+    "Guid": "045521dc-5c1f-4c0c-977d-74eff3d06ebe"
+  },
+  {
+    "Name": "All Dairy Resource  Development Desk Emp",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Dairy Resource  Development Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "a1fba4dc-8e4d-42fb-bad1-1f8af82e2c42"
+  },
+  {
+    "Name": "All Fishery Resource Development Desk Emp",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Fishery Resource Development Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "7b78d13d-3df4-4e2b-a234-104ecbfe1d96"
+  },
+  {
+    "Name": "DRSLP-AICS Emp",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/DRSLP-AICS/DRSLP-AICS Emp",
+    "Description": "የድርቅ መቋቋሚያ እና ዘላቂ አርብቶ አደር ኑሮ ማሻሻያ ፕሮግራም",
+    "Level": 4,
+    "Guid": "742c5845-4b3d-4f5d-bb3b-5500ae8e7e9d"
+  },
+  {
+    "Name": "Urban Livestock Resource Devleopment",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Urban Agriculture development/Urban Livestock Resource Devleopment",
+    "Description": null,
+    "Level": 4,
+    "Guid": "2575cb31-572d-40d9-8f34-af33ed4d50f2"
+  },
+  {
+    "Name": "Crop and Horticulture Devleopment",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Urban Agriculture development/Crop and Horticulture Devleopment",
+    "Description": null,
+    "Level": 4,
+    "Guid": "ab87851e-626c-4496-885e-5c76be929216"
+  },
+  {
+    "Name": "Natural Resource Development",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Urban Agriculture development/Natural Resource Development",
+    "Description": null,
+    "Level": 4,
+    "Guid": "832ddb00-ec27-4255-93ff-25468e8a3117"
+  },
+  {
+    "Name": "PACT members",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Participatory Agriculture and Climate Transformation Program/PACT members",
+    "Description": null,
+    "Level": 4,
+    "Guid": "afe6145c-bee7-48bc-b0f1-fcbe6187012f"
+  },
+  {
+    "Name": "Livestock identification traceablity System animal Walfare Desk",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/Livestock identification traceablity System animal Walfare Desk",
+    "Description": "እንሰሳት ልየታ፣ክትትልና ደህንነት ዴስክ",
+    "Level": 4,
+    "Guid": "b0122b90-a431-475c-a370-d07f1afebb52"
+  },
+  {
+    "Name": "De-Risking Inclusion and Value Enhancement of Pastoral Economics",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/DRIVE and BREFONS/DRIVE Member",
+    "Description": "አደጋ ስጋት ቅነሳና አካታች የኢኮኖሚ እሴት ማሻሻያ  አባላት",
+    "Level": 4,
+    "Guid": "438ab2d3-d1be-4f93-a58e-3ac881db8e1f"
+  },
+  {
+    "Name": "SLM members",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Sustainable Land Use Management Project (SLMP)/SLM members",
+    "Description": null,
+    "Level": 4,
+    "Guid": "e1edf451-e3fb-401f-a5d0-38cb6fb08145"
+  },
+  {
+    "Name": "PACT Finance",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Participatory Agriculture and Climate Transformation Program/PACT Finance",
+    "Description": "ተሳትፏዊ ግብርናና አየር ንብረት ሽግግር ፕሮግራም ፋይናንስ ክፍል",
+    "Level": 4,
+    "Guid": "ee2c4222-0dcd-4a4b-9ae5-4d62a6512efe"
+  },
+  {
+    "Name": "urban Agriculture and Devlopment Lead excutive secretery",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Urban Agriculture development/urban Agriculture and Devlopment Lead excutive secretery",
+    "Description": null,
+    "Level": 4,
+    "Guid": "8b43e4ef-44ca-45b4-952a-24506023a4ea"
+  },
+  {
+    "Name": "procurment excutives secretary",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Procurement Excutive/procurment excutives secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "e83ad2a7-1080-4d86-93bf-f478e09b6b2a"
+  },
+  {
+    "Name": "national avocado program team",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/National Avocado Program/national avocado program team",
+    "Description": "ብሔራዊ አቮካዶ ልማት ፕሮግራም ቡድን",
+    "Level": 4,
+    "Guid": "7fe8a504-c4ee-40df-a3e1-b82fd1a7c722"
+  },
+  {
+    "Name": "procurement project team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Procurement Excutive/procurement project team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "009f40d2-1bcb-45ca-9445-487c2a57ee0d"
+  },
+  {
+    "Name": "Public Relation and Communication Excutive Secretary",
+    "Path": "Ministry of Agriculture/Minister Office/Public Relation and Communication Excutive/Public Relation and Communication Excutive Secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "463dc3d5-9800-4eb7-b9d5-8fb774696c13"
+  },
+  {
+    "Name": "Technical Advisor",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Smallholder Irigation development lead excutives/Technical Advisor",
+    "Description": "ቴክኒካል አማካሪ",
+    "Level": 4,
+    "Guid": "d6c9e5f2-055c-48cd-b6a5-028cd1e6933b"
+  },
+  {
+    "Name": "Livestock Mechanization Technology Supply Desk",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Agricultural Mechanization/Livestock Mechanization Technology Supply Desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "bdfd1ef5-be79-446e-b806-51805518a419"
+  },
+  {
+    "Name": "Rural Finance Service Unit Team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Rural Finance Service Unit/Rural Finance Service Unit Team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "9b5388da-4854-40f5-afcd-e5c18faa559f"
+  },
+  {
+    "Name": "Climate  Resilient Wheat Value Chain Development Project Secr",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Climate  Resilient Wheat Value Chain Development { CREW} Project/Climate  Resilient Wheat Value Chain Development Project Secr",
+    "Description": null,
+    "Level": 4,
+    "Guid": "4af2e3bc-40a0-4991-a6b6-ced3feefae92"
+  },
+  {
+    "Name": "Agricultural Investiment and product marketing  advisor",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead executive of Agricultural investment and product marketing/Agricultural Investiment and product marketing  advisor",
+    "Description": null,
+    "Level": 4,
+    "Guid": "1eaf8063-3d71-4a17-9278-444edaa22335"
+  },
+  {
+    "Name": "National Avocado Program Secre..& Casher",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/National Avocado Program/National Avocado Program Secre..& Casher",
+    "Description": null,
+    "Level": 4,
+    "Guid": "dbcab55e-8aa4-49fa-a932-d9fcb6699209"
+  },
+  {
+    "Name": "Intern3 department team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Intern3 department/Intern3 department team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "726741c6-787a-4895-9417-f9e70754a816"
+  },
+  {
+    "Name": "vegetable and herb desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/.",
+    "Description": "አትክልትና እፀ ጣዕም ልማት ዴስክ ኃላፊ",
+    "Level": 4,
+    "Guid": "f374db7f-fdd0-410f-9aa3-7abe55383775"
+  },
+  {
+    "Name": "Finance Project",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Finance executive/Finance Project",
+    "Description": null,
+    "Level": 4,
+    "Guid": "58e2541d-73d8-4915-9d08-cf7d83fc2610"
+  },
+  {
+    "Name": "Pluse Crop Development and Post-Harvest",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives/Pluse Crop Development and Post-Harvest",
+    "Description": "ጥራጥሬ ሰብል ልማት እና ድህረ ምርት",
+    "Level": 4,
+    "Guid": "373ebcb2-ea3d-4533-9879-321448104909"
+  },
+  {
+    "Name": "Agrometeorology and Irrigation Agronomy",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives/Agrometeorology and Irrigation Agronomy",
+    "Description": "መስኖ አግሮኖሚ እና ግሮሜቲዎሮሎጅ ዴስክ",
+    "Level": 4,
+    "Guid": "789e8596-0d56-4541-876f-7fe2730d0197"
+  },
+  {
+    "Name": "All Agrometeorology and Irrigation Agronomy Emp",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives/Agrometeorology and Irrigation Agronomy",
+    "Description": null,
+    "Level": 4,
+    "Guid": "d172ffe6-8fb4-4c3e-9148-64a32c6cb2d7"
+  },
+  {
+    "Name": "cotton development lead excutives Secretary",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/cotton development lead excutives/cotton development lead excutives Secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "0aecb341-38d3-43c1-9efa-86ed2d0cddd9"
+  },
+  {
+    "Name": "Development Response to Displacement impact Phase Secret",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Development Response to Displacement impact Project Phase II/Development Response to Displacement impact Phase Secret",
+    "Description": null,
+    "Level": 4,
+    "Guid": "626d637e-3b1c-4a52-8237-7215e9eb3aaa"
+  },
+  {
+    "Name": "women children and youth affairs team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Women and Social Affairs  Inclusive executive/women children and youth affairs team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "dd14c44f-b221-4745-b91e-e3773e2103a2"
+  },
+  {
+    "Name": "Social Issues Inclusion Team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Women and Social Affairs  Inclusive executive/Social Issues Inclusion Team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "ad114fb4-9008-4662-b16c-a2c887e1d036"
+  },
+  {
+    "Name": "Women and Social Affairs  Inclusive executive secretary",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Women and Social Affairs  Inclusive executive/Women and Social Affairs  Inclusive executive secretary",
+    "Description": null,
+    "Level": 4,
+    "Guid": "ba300549-b239-44e5-a885-b4c858bec75f"
+  },
+  {
+    "Name": "WE_GO",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Women and Social Affairs  Inclusive executive/WE_GO",
+    "Description": "ዊጎ",
+    "Level": 4,
+    "Guid": "262aca97-8166-43be-9857-2bad463cdef8"
+  },
+  {
+    "Name": "FSRP secretery",
+    "Path": "Ministry of Agriculture/Minister Office/Food System Resilience Program (FSRP)/FSRP secretery",
+    "Description": null,
+    "Level": 4,
+    "Guid": "9976e01c-97c5-4f76-b9c8-fcfa6154f983"
+  },
+  {
+    "Name": "All soil survey and map preparation Emp",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Soil Resource Development Lead Excutives/soil survey and map preparation desk",
+    "Description": null,
+    "Level": 4,
+    "Guid": "1dfaaf9c-ac4a-43e2-8c85-f9f3a2d25372"
+  },
+  {
+    "Name": "All Record and Documentation Employe",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Competency and Human Resource Management Executive/Record and Documentation Team",
+    "Description": null,
+    "Level": 4,
+    "Guid": "8c0a477c-951f-4e02-8d59-ebb434e45a17"
+  },
+  {
+    "Name": "Ethiopian Emergency Locust Response project(EELRP)",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office/Ethiopian Emergency Locust Response project(EELRP)",
+    "Description": "በረሃ አንበጣ መከላከል እና መቆጣጠር ፕሮጀክት",
+    "Level": 4,
+    "Guid": "d9b8f84c-89cd-444c-87a2-2a18496dc784"
+  },
+  {
+    "Name": "Italian Development Cooperation Agriculture value chain te",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Italian Development Cooperation Agriculture value chain project/Italian Development Cooperation Agriculture value chain te",
+    "Description": null,
+    "Level": 4,
+    "Guid": "2031c509-9725-43be-9142-a21a113824da"
+  },
+  {
+    "Name": "Strengthening Drought Resilience (SRD) project member",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Strengthening Drought Resilience project/Strengthening Drought Resilience (SRD) project member",
+    "Description": null,
+    "Level": 4,
+    "Guid": "cf8d06dc-cd9d-4670-adeb-4658a4ee18c1"
+  },
+  {
+    "Name": "BREFONS Member",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/DRIVE and BREFONS/BREFONS Member",
+    "Description": "የአርብቶ አደር የምግብና ስርዓተ ምግብ ደህንነት ማሻሻያ አባላት",
+    "Level": 4,
+    "Guid": "7311178c-38e2-4a8c-b7c1-35caa2d3a454"
+  },
+  {
+    "Name": "MOA Analytics and M and E",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/MOA Analytics and M and E",
+    "Description": null,
+    "Level": 4,
+    "Guid": "205623c8-c68d-4f93-b1b5-f0b899435ada"
+  },
+  {
+    "Name": "Climate Action through Landscape Management CALM",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive/Climate Action through Landscape Management CALM",
+    "Description": "አየር ንብረት አፈጻጸም የመሬት አያያዝ ኘሮግራም(CALM)",
+    "Level": 4,
+    "Guid": "d9fb2f45-4f19-49fd-9b74-1d70a8bb732b"
+  },
+  {
+    "Name": "Participatory Agriculture and Climate Transformation Casher&Sec",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Participatory Agriculture and Climate Transformation Program/..",
+    "Description": null,
+    "Level": 4,
+    "Guid": "a349c4c2-01d7-4427-a466-5ae2e23d2b4f"
+  },
+  {
+    "Name": "Database Team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Competency and Human Resource Management Executive/Database Team",
+    "Description": "የሰው ሀብት መረጃ",
+    "Level": 4,
+    "Guid": "ed3dee9a-a3c4-4cc5-a72f-e73a44e15798"
+  },
+  {
+    "Name": "ETHIOPIA HUMAN CAPITAL OPERATION",
+    "Path": "Ministry of Agriculture/Minister Office/Food and Nutrition Office/ETHIOPIA HUMAN CAPITAL OPERATION",
+    "Description": null,
+    "Level": 4,
+    "Guid": "88caaa59-bad9-45b8-b61b-6652d21cfec3"
+  },
+  {
+    "Name": "Ethio-SHEP 2",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/Ethio-SHEP 2",
+    "Description": null,
+    "Level": 4,
+    "Guid": "dac0eb4c-8ad5-4379-abec-10ab6cbb66ab"
+  },
+  {
+    "Name": "Project Coordination Members",
+    "Path": "Ministry of Agriculture/Minister Office/Project Coordination Unit (PCU)/Project Coordination Members",
+    "Description": null,
+    "Level": 4,
+    "Guid": "b0bfd8e1-fe36-4528-a61d-8b75456b4110"
+  },
+  {
+    "Name": "Event Management",
+    "Path": "Ministry of Agriculture/Minister Office/Ministry of Agriculture Conference Center Management/Event Management",
+    "Description": null,
+    "Level": 4,
+    "Guid": "390e1a5a-64ea-48d2-88a0-0f584c036c94"
+  },
+  {
+    "Name": "Technical Unit",
+    "Path": "Ministry of Agriculture/Minister Office/Ministry of Agriculture Conference Center Management/Technical Unit",
+    "Description": null,
+    "Level": 4,
+    "Guid": "16c61117-9186-460b-ab41-6f124c58924e"
+  },
+  {
+    "Name": "Finance and Admin",
+    "Path": "Ministry of Agriculture/Minister Office/Ministry of Agriculture Conference Center Management/Finance and Admin",
+    "Description": null,
+    "Level": 4,
+    "Guid": "42af67ad-5476-4411-ba18-4407dbdb310e"
+  },
+  {
+    "Name": "Strategic Affair Advisor",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/Strategic Affair Advisor",
+    "Description": null,
+    "Level": 4,
+    "Guid": "b557d3b5-c78c-4000-b669-86229187ede9"
+  },
+  {
+    "Name": "extension communication and digital extension",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Agricultural and Horticulture extension lead executives/extension communication and digital extension desk/extension communication and digital extension",
+    "Description": null,
+    "Level": 5,
+    "Guid": "fd46da1a-7b83-407d-84ec-91e79ad3f52b"
+  },
+  {
+    "Name": "extension development partnership relation",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Agricultural and Horticulture extension lead executives/Agricultural extension development partners Linkage desk/extension development partnership relation",
+    "Description": null,
+    "Level": 5,
+    "Guid": "a61e59c1-70c4-415a-96fc-9a32e3a0f661"
+  },
+  {
+    "Name": "cotton crop development",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/cotton development lead excutives/Cotton Crop Development Desk/cotton crop development",
+    "Description": null,
+    "Level": 5,
+    "Guid": "92268bb2-6687-4053-b8ff-3c38d1ffaa24"
+  },
+  {
+    "Name": "cotton product treatment desk",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/cotton development lead excutives/Cotton Product Handling Desk/cotton product treatment",
+    "Description": null,
+    "Level": 5,
+    "Guid": "e951aa65-9371-440d-83f2-d67a39a1b20f"
+  },
+  {
+    "Name": "cotton value chain development",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/cotton development lead excutives/Cotton Value Chain Development Desk/cotton value chain development",
+    "Description": null,
+    "Level": 5,
+    "Guid": "ed30d9f6-7ed2-4c18-ac3d-6554d8602472"
+  },
+  {
+    "Name": "Development and post harvest desk of oilseed crops",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives/Oil Crop Development and Post-Harvesting/Development and post harvest desk of oilseed crops",
+    "Description": null,
+    "Level": 5,
+    "Guid": "20ded9fb-28d5-42b0-ad54-6f5029203349"
+  },
+  {
+    "Name": "Cereal  Crops Development and Post Harvest",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives/Cereal crops development and post harvest desk/Cereal  Crops Development and Post Harvest",
+    "Description": null,
+    "Level": 5,
+    "Guid": "23abb300-0cc6-489a-9894-d51648250e73"
+  },
+  {
+    "Name": "Flower development",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/Flower development desk/Flower development",
+    "Description": null,
+    "Level": 5,
+    "Guid": "3e5733e0-c6f5-4eb8-b0eb-438f3e000bfc"
+  },
+  {
+    "Name": "Fruit Development",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/Fruit Development Desk/Fruit Development",
+    "Description": null,
+    "Level": 5,
+    "Guid": "463e54e5-a58a-4ddd-bb37-1bba65d199f7"
+  },
+  {
+    "Name": "Horticultural Development",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/Vegetable and Herb Developmetn Desk/Horticultural Development",
+    "Description": null,
+    "Level": 5,
+    "Guid": "4c063cf7-fbaa-4628-b3b2-42d2d0a933ea"
+  },
+  {
+    "Name": "root and enset development",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/root and enset development  desk/root and enset development",
+    "Description": null,
+    "Level": 5,
+    "Guid": "d3e032ce-77a6-4df3-bf64-416a5ea30570"
+  },
+  {
+    "Name": "Survey and prevention desk of regular pests",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/plant protection lead excutives/Survey and prevention desk of regular pests desk/Survey and prevention desk of regular pests",
+    "Description": null,
+    "Level": 5,
+    "Guid": "f8d37c94-d175-4705-8b75-091058a69ddc"
+  },
+  {
+    "Name": "migratory pest desk Team Member",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/plant protection lead excutives/migratory pest desk/migratory pest desk Team Member",
+    "Description": null,
+    "Level": 5,
+    "Guid": "15ddc1af-6d7b-4105-b258-8dd62bcdc306"
+  },
+  {
+    "Name": "weed study  supervision and protection",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/plant protection lead excutives/weed study  supervision and protection desk/weed study  supervision and protection",
+    "Description": null,
+    "Level": 5,
+    "Guid": "5754278b-e671-4b2d-92cb-1f0afd56d1fe"
+  },
+  {
+    "Name": "Crop Production Mechanization and Technology Desk Team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Agricultural Mechanization/Crop Production Mechanization and Technology Desk/Crop Production Mechanization and Technology Desk Team",
+    "Description": "ሰብል ልማት መካናይዜሺንና ቴክኖሎጅ አቅርቦት ዴስክ",
+    "Level": 5,
+    "Guid": "90a1aa95-acb3-4108-b1c1-3a266071f5ce"
+  },
+  {
+    "Name": "Chemical Input supply desk Team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Supply chain/Chemical Input supply desk/Chemical Input supply desk Team",
+    "Description": "ግብርና ኬሚካል ግብዓት አቅርቦት ዴስክ",
+    "Level": 5,
+    "Guid": "62c3a672-fb42-4388-afed-681bc8cfec98"
+  },
+  {
+    "Name": "Biological Input supply Team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Supply chain/Biological Input supply desk/Biological Input supply Team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "59141b20-e82f-4a9a-9a09-320fe1e8f715"
+  },
+  {
+    "Name": "Agriculture industry by product and feed usage Employee",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive/Agriculture industry by product and feed usage desk/Agriculture industry by product and feed usage Employee",
+    "Description": null,
+    "Level": 5,
+    "Guid": "a441dffe-de0d-4273-b924-5491ea40f8f3"
+  },
+  {
+    "Name": "Improved Forage  Development Team",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive/Improved Forage  Development Desk/Improved Forage  Development Team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "1f865dce-ef13-4205-8ab3-ca980f82ceba"
+  },
+  {
+    "Name": "Natural grazing development and management team members",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Feed Resource Development Lead Executive/Natural Pasture and Rangeland Development and Management Desk/Natural grazing development and management team members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "d2d10cd9-fe2b-4690-9ec9-0e8b9eaa8c8f"
+  },
+  {
+    "Name": "Apiculture and Silk Resource Development Member",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Apiculture and Silk Resource Development/Apiculture and Silk Resource Development Member",
+    "Description": null,
+    "Level": 5,
+    "Guid": "b941d723-60c8-45ae-a99f-9ef619e835a1"
+  },
+  {
+    "Name": "Dairy Resource  Development Desk Team",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Dairy Resource  Development Desk/Dairy Resource  Development Desk Team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "1e157e07-d797-4045-9fc3-ba3b59ae191a"
+  },
+  {
+    "Name": "Fisheries Development",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Fishery Resource Development Desk/Fisheries Development",
+    "Description": null,
+    "Level": 5,
+    "Guid": "da244d25-5c14-40aa-bbbe-b5d79c11d5f8"
+  },
+  {
+    "Name": "Meat leather and leather resource development",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Meat Hide and Skin resource development desk/Meat leather and leather resource development",
+    "Description": null,
+    "Level": 5,
+    "Guid": "a2816b2f-3ef8-45ad-85f6-bc529b1e923c"
+  },
+  {
+    "Name": "Poultry Resource Development",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/livestock and fishery resource development lead excutives/Poultry Resource Development Desk/Poultry Resource Development",
+    "Description": null,
+    "Level": 5,
+    "Guid": "e0cc54fe-bb05-4037-99d3-246b5600ba13"
+  },
+  {
+    "Name": "Disease prevention and control",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/Disease prevention and control  desk/Disease prevention and control",
+    "Description": null,
+    "Level": 5,
+    "Guid": "b04bfaf5-aa4f-4598-b841-6c01bb8df3be"
+  },
+  {
+    "Name": "Epidemiology",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/Epidemiology desk/Epidemiology",
+    "Description": null,
+    "Level": 5,
+    "Guid": "ef22721a-3157-42b0-a74b-686c5e52fdbb"
+  },
+  {
+    "Name": "veterinary public Health member",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/Veterinary Public Health Desk/veterinary public Health member",
+    "Description": null,
+    "Level": 5,
+    "Guid": "f8d67088-0066-450c-a731-1017042922fd"
+  },
+  {
+    "Name": "Property management",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Basic Service Executive/Property management team/Property management",
+    "Description": null,
+    "Level": 5,
+    "Guid": "379a2476-45dc-4cea-b520-7173d40886f4"
+  },
+  {
+    "Name": "Human Resource Management",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Competency and Human Resource Management Executive/Human Resource Management team/Human Resource Management",
+    "Description": "ሰው ሀብት አስተዳደር ቡድን",
+    "Level": 5,
+    "Guid": "6c8fb084-7790-412b-bd29-683de44394a1"
+  },
+  {
+    "Name": "Human resource skills and development",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Competency and Human Resource Management Executive/Human resource skills and development team/Human resource skills and development",
+    "Description": "ሰዉ ሀብት መረጃ",
+    "Level": 5,
+    "Guid": "7810cfc6-5187-41c7-9ddd-e3748b39636f"
+  },
+  {
+    "Name": "Record and Documentation",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Competency and Human Resource Management Executive/Record and Documentation Team/Record and Documentation",
+    "Description": null,
+    "Level": 5,
+    "Guid": "962db4fb-2995-47c2-ad5a-7c1eacbddc5d"
+  },
+  {
+    "Name": "Budget preparation and monitoring team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Finance executive/Budget preparation and monitoring team leader/Budget preparation and monitoring team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "2c9e2bcf-264f-4369-a06e-6ab0db1df187"
+  },
+  {
+    "Name": "finance operation  team",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Finance executive/finance operation  team leader/finance operation  team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "66a3969d-f66e-4416-9b32-b2ab9a83aae6"
+  },
+  {
+    "Name": "financial analyst",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Finance executive/financial analyst team lead/financial analyst",
+    "Description": null,
+    "Level": 5,
+    "Guid": "5d5a9fea-010d-46b4-a9c6-45a184becc93"
+  },
+  {
+    "Name": "Procurement Members",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Procurement Excutive/Procurement Team Lead/Procurement Members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "866d2796-f5cd-4403-9487-5f67c8ef0c4a"
+  },
+  {
+    "Name": "climate change",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/climate change team/climate change",
+    "Description": null,
+    "Level": 5,
+    "Guid": "4307d7de-631c-4f7e-a0bf-f69e4414bba7"
+  },
+  {
+    "Name": "plan budget Monitoring and Evaluation",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/plan budget Monitoring and Evaluation team/plan budget Monitoring and Evaluation",
+    "Description": null,
+    "Level": 5,
+    "Guid": "afa9a8db-cc14-4323-b261-2b5a55de6afa"
+  },
+  {
+    "Name": "Statistics and Information",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/Statistics and Information Team/Statistics and Information",
+    "Description": null,
+    "Level": 5,
+    "Guid": "2d2b927f-ab46-4c1e-aad5-c3c1e5e16511"
+  },
+  {
+    "Name": "Biological soil and water conservation and agro forestry",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive/Biological soil and water conservation and agro forestry desk/Biological soil and water conservation and agro forestry",
+    "Description": null,
+    "Level": 5,
+    "Guid": "29b8ee8f-8540-46f2-a1d0-d66c0e5fbb03"
+  },
+  {
+    "Name": "Public work coordination unit",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive/Public work coordination unit desk/Public work coordination unit",
+    "Description": null,
+    "Level": 5,
+    "Guid": "3b75b663-abeb-4f06-814c-ef29f1b9e789"
+  },
+  {
+    "Name": "Water Shead managment",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive/Water Shead managment desk/Water Shead managment",
+    "Description": null,
+    "Level": 5,
+    "Guid": "4e28c8e5-a4c6-4170-b362-f7c6b39061d6"
+  },
+  {
+    "Name": "land use",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Rural Land Administration and use Lead Excutives/Land Use Desk/land use",
+    "Description": "መሬት አጠቃቀም ዴስክ ሃላፊ",
+    "Level": 5,
+    "Guid": "4ec96590-8c54-41b3-b590-6e106d8a45e3"
+  },
+  {
+    "Name": "rural land administration and geospatial",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Rural Land Administration and use Lead Excutives/Land Administration Geo-Spacial Desk/rural land administration and geospatial",
+    "Description": null,
+    "Level": 5,
+    "Guid": "7bf6e76a-2eeb-455f-b480-c25b05e2fdee"
+  },
+  {
+    "Name": "Rural land administration and use monitoring and evaluation",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Rural Land Administration and use Lead Excutives/Rural Land Administration and use Monitoring and Evaluation Desk/Rural land administration and use monitoring and evaluation",
+    "Description": null,
+    "Level": 5,
+    "Guid": "7e823536-b97f-49d9-9bfa-e4c7385e564b"
+  },
+  {
+    "Name": "Design and construction",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Smallholder Irigation development lead excutives/Design and Construction Desk/Design and construction",
+    "Description": null,
+    "Level": 5,
+    "Guid": "80937d92-f3fb-4733-b9b8-59c45abf6067"
+  },
+  {
+    "Name": "schema administration and water management",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Smallholder Irigation development lead excutives/schema administration and water management  desk/schema administration and water management",
+    "Description": null,
+    "Level": 5,
+    "Guid": "fceb149b-83e2-4511-9ffb-2bcde05ae8da"
+  },
+  {
+    "Name": "soil survey and map preparation",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Soil Resource Development Lead Excutives/soil survey and map preparation desk/soil survey and map preparation",
+    "Description": null,
+    "Level": 5,
+    "Guid": "2669f404-3fab-4dd0-b407-7f0b43557051"
+  },
+  {
+    "Name": "Network database and maintenance members",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Information Communication Technology Executive/Network database and maintenance team lead/Network database and maintenance members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "958dad47-cca2-455d-b065-13436b09c957"
+  },
+  {
+    "Name": "Information Technology team Members",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Information Communication Technology Executive/Information Technology team lead/Information Technology team Members",
+    "Description": "የኢንፎርሜሽን  ቴክኖሎጂ ቡድን አባል",
+    "Level": 5,
+    "Guid": "cc3133b8-95e3-41f4-a588-e6f216961d44"
+  },
+  {
+    "Name": "Soil Health and Fertility Improvement",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Soil Resource Development Lead Excutives/Soil Health and fertility improvement Desk/Soil Health and Fertility Improvement",
+    "Description": null,
+    "Level": 5,
+    "Guid": "14f80021-21d9-4b00-923c-2e370c2c8834"
+  },
+  {
+    "Name": "public relation and communication team members",
+    "Path": "Ministry of Agriculture/Minister Office/Public Relation and Communication Excutive/public relation and communication team/public relation and communication team members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "f2906fec-8e88-44eb-b9cd-5248dcc61dfd"
+  },
+  {
+    "Name": "Library and documentation team members",
+    "Path": "Ministry of Agriculture/Minister Office/Public Relation and Communication Excutive/Library and documentation team/Library and documentation team members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "421256bb-bc09-42f7-9a40-b33264fcad35"
+  },
+  {
+    "Name": "food and food system Research and capacity Buliding desk members",
+    "Path": "Ministry of Agriculture/Minister Office/Food and Nutrition Office/Food and Nutrition  Research and Capacity Buliding desk/food and food system Research and capacity Buliding desk members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "7572f65b-dc45-4e16-aa44-22bd8f10412f"
+  },
+  {
+    "Name": "Quality of food security desk members",
+    "Path": "Ministry of Agriculture/Minister Office/Food and Nutrition Office/Food Safety and Quality Desk/Quality of food security desk members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "60d4ae2c-cc8c-4d66-80b8-2f83b476b306"
+  },
+  {
+    "Name": "Family Livehood improvement desk members",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office/Family Livehood improvement desk/Family Livehood improvement desk members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "ed539b5d-79ed-4978-8a14-eea62c38a5cc"
+  },
+  {
+    "Name": "procurementFinance and Property Administration members",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office/procurementFinance and Property Administration desk/procurementFinance and Property Administration members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "d3d5f383-c485-4910-ac5d-4a1e9546e2d0"
+  },
+  {
+    "Name": "Safety Net Program Desk members",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office/Safety Net Program Desk/Safety Net Program Desk members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "e7e06006-a152-468f-89bb-3b747301022b"
+  },
+  {
+    "Name": "Productive Safety Net Programme Team Member",
+    "Path": "Ministry of Agriculture/Minister Office/Food security Coordination office/Productive Safety Net Programme (PSNP)/Productive Safety Net Programme Team Member",
+    "Description": null,
+    "Level": 5,
+    "Guid": "9619034b-a5d1-4b31-9188-5b2f0b25f34d"
+  },
+  {
+    "Name": "All Climate Action through Landscape Management CALM",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive/Climate Action through Landscape Management CALM/Climate Action through Landscape Management Project",
+    "Description": null,
+    "Level": 5,
+    "Guid": "15ba84c8-4d21-49c2-a393-a3d6040cc023"
+  },
+  {
+    "Name": "Agricultural and Holitculture Investiment product Marketing team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead executive of Agricultural investment and product marketing/Agricultural and Holitculture Investiment product Marketing Desk/Agricultural and Holitculture Investiment product Marketing team",
+    "Description": "የእርሻና ሆርቲካልችር ኢንቨስትመንት ምርት ግብይት ዴስክ ",
+    "Level": 5,
+    "Guid": "70cdeb17-8c50-40a6-b733-cb87f902d1e7"
+  },
+  {
+    "Name": "Agricultural Contract Implementation Desk team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead executive of Agricultural investment and product marketing/Agricultural Contract Implementation Desk/Agricultural Contract Implementation Desk team",
+    "Description": "የግብርና ውል አፈጻጸም ዴስክ ",
+    "Level": 5,
+    "Guid": "25feefcb-4bfc-4aac-8257-cfec4220e821"
+  },
+  {
+    "Name": "Livestock and Fish Investiment Output Market Desk Head Team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead executive of Agricultural investment and product marketing/Livestock and Fish Investiment Output Market Desk Head/Livestock and Fish Investiment Output Market Desk Head Team",
+    "Description": "እንስሳት ዓሳ ኢንቨስትመንት ክትትልና ድጋፍ ዴስክ",
+    "Level": 5,
+    "Guid": "c5581245-63e0-4090-a970-1a355090cecc"
+  },
+  {
+    "Name": "Demonstration Desk team",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Agricultural and Horticulture extension lead executives/Demonstration Desk/Demonstration Desk team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "2a304cd6-0e5b-4eb8-af98-73986b0b8eb1"
+  },
+  {
+    "Name": "Livestock identification traceablity System animal Walfare Team",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Animal health and veterinary public health lead executive/Livestock identification traceablity System animal Walfare Desk/Livestock identification traceablity System animal Walfare Team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "20eca299-4879-4988-9da6-8838351ff323"
+  },
+  {
+    "Name": "Urban Livestock Resource Devleopment team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Urban Agriculture development/Urban Livestock Resource Devleopment/Urban Livestock Resource Devleopment team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "1076b0b3-b429-4d20-9002-61a68924bfe3"
+  },
+  {
+    "Name": "Crop and Horticulture Devleopment Team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Urban Agriculture development/Crop and Horticulture Devleopment/Crop and Horticulture Devleopment Team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "d07554e5-cb45-4bbd-82d6-e1c88ed6d44a"
+  },
+  {
+    "Name": "Natural Resource Development team",
+    "Path": "Ministry of Agriculture/Agricultural Investment and Input sector​/Lead Executive of Urban Agriculture development/Natural Resource Development/Natural Resource Development team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "a11c5f9e-d19a-4345-8250-0a08698c2675"
+  },
+  {
+    "Name": "other department members",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Information Communication Technology Executive/Other Department/other department members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "1ab064e4-96ff-4c00-bdce-3e440aab2e6e"
+  },
+  {
+    "Name": "vehicle maintenance members",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Basic Service Executive/Vehicle  Mintenance team/vehicle maintenance members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "d6bb0317-fc52-491a-838d-b8b275bdcd7b"
+  },
+  {
+    "Name": "General service member",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Basic Service Executive/General service team/General service member",
+    "Description": "ጠቅላላ አገልግሎት",
+    "Level": 5,
+    "Guid": "025dd7d4-ed58-46f2-9445-48dec043a763"
+  },
+  {
+    "Name": "Transport Service member",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Basic Service Executive/Transport service team/Transport Service member",
+    "Description": null,
+    "Level": 5,
+    "Guid": "80d7f6de-9a73-4830-80d2-55669fb0b497"
+  },
+  {
+    "Name": "Intern Team Member New",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Intern Department 2/Intern Team Lead 2/Intern Team Member New",
+    "Description": null,
+    "Level": 5,
+    "Guid": "46ef8eb9-0290-4be0-a839-d17feea8cf8b"
+  },
+  {
+    "Name": "ren",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/./ren",
+    "Description": null,
+    "Level": 5,
+    "Guid": "46fbc58b-8b0b-4359-a006-b407dd54586c"
+  },
+  {
+    "Name": "Pluse Crop Development and Post-Harvest team",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives/Pluse Crop Development and Post-Harvest/Pluse Crop Development and Post-Harvest team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "11a68b5e-f79d-4e97-9d68-65e678041012"
+  },
+  {
+    "Name": "Agrometeorology and Irrigation Agronomy Team",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Crop Development Lead Executives/Agrometeorology and Irrigation Agronomy/Agrometeorology and Irrigation Agronomy Team",
+    "Description": null,
+    "Level": 5,
+    "Guid": "70d37d67-9aa6-4fb6-b15a-a76fc9515052"
+  },
+  {
+    "Name": "women children and youth affairs team member",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Women and Social Affairs  Inclusive executive/women children and youth affairs team/women children and youth affairs team member",
+    "Description": null,
+    "Level": 5,
+    "Guid": "5bf3f46d-0d39-4b84-879b-9d65e243401b"
+  },
+  {
+    "Name": "Social Issues Inclusion Team memeber",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Women and Social Affairs  Inclusive executive/Social Issues Inclusion Team/Social Issues Inclusion Team memeber",
+    "Description": null,
+    "Level": 5,
+    "Guid": "adc9efd6-bbe1-452e-819f-9ef699b0981f"
+  },
+  {
+    "Name": "Pact Finance Member",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Participatory Agriculture and Climate Transformation Program/PACT Finance/Pact Finance Member",
+    "Description": null,
+    "Level": 5,
+    "Guid": "9bd555ff-b034-4d0e-90cf-d4f829edad18"
+  },
+  {
+    "Name": "MOA Analytics and M and E members",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/MOA Analytics and M and E/MOA Analytics and M and E members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "ef277885-28e9-43e8-ad42-8a1c680e4a79"
+  },
+  {
+    "Name": "Food and Nutriton Project team members",
+    "Path": "Ministry of Agriculture/Minister Office/Food and Nutrition Office/Food and Nutriton Project team/Food and Nutriton Project team members",
+    "Description": null,
+    "Level": 5,
+    "Guid": "ffeb6a7a-ff8a-48f0-b2d9-5b6218b8aa35"
+  },
+  {
+    "Name": "Climate Action through Landscape Management Project",
+    "Path": "Ministry of Agriculture/Natural resource development sector/Natural Resources Management lead executive/Climate Action through Landscape Management CALM/Climate Action through Landscape Management Project",
+    "Description": null,
+    "Level": 5,
+    "Guid": "e35e2b82-c4ac-478e-88fe-14b8be222710"
+  },
+  {
+    "Name": "Regular Pest Diagnostics Laboratory member",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/plant protection lead excutives/Regular Pest Diagnostics Laboratory Desk/Regular Pest Diagnostics Laboratory member",
+    "Description": null,
+    "Level": 5,
+    "Guid": "f680a8ab-5802-46c0-9415-3abec6abc310"
+  },
+  {
+    "Name": "Ethio-SHEP 2 Member",
+    "Path": "Ministry of Agriculture/Agriculture and Holitculture Development sector/Horticulture Development  lead  executive/Ethio-SHEP 2/Ethio-SHEP 2 Member",
+    "Description": null,
+    "Level": 5,
+    "Guid": "0b7fe53c-1114-48cb-a688-cc03dfa13f44"
+  },
+  {
+    "Name": "Agricultural Value Chain Productivity, Commercialization and job",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Agricultural Value Chain Productivity\\",
+    "Description": null,
+    "Level": 5,
+    "Guid": "019f6afb-b165-4372-bf80-f2dcbab0311a"
+  },
+  {
+    "Name": "TechSupport Member",
+    "Path": "Ministry of Agriculture/Minister Office/Ministry of Agriculture Conference Center Management/Technical Unit/TechSupport Member",
+    "Description": null,
+    "Level": 5,
+    "Guid": "ca1eb06a-4107-4c1f-82d4-26cacd97016a"
+  },
+  {
+    "Name": "M&E",
+    "Path": "Ministry of Agriculture/Livestock Resource Development Sector/Agricultural Value Chain Productivity\\/M&E",
+    "Description": null,
+    "Level": 5,
+    "Guid": "7220fdab-3126-4956-98ba-6274b6201088"
+  },
+  {
+    "Name": "Project management, partnership and resource Mobilization",
+    "Path": "Ministry of Agriculture/Management Chief Executives/Strategic Affair Executives/Project management partnership and resource Mobilization team/Project management\\",
+    "Description": null,
+    "Level": 7,
+    "Guid": "3bbe0c14-77dc-4bc0-b05e-2019de399430"
+  }
+]

@@ -343,6 +343,29 @@ namespace SPMigration.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Groups the incoming items by Path and attaches AD members to each group.
+        /// </summary>
+        [HttpPost("groups-with-members")]
+        public async Task<IActionResult> GetGroupsWithMembers(
+            [FromBody] List<GroupItem> groups,
+            [FromServices] AdExplorerService adService,
+            CancellationToken ct)
+        {
+            if (groups == null || groups.Count == 0)
+                return BadRequest(new { error = "Request body must be a non-empty list of groups." });
+
+            try
+            {
+                return Ok(await adService.GetMembersByPathAsync(groups, ct));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Failed to get groups with members");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
     }
 
 }

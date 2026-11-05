@@ -13,6 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<SharePointService>();
 builder.Services.AddSingleton<MinIOService>();
 builder.Services.AddHttpClient<ApiService>();
+builder.Services.AddHttpClient<AdExplorerService>();
 builder.Services.AddSingleton<MigrationService>();
 
 var app = builder.Build();
