@@ -1,0 +1,48 @@
+# .NET build output
+[Bb]in/
+[Oo]bj/
+artifacts/
+
+# Visual Studio and user-specific files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vsidx
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Visual Studio Code local settings
+.vscode/
+
+# Test results and coverage
+[Tt]est[Rr]esult*/
+coverage/
+*.coverage
+*.coveragexml
+
+# NuGet packages and generated package files
+packages/
+*.nupkg
+*.snupkg
+
+# Runtime logs and migration-generated exports
+*.log
+Exports/
+errors.json
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+appsettings.Local.json
+appsettings.*.Local.json
+secrets.json
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini

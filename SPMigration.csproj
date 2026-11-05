@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
+    <PackageReference Include="Microsoft.SharePointOnline.CSOM" Version="16.1.26413.12010" />
+    <PackageReference Include="Minio" Version="6.0.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+</Project>
