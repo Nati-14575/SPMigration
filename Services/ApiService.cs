@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
@@ -192,6 +192,42 @@ public class ApiService
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// POSTs a JSON body to an arbitrary IAM URL with the bearer token, logging in / refreshing when needed.
+    /// </summary>
+    public async Task<(bool Success, int StatusCode, string Body)> PostJsonAsync(string url, object payload)
+    {
+        var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        });
+
+        if (string.IsNullOrEmpty(_token) && !await LoginAsync())
+            return (false, 401, "Login to IAM failed.");
+
+        async Task<HttpResponseMessage> SendAsync()
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            return await _httpClient.SendAsync(request);
+        }
+
+        var response = await SendAsync();
+        var body = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode && IsJwtTokenError(response.StatusCode, body) && await RefreshTokenAsync())
+        {
+            response = await SendAsync();
+            body = await response.Content.ReadAsStringAsync();
+        }
+
+        return (response.IsSuccessStatusCode, (int)response.StatusCode, body);
     }
 
     public async Task<bool> MigrateRecordAsync(MigrationPayload payload)

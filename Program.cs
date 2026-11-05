@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +15,7 @@ builder.Services.AddSingleton<MinIOService>();
 builder.Services.AddHttpClient<ApiService>();
 builder.Services.AddHttpClient<AdExplorerService>();
 builder.Services.AddSingleton<MigrationService>();
+builder.Services.AddTransient<IamGroupMigrationService>();
 
 var app = builder.Build();
 

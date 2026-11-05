@@ -366,6 +366,42 @@ namespace SPMigration.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Creates the groups (with members and subgroups) from the attached JSON file on the IAM side.
+        /// unitId is applied to every group. Use dryRun=true to only build payloads.
+        /// </summary>
+        [HttpPost("iam-groups")]
+        public async Task<IActionResult> CreateIamGroups(
+            [FromServices] IamGroupMigrationService iamGroups,
+            IFormFile file,
+            [FromQuery] string? unitId = null,
+            [FromQuery] bool dryRun = true,
+            CancellationToken ct = default)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(new { error = "Attach the groups JSON file." });
+            if (!dryRun && string.IsNullOrWhiteSpace(unitId))
+                return BadRequest(new { error = "unitId is required when dryRun=false." });
+
+            try
+            {
+                using var reader = new StreamReader(file.OpenReadStream());
+                var json = await reader.ReadToEndAsync(ct);
+
+                var input = JsonSerializer.Deserialize<List<UpdatedPathEntry>>(json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (input == null || input.Count == 0)
+                    return BadRequest(new { error = "Input contains no groups." });
+
+                return Ok(await iamGroups.RunAsync(input, unitId, dryRun, ct));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ IAM group creation failed");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
     }
 
 }
