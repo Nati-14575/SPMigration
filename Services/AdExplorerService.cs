@@ -32,7 +32,11 @@ public class AdExplorerService
         var results = new List<PathGroupsResult>();
         using var gate = new SemaphoreSlim(5);
 
-        foreach (var pathGroup in items.GroupBy(i => i.Path ?? string.Empty))
+        // Skip groups whose name is the same as the last segment of their own path
+        // (e.g. Name "X" under Path "A/B/X"); those are the unit's own group, not a sub-group.
+        var candidates = items.Where(i => Normalize(i.Name) != Normalize(LastSegment(i.Path)));
+
+        foreach (var pathGroup in candidates.GroupBy(i => i.Path ?? string.Empty))
         {
             var tasks = pathGroup.Select(async g =>
             {
@@ -62,4 +66,20 @@ public class AdExplorerService
         }
         return results;
     }
+
+    private static string LastSegment(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return string.Empty;
+        var idx = path.LastIndexOfAny(new[] { '/', '\\' });
+        return idx >= 0 ? path[(idx + 1)..] : path;
+    }
+
+    // Trim and drop zero-width / non-breaking spaces so visually equal names compare equal.
+    private static string Normalize(string? value) =>
+        new string((value ?? string.Empty)
+            .Where(c => c != '\u200B' && c != '\u200C' && c != '\u200D' && c != '\uFEFF')
+            .ToArray())
+            .Replace('\u00A0', ' ')
+            .Trim()
+            .ToLowerInvariant();
 }
