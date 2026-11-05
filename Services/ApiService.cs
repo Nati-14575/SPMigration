@@ -16,6 +16,7 @@ public class ApiService
 
     public string? Token => _token;
     public string? RefreshToken => _refreshToken;
+    public string? LastLoginError { get; private set; }
 
     public ApiService(HttpClient httpClient, IConfiguration configuration, ILogger<ApiService> logger)
     {
@@ -46,12 +47,14 @@ public class ApiService
                 return true;
             }
 
-            Console.WriteLine(_token);
-            _logger.LogError("Login failed: {StatusCode}", response.StatusCode);
+            var failBody = await response.Content.ReadAsStringAsync();
+            LastLoginError = $"{(int)response.StatusCode} {response.StatusCode} from {loginUrl}: {failBody}";
+            _logger.LogError("Login failed: {Error}", LastLoginError);
             return false;
         }
         catch (Exception ex)
         {
+            LastLoginError = $"{ex.GetType().Name}: {ex.Message}";
             _logger.LogError(ex, "Error during login");
             return false;
         }
@@ -206,7 +209,7 @@ public class ApiService
         });
 
         if (string.IsNullOrEmpty(_token) && !await LoginAsync())
-            return (false, 401, "Login to IAM failed.");
+            return (false, 401, $"Login to IAM failed: {LastLoginError}");
 
         async Task<HttpResponseMessage> SendAsync()
         {

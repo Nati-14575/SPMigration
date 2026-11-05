@@ -5,14 +5,13 @@ using SPMigration.Models;
 public class IamGroupMigrationService
 {
     private readonly ApiService _api;
-    private readonly AdExplorerService _ad;
     private readonly IConfiguration _config;
     private readonly ILogger<IamGroupMigrationService> _logger;
 
-    public IamGroupMigrationService(ApiService api, AdExplorerService ad, IConfiguration config,
+    public IamGroupMigrationService(ApiService api, IConfiguration config,
         ILogger<IamGroupMigrationService> logger)
     {
-        _api = api; _ad = ad; _config = config; _logger = logger;
+        _api = api; _config = config; _logger = logger;
     }
 
     public async Task<IamGroupMigrationReport> RunAsync(List<UpdatedPathEntry> input, string? unitId, bool dryRun, CancellationToken ct = default)
@@ -20,7 +19,6 @@ public class IamGroupMigrationService
         var groups = input.SelectMany(p => p.Groups).ToList();
         var byName = groups.GroupBy(g => Norm(g.Name)).ToDictionary(g => g.Key, g => g.First());
         var createUrl = _config["IamGroups:CreateGroupUrl"];
-        var adCache = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
         if (!dryRun && string.IsNullOrWhiteSpace(unitId))
             throw new ArgumentException("unitId is required when dryRun=false.");
@@ -53,25 +51,10 @@ public class IamGroupMigrationService
                     var key = ToKey(sg.Name!);
                     if (!usedKeys.Add(key)) continue;
 
-                    List<string> members;
-                    UpdatedGroup? known = byName.GetValueOrDefault(Norm(sg.Name!));
-                    if (known != null)
-                    {
-                        members = Users(known.Members);
-                    }
-                    else if (!adCache.TryGetValue(sg.Name!, out members!))
-                    {
-                        try
-                        {
-                            members = ExtractUsers(await _ad.GetAllGroupMembersAsync(sg.Name!, ct));
-                        }
-                        catch (Exception ex) when (ex is not OperationCanceledException)
-                        {
-                            members = new();
-                            result.Warnings.Add($"Could not load members of subgroup '{sg.Name}': {ex.Message}");
-                        }
-                        adCache[sg.Name!] = members;
-                    }
+                    // Members come only from Updated.json; a subgroup not listed there has none.
+                    var members = byName.TryGetValue(Norm(sg.Name!), out var known)
+                        ? Users(known.Members)
+                        : new List<string>();
 
                     payload.Subgroups.Add(new IamSubgroup { Name = ToName(sg.Name!, null), Key = key, Members = members });
                 }
@@ -107,30 +90,6 @@ public class IamGroupMigrationService
         members.Where(m => m.Type == "User" && !string.IsNullOrWhiteSpace(m.SamAccountName))
                .Select(m => m.SamAccountName!.Trim())
                .Distinct(StringComparer.OrdinalIgnoreCase).ToList();
-
-    // AD response is a list of members (possibly wrapped in an object).
-    private static List<string> ExtractUsers(JsonElement el)
-    {
-        if (el.ValueKind == JsonValueKind.Object)
-            el = el.EnumerateObject().Select(p => p.Value).FirstOrDefault(v => v.ValueKind == JsonValueKind.Array);
-        if (el.ValueKind != JsonValueKind.Array) return new();
-
-        var list = new List<string>();
-        foreach (var m in el.EnumerateArray())
-        {
-            if (m.ValueKind != JsonValueKind.Object) continue;
-            string? Get(string n)
-            {
-                foreach (var p in m.EnumerateObject())
-                    if (string.Equals(p.Name, n, StringComparison.OrdinalIgnoreCase) && p.Value.ValueKind == JsonValueKind.String)
-                        return p.Value.GetString();
-                return null;
-            }
-            if (Get("Type") == "User" && !string.IsNullOrWhiteSpace(Get("SamAccountName")))
-                list.Add(Get("SamAccountName")!.Trim());
-        }
-        return list.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
-    }
 
     // Amharic description when present, otherwise fall back to the English name.
     private static LocalizedName ToName(string name, string? description) => new()
