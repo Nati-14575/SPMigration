@@ -789,6 +789,14 @@ public static class JsonExtensions
         if (!element.TryGetProperty(propertyName, out var prop))
             return "*";
 
+        // Multi-value person fields come back as { "results": [ {user}, ... ] } under odata=verbose
+        if (prop.ValueKind == JsonValueKind.Object &&
+            prop.TryGetProperty("results", out var results) &&
+            results.ValueKind == JsonValueKind.Array)
+        {
+            prop = results;
+        }
+
         if (prop.ValueKind == JsonValueKind.Object)
             return ResolveUserOrGroup(prop, userMappings);
 
