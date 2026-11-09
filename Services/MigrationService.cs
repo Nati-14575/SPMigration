@@ -540,8 +540,7 @@ public class MigrationService
     }
 
     /// <summary>
-    /// User_Records items ready for migration: Status = Sent and, unless InternalMemo, dispatched by the
-    /// records officer (a matching item in the Records library), as RunMigrationAsync requires.
+    /// User_Records items ready for migration: every item in the list with Status = Sent.
     /// IDs in the *_success.json logs are counted as already migrated and omitted unless includeMigrated is set.
     /// </summary>
     public async Task<ReadyRecordsResult> GetReadyUserRecordsAsync(bool includeMigrated = false)
@@ -549,16 +548,12 @@ public class MigrationService
         var recordsList = _configuration["SharePoint:RecordsListName"] ?? "User_Records";
         var migrated = await LoadMigratedIdsAsync(isIncoming: false);
 
-        _logger.LogInformation("[ready] Step 1/2: loading Sent items from {List}", recordsList);
+        _logger.LogInformation("[ready] Loading Sent items from {List}", recordsList);
         var sent = await _sharePointService.GetSentRecordSummariesAsync(recordsList);
-        _logger.LogInformation("[ready] Step 2/2: loading dispatched RecordIds from Records library");
-        var dispatched = await _sharePointService.GetDispatchedRecordIdsAsync();
 
         var result = new ReadyRecordsResult { Source = recordsList, TotalFound = sent.Count };
         foreach (var r in sent)
         {
-            var isInternalMemo = string.Equals(r.RecordType, "InternalMemo", StringComparison.OrdinalIgnoreCase);
-            if (!isInternalMemo && !dispatched.Contains(r.Id)) { result.SkippedNotReady++; continue; }
             if (migrated.Contains(r.Id)) { result.AlreadyMigrated++; if (!includeMigrated) continue; }
             result.Records.Add(r);
         }

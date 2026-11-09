@@ -707,59 +707,6 @@ public class SharePointService
         return result;
     }
 
-    /// <summary>
-    /// IDs of User_Records that the records officer has dispatched, i.e. a matching item
-    /// exists in the "Records" library (RecordId = User_Records.ID). Needed for every type except InternalMemo.
-    /// </summary>
-    public async Task<HashSet<int>> GetDispatchedRecordIdsAsync(string libraryName = "Records")
-    {
-        var ids = new HashSet<int>();
-        const int pageSize = 2000;
-        var lastId = 0;
-
-        while (true)
-        {
-            var viewXml = $@"
-<View Scope='RecursiveAll'>
-  <Query>
-    <Where>
-      <And>
-        <Gt><FieldRef Name='ID' /><Value Type='Counter'>{lastId}</Value></Gt>
-        <IsNotNull><FieldRef Name='RecordId' /></IsNotNull>
-      </And>
-    </Where>
-    <OrderBy><FieldRef Name='ID' Ascending='True' /></OrderBy>
-  </Query>
-  <ViewFields><FieldRef Name='ID' /><FieldRef Name='RecordId' /></ViewFields>
-  <RowLimit>{pageSize}</RowLimit>
-</View>";
-
-            Console.WriteLine($"[ready] {libraryName}: fetching dispatched RecordIds with ID > {lastId}...");
-            using var doc = await InvokeRLDSAsync(libraryName, viewXml);
-            if (!doc.RootElement.TryGetProperty("Row", out var rows))
-            {
-                Console.WriteLine($"[ready] {libraryName}: no 'Row' in response: {doc.RootElement.ToString()[..Math.Min(300, doc.RootElement.ToString().Length)]}");
-                break;
-            }
-
-            var count = 0;
-            var startLast = lastId;
-            foreach (var r in rows.EnumerateArray())
-            {
-                count++;
-                if (int.TryParse(r.GetStringSafe("ID"), out var id)) lastId = Math.Max(lastId, id);
-
-                var digits = new string((r.GetStringSafe("RecordId") ?? "").Where(char.IsDigit).ToArray());
-                if (int.TryParse(digits, out var recordId)) ids.Add(recordId);
-            }
-
-            Console.WriteLine($"[ready] {libraryName}: got {count} rows (total {ids.Count}).");
-            if (count < pageSize || lastId == startLast) break;
-        }
-
-        return ids;
-    }
-
     /// <summary>Summaries of every folder under Records/Incoming, fetched in one call.</summary>
     public async Task<List<ReadyRecordItem>> GetIncomingFolderSummariesAsync(
         string libraryName = "Records", string incomingFolderName = "Incoming")

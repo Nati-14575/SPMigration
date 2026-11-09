@@ -18,7 +18,6 @@
         public string Source { get; set; } = string.Empty;
         public int TotalFound { get; set; }
         public int AlreadyMigrated { get; set; }
-        public int SkippedNotReady { get; set; }
         /// <summary>Total ready items, even when Records is truncated by the limit parameter.</summary>
         public int TotalReady { get; set; }
         /// <summary>Number of records actually returned in this response.</summary>
