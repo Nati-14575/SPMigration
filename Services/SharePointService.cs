@@ -606,38 +606,43 @@ public class SharePointService
      int? lastProcessedId = null)
     {
         var ids = new List<int>();
+        const int pageSize = 5000;
+        var last = lastProcessedId ?? 0;
 
-
-        var filter = lastProcessedId.HasValue
-            ? $"$filter=ListItemAllFields/Id gt {lastProcessedId.Value}&"
-            : string.Empty;
-
-        var endpoint =
-            $"{_siteUrl}/_api/web/GetFolderByServerRelativeUrl('{libraryName}/{incomingFolderName}')/Folders" +
-            $"?{filter}$select=ListItemAllFields/Id&$expand=ListItemAllFields&$orderBy=ListItemAllFields/Id asc&$top=5000";
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-        request.Headers.Add("Accept", "application/json;odata=nometadata");
-
-        var response = await _client.SendAsync(request);
-
-        response.EnsureSuccessStatusCode();
-
-        var json = await response.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(json);
-
-        if (doc.RootElement.TryGetProperty("value", out var folders))
+        while (true)
         {
-            foreach (var folder in folders.EnumerateArray())
-            {
-                if (!folder.TryGetProperty("ListItemAllFields", out var d))
-                    continue;
+            var endpoint =
+                $"{_siteUrl}/_api/web/GetFolderByServerRelativeUrl('{libraryName}/{incomingFolderName}')/Folders" +
+                $"?$filter=ListItemAllFields/Id gt {last}&$select=ListItemAllFields/Id&$expand=ListItemAllFields&$orderBy=ListItemAllFields/Id asc&$top={pageSize}";
 
-                if (d.TryGetProperty("Id", out var id))
+            using var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("Accept", "application/json;odata=nometadata");
+
+            var response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            var pageMax = last;
+            var count = 0;
+            if (doc.RootElement.TryGetProperty("value", out var folders))
+            {
+                foreach (var folder in folders.EnumerateArray())
                 {
-                    ids.Add(id.GetInt32());
+                    count++;
+                    if (!folder.TryGetProperty("ListItemAllFields", out var d)) continue;
+                    if (!d.TryGetProperty("Id", out var id)) continue;
+                    var v = id.GetInt32();
+                    if (v <= last) continue;
+                    ids.Add(v);
+                    if (v > pageMax) pageMax = v;
                 }
             }
+
+            // stop when the page is not full, or no progress was made
+            if (count < pageSize || pageMax <= last) break;
+            last = pageMax;
         }
 
         return ids;

@@ -22,6 +22,11 @@
         public int TotalReady { get; set; }
         /// <summary>Number of ids actually returned in this response.</summary>
         public int Count => Ids.Count;
+        /// <summary>Ready ids (migrated ones only when includeMigrated=true). Equals failedIds + notMigratedIds otherwise.</summary>
         public List<int> Ids { get; set; } = new();
+        /// <summary>Ids whose last logged attempt failed (in an *_errors.json log, never in a success log).</summary>
+        public List<int> FailedIds { get; set; } = new();
+        /// <summary>Ids never attempted: not in any success or error log.</summary>
+        public List<int> NotMigratedIds { get; set; } = new();
     }
 }

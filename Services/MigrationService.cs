@@ -411,7 +411,8 @@ public class MigrationService
 
             var folderIds = await _sharePointService.GetIncomingFolderIdsAsync(
                 libraryName,
-                incomingFolderName);
+                incomingFolderName,
+                startId - 1);
 
             var requestedFolderIds = folderIds
                 .Where(id => id >= startId && id <= endId)
@@ -547,6 +548,7 @@ public class MigrationService
     {
         var recordsList = _configuration["SharePoint:RecordsListName"] ?? "User_Records";
         var migrated = await LoadMigratedIdsAsync(isIncoming: false);
+        var failed = await LoadFailedIdsAsync(isIncoming: false);
 
         _logger.LogInformation("[ready] Loading Sent items from {List}", recordsList);
         var sent = await _sharePointService.GetSentRecordSummariesAsync(recordsList);
@@ -555,6 +557,8 @@ public class MigrationService
         foreach (var r in sent)
         {
             if (migrated.Contains(r.Id)) { result.AlreadyMigrated++; if (!includeMigrated) continue; }
+            else if (failed.Contains(r.Id)) result.FailedIds.Add(r.Id);
+            else result.NotMigratedIds.Add(r.Id);
             result.Ids.Add(r.Id);
         }
         return result;
@@ -567,6 +571,7 @@ public class MigrationService
     public async Task<ReadyRecordsResult> GetReadyIncomingRecordsAsync(bool includeMigrated = false)
     {
         var migrated = await LoadMigratedIdsAsync(isIncoming: true);
+        var failed = await LoadFailedIdsAsync(isIncoming: true);
 
         _logger.LogInformation("[ready] Loading Records/Incoming folders");
         var folders = await _sharePointService.GetIncomingFolderSummariesAsync("Records", "Incoming");
@@ -575,39 +580,50 @@ public class MigrationService
         foreach (var f in folders)
         {
             if (migrated.Contains(f.Id)) { result.AlreadyMigrated++; if (!includeMigrated) continue; }
+            else if (failed.Contains(f.Id)) result.FailedIds.Add(f.Id);
+            else result.NotMigratedIds.Add(f.Id);
             result.Ids.Add(f.Id);
         }
         return result;
     }
 
-    // Collects record IDs from every success log. Incoming runs write "<library>_doclib_success.json";
-    // User_Records runs write "<start>_<end>_success.json".
-    private async Task<HashSet<int>> LoadMigratedIdsAsync(bool isIncoming)
+    // Success logs: Incoming runs write "<library>_doclib_success.json"; User_Records runs write "<start>_<end>_success.json".
+    private async Task<HashSet<int>> LoadMigratedIdsAsync(bool isIncoming) =>
+        await LoadLoggedIdsAsync(_configuration["SharePoint:SuccessFilePath"], "*_success.json", "_doclib_success.json", isIncoming);
+
+    // Error logs follow the same naming with "_errors.json". An id that later succeeded is excluded by the caller
+    // (migrated is checked first), so retried-and-fixed records don't show as failed.
+    private async Task<HashSet<int>> LoadFailedIdsAsync(bool isIncoming) =>
+        await LoadLoggedIdsAsync(_configuration["SharePoint:ErrorFilePath"], "*_errors.json", "_doclib_errors.json", isIncoming);
+
+    private async Task<HashSet<int>> LoadLoggedIdsAsync(string? configuredPath, string pattern, string docLibSuffix, bool isIncoming)
     {
         var ids = new HashSet<int>();
-        var basePath = _configuration["SharePoint:SuccessFilePath"] ?? AppContext.BaseDirectory;
+        var basePath = configuredPath ?? AppContext.BaseDirectory;
         if (!Directory.Exists(basePath)) return ids;
 
-        foreach (var file in Directory.EnumerateFiles(basePath, "*_success.json"))
+        foreach (var file in Directory.EnumerateFiles(basePath, pattern))
         {
-            var isDocLib = Path.GetFileName(file).EndsWith("_doclib_success.json", StringComparison.OrdinalIgnoreCase);
+            var isDocLib = Path.GetFileName(file).EndsWith(docLibSuffix, StringComparison.OrdinalIgnoreCase);
             if (isDocLib != isIncoming) continue;
 
             try
             {
                 var json = await File.ReadAllTextAsync(file);
                 if (string.IsNullOrWhiteSpace(json)) continue;
-                foreach (var s in JsonSerializer.Deserialize<List<MigrationSuccess>>(json) ?? new())
-                    ids.Add(s.RecordId);
+                foreach (var e in JsonSerializer.Deserialize<List<LoggedId>>(json) ?? new())
+                    ids.Add(e.RecordId);
             }
             catch (JsonException ex)
             {
-                _logger.LogWarning(ex, "⚠️ Could not read success log {File}", file);
+                _logger.LogWarning(ex, "⚠️ Could not read log {File}", file);
             }
         }
 
         return ids;
     }
+
+    private class LoggedId { public int RecordId { get; set; } }
 
     public async Task RunDocumentLibraryMigrationAsync()
     {

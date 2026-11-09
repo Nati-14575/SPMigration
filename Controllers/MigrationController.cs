@@ -357,7 +357,12 @@ namespace SPMigration.Controllers
                 return File(bytes, "application/json", fileName);
             }
 
-            if (limit > 0) result.Ids = result.Ids.Take(limit).ToList();
+            if (limit > 0)
+            {
+                result.Ids = result.Ids.Take(limit).ToList();
+                result.FailedIds = result.FailedIds.Take(limit).ToList();
+                result.NotMigratedIds = result.NotMigratedIds.Take(limit).ToList();
+            }
             return Ok(result);
         }
 
