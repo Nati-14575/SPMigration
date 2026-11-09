@@ -305,38 +305,48 @@ namespace SPMigration.Controllers
         }
 
         /// <summary>
-        /// Lists the records that are ready for migration, as two result sets:
-        /// userRecords (User_Records) and incomingRecords (Records/Incoming).
-        /// Already-migrated items are counted but omitted unless includeMigrated=true.
-        /// limit caps how many records are returned per list (default 100; 0 = no cap). The counts always cover everything.
+        /// User_Records ready for migration. Already-migrated items are counted but omitted unless includeMigrated=true.
+        /// limit caps the records returned (default 100; 0 = no cap); totalReady always has the full number.
         /// Swagger UI freezes on very large bodies, so for the full list use limit=0 with curl/Postman.
-        /// Example: GET /api/migration/ready?limit=100
+        /// Example: GET /api/migration/ready/user-records?limit=100
         /// </summary>
-        [HttpGet("ready")]
-        public async Task<IActionResult> GetReadyForMigration([FromQuery] bool includeMigrated = false, [FromQuery] int limit = 100)
+        [HttpGet("ready/user-records")]
+        public async Task<IActionResult> GetReadyUserRecords([FromQuery] bool includeMigrated = false, [FromQuery] int limit = 100)
         {
             try
             {
-                var result = await _migrationService.GetReadyForMigrationAsync(includeMigrated);
-                if (limit > 0)
-                {
-                    result.UserRecords.TotalReady = result.UserRecords.Records.Count;
-                    result.IncomingRecords.TotalReady = result.IncomingRecords.Records.Count;
-                    result.UserRecords.Records = result.UserRecords.Records.Take(limit).ToList();
-                    result.IncomingRecords.Records = result.IncomingRecords.Records.Take(limit).ToList();
-                }
-                else
-                {
-                    result.UserRecords.TotalReady = result.UserRecords.Records.Count;
-                    result.IncomingRecords.TotalReady = result.IncomingRecords.Records.Count;
-                }
-                return Ok(result);
+                return Ok(ApplyLimit(await _migrationService.GetReadyUserRecordsAsync(includeMigrated), limit));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "❌ Failed to list records ready for migration");
+                _logger.LogError(ex, "❌ Failed to list User_Records ready for migration");
                 return StatusCode(500, new { error = ex.Message });
             }
+        }
+
+        /// <summary>
+        /// Records/Incoming folders ready for migration. Same parameters as ready/user-records.
+        /// Example: GET /api/migration/ready/incoming?limit=100
+        /// </summary>
+        [HttpGet("ready/incoming")]
+        public async Task<IActionResult> GetReadyIncomingRecords([FromQuery] bool includeMigrated = false, [FromQuery] int limit = 100)
+        {
+            try
+            {
+                return Ok(ApplyLimit(await _migrationService.GetReadyIncomingRecordsAsync(includeMigrated), limit));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Failed to list Records/Incoming ready for migration");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        private static ReadyRecordsResult ApplyLimit(ReadyRecordsResult result, int limit)
+        {
+            result.TotalReady = result.Records.Count;
+            if (limit > 0) result.Records = result.Records.Take(limit).ToList();
+            return result;
         }
 
         [HttpPost("retry-from-errors")]

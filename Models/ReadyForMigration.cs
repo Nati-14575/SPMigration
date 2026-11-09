@@ -25,10 +25,4 @@
         public int Count => Records.Count;
         public List<ReadyRecordItem> Records { get; set; } = new();
     }
-
-    public class ReadyForMigrationResponse
-    {
-        public ReadyRecordsResult UserRecords { get; set; } = new();
-        public ReadyRecordsResult IncomingRecords { get; set; } = new();
-    }
 }

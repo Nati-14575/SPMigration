@@ -540,45 +540,49 @@ public class MigrationService
     }
 
     /// <summary>
-    /// Lists what can be migrated right now, as two separate result sets:
-    ///  - UserRecords: User_Records items with Status = Sent. Unless InternalMemo, the records officer
-    ///    must also have dispatched them (a matching item in the Records library), as RunMigrationAsync requires.
-    ///  - IncomingRecords: folders under Records/Incoming.
-    /// IDs found in the *_success.json files are reported as already migrated and left out unless includeMigrated is set.
+    /// User_Records items ready for migration: Status = Sent and, unless InternalMemo, dispatched by the
+    /// records officer (a matching item in the Records library), as RunMigrationAsync requires.
+    /// IDs in the *_success.json logs are counted as already migrated and omitted unless includeMigrated is set.
     /// </summary>
-    public async Task<ReadyForMigrationResponse> GetReadyForMigrationAsync(bool includeMigrated = false)
+    public async Task<ReadyRecordsResult> GetReadyUserRecordsAsync(bool includeMigrated = false)
     {
         var recordsList = _configuration["SharePoint:RecordsListName"] ?? "User_Records";
+        var migrated = await LoadMigratedIdsAsync(isIncoming: false);
 
-        var migratedUser = await LoadMigratedIdsAsync(isIncoming: false);
-        var migratedIncoming = await LoadMigratedIdsAsync(isIncoming: true);
-
-        // ---- User_Records ----
-        _logger.LogInformation("[ready] Step 1/3: loading Sent items from {List}", recordsList);
+        _logger.LogInformation("[ready] Step 1/2: loading Sent items from {List}", recordsList);
         var sent = await _sharePointService.GetSentRecordSummariesAsync(recordsList);
-        _logger.LogInformation("[ready] Step 2/3: loading dispatched RecordIds from Records library");
+        _logger.LogInformation("[ready] Step 2/2: loading dispatched RecordIds from Records library");
         var dispatched = await _sharePointService.GetDispatchedRecordIdsAsync();
 
-        var userResult = new ReadyRecordsResult { Source = recordsList, TotalFound = sent.Count };
+        var result = new ReadyRecordsResult { Source = recordsList, TotalFound = sent.Count };
         foreach (var r in sent)
         {
             var isInternalMemo = string.Equals(r.RecordType, "InternalMemo", StringComparison.OrdinalIgnoreCase);
-            if (!isInternalMemo && !dispatched.Contains(r.Id)) { userResult.SkippedNotReady++; continue; }
-            if (migratedUser.Contains(r.Id)) { userResult.AlreadyMigrated++; if (!includeMigrated) continue; }
-            userResult.Records.Add(r);
+            if (!isInternalMemo && !dispatched.Contains(r.Id)) { result.SkippedNotReady++; continue; }
+            if (migrated.Contains(r.Id)) { result.AlreadyMigrated++; if (!includeMigrated) continue; }
+            result.Records.Add(r);
         }
+        return result;
+    }
 
-        // ---- Records/Incoming ----
-        _logger.LogInformation("[ready] Step 3/3: loading Records/Incoming folders");
+    /// <summary>
+    /// Folders under Records/Incoming ready for migration. IDs in Records_doclib_success.json are counted as
+    /// already migrated and omitted unless includeMigrated is set.
+    /// </summary>
+    public async Task<ReadyRecordsResult> GetReadyIncomingRecordsAsync(bool includeMigrated = false)
+    {
+        var migrated = await LoadMigratedIdsAsync(isIncoming: true);
+
+        _logger.LogInformation("[ready] Loading Records/Incoming folders");
         var folders = await _sharePointService.GetIncomingFolderSummariesAsync("Records", "Incoming");
-        var incomingResult = new ReadyRecordsResult { Source = "Records/Incoming", TotalFound = folders.Count };
+
+        var result = new ReadyRecordsResult { Source = "Records/Incoming", TotalFound = folders.Count };
         foreach (var f in folders)
         {
-            if (migratedIncoming.Contains(f.Id)) { incomingResult.AlreadyMigrated++; if (!includeMigrated) continue; }
-            incomingResult.Records.Add(f);
+            if (migrated.Contains(f.Id)) { result.AlreadyMigrated++; if (!includeMigrated) continue; }
+            result.Records.Add(f);
         }
-
-        return new ReadyForMigrationResponse { UserRecords = userResult, IncomingRecords = incomingResult };
+        return result;
     }
 
     // Collects record IDs from every success log. Incoming runs write "<library>_doclib_success.json";
