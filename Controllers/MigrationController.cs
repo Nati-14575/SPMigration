@@ -307,15 +307,15 @@ namespace SPMigration.Controllers
         /// <summary>
         /// User_Records ready for migration. Already-migrated items are counted but omitted unless includeMigrated=true.
         /// limit caps the records returned (default 100; 0 = no cap); totalReady always has the full number.
-        /// Swagger UI freezes on very large bodies, so for the full list use limit=0 with curl/Postman.
+        /// Swagger UI freezes on very large bodies, so for the full list use download=true (saves it as a JSON file).
         /// Example: GET /api/migration/ready/user-records?limit=100
         /// </summary>
         [HttpGet("ready/user-records")]
-        public async Task<IActionResult> GetReadyUserRecords([FromQuery] bool includeMigrated = false, [FromQuery] int limit = 100)
+        public async Task<IActionResult> GetReadyUserRecords([FromQuery] bool includeMigrated = false, [FromQuery] int limit = 100, [FromQuery] bool download = false)
         {
             try
             {
-                return Ok(ApplyLimit(await _migrationService.GetReadyUserRecordsAsync(includeMigrated), limit));
+                return ReadyResponse(await _migrationService.GetReadyUserRecordsAsync(includeMigrated), limit, download, "ready-user-records.json");
             }
             catch (Exception ex)
             {
@@ -329,11 +329,11 @@ namespace SPMigration.Controllers
         /// Example: GET /api/migration/ready/incoming?limit=100
         /// </summary>
         [HttpGet("ready/incoming")]
-        public async Task<IActionResult> GetReadyIncomingRecords([FromQuery] bool includeMigrated = false, [FromQuery] int limit = 100)
+        public async Task<IActionResult> GetReadyIncomingRecords([FromQuery] bool includeMigrated = false, [FromQuery] int limit = 100, [FromQuery] bool download = false)
         {
             try
             {
-                return Ok(ApplyLimit(await _migrationService.GetReadyIncomingRecordsAsync(includeMigrated), limit));
+                return ReadyResponse(await _migrationService.GetReadyIncomingRecordsAsync(includeMigrated), limit, download, "ready-incoming-records.json");
             }
             catch (Exception ex)
             {
@@ -342,11 +342,23 @@ namespace SPMigration.Controllers
             }
         }
 
-        private static ReadyRecordsResult ApplyLimit(ReadyRecordsResult result, int limit)
+        // download=true returns the whole list (limit ignored) as a JSON file so Swagger doesn't have to render it.
+        private IActionResult ReadyResponse(ReadyRecordsResult result, int limit, bool download, string fileName)
         {
             result.TotalReady = result.Records.Count;
+            if (download)
+            {
+                var bytes = JsonSerializer.SerializeToUtf8Bytes(result, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                });
+                return File(bytes, "application/json", fileName);
+            }
+
             if (limit > 0) result.Records = result.Records.Take(limit).ToList();
-            return result;
+            return Ok(result);
         }
 
         [HttpPost("retry-from-errors")]
