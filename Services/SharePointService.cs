@@ -673,10 +673,16 @@ public class SharePointService
   <RowLimit>{pageSize}</RowLimit>
 </View>";
 
+            Console.WriteLine($"[ready] {listTitle}: fetching Sent items with ID > {lastId}...");
             using var doc = await InvokeRLDSAsync(listTitle, viewXml);
-            if (!doc.RootElement.TryGetProperty("Row", out var rows)) break;
+            if (!doc.RootElement.TryGetProperty("Row", out var rows))
+            {
+                Console.WriteLine($"[ready] {listTitle}: no 'Row' in response: {doc.RootElement.ToString()[..Math.Min(300, doc.RootElement.ToString().Length)]}");
+                break;
+            }
 
             var count = 0;
+            var startLast = lastId;
             foreach (var r in rows.EnumerateArray())
             {
                 count++;
@@ -694,7 +700,8 @@ public class SharePointService
                 });
             }
 
-            if (count < pageSize) break;
+            Console.WriteLine($"[ready] {listTitle}: got {count} rows (total {result.Count}).");
+            if (count < pageSize || lastId == startLast) break;
         }
 
         return result;
@@ -727,10 +734,16 @@ public class SharePointService
   <RowLimit>{pageSize}</RowLimit>
 </View>";
 
+            Console.WriteLine($"[ready] {libraryName}: fetching dispatched RecordIds with ID > {lastId}...");
             using var doc = await InvokeRLDSAsync(libraryName, viewXml);
-            if (!doc.RootElement.TryGetProperty("Row", out var rows)) break;
+            if (!doc.RootElement.TryGetProperty("Row", out var rows))
+            {
+                Console.WriteLine($"[ready] {libraryName}: no 'Row' in response: {doc.RootElement.ToString()[..Math.Min(300, doc.RootElement.ToString().Length)]}");
+                break;
+            }
 
             var count = 0;
+            var startLast = lastId;
             foreach (var r in rows.EnumerateArray())
             {
                 count++;
@@ -740,7 +753,8 @@ public class SharePointService
                 if (int.TryParse(digits, out var recordId)) ids.Add(recordId);
             }
 
-            if (count < pageSize) break;
+            Console.WriteLine($"[ready] {libraryName}: got {count} rows (total {ids.Count}).");
+            if (count < pageSize || lastId == startLast) break;
         }
 
         return ids;
@@ -762,6 +776,7 @@ public class SharePointService
                 "&$select=Name,ListItemAllFields/Id,ListItemAllFields/Subject,ListItemAllFields/Reference_Number,ListItemAllFields/Created" +
                 $"&$expand=ListItemAllFields&$orderby=ListItemAllFields/Id asc&$top={pageSize}";
 
+            Console.WriteLine($"[ready] {libraryName}/{incomingFolderName}: fetching folders with ID > {lastId}...");
             using var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
             request.Headers.Add("Accept", "application/json;odata=nometadata");
             var response = await _client.SendAsync(request);
@@ -771,6 +786,7 @@ public class SharePointService
             if (!doc.RootElement.TryGetProperty("value", out var folders)) break;
 
             var count = 0;
+            var startLast = lastId;
             foreach (var f in folders.EnumerateArray())
             {
                 count++;
@@ -789,7 +805,8 @@ public class SharePointService
                 });
             }
 
-            if (count < pageSize) break;
+            Console.WriteLine($"[ready] {libraryName}/{incomingFolderName}: got {count} folders (total {result.Count}).");
+            if (count < pageSize || lastId == startLast) break;
         }
 
         return result;

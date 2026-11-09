@@ -554,7 +554,9 @@ public class MigrationService
         var migratedIncoming = await LoadMigratedIdsAsync(isIncoming: true);
 
         // ---- User_Records ----
+        _logger.LogInformation("[ready] Step 1/3: loading Sent items from {List}", recordsList);
         var sent = await _sharePointService.GetSentRecordSummariesAsync(recordsList);
+        _logger.LogInformation("[ready] Step 2/3: loading dispatched RecordIds from Records library");
         var dispatched = await _sharePointService.GetDispatchedRecordIdsAsync();
 
         var userResult = new ReadyRecordsResult { Source = recordsList, TotalFound = sent.Count };
@@ -567,6 +569,7 @@ public class MigrationService
         }
 
         // ---- Records/Incoming ----
+        _logger.LogInformation("[ready] Step 3/3: loading Records/Incoming folders");
         var folders = await _sharePointService.GetIncomingFolderSummariesAsync("Records", "Incoming");
         var incomingResult = new ReadyRecordsResult { Source = "Records/Incoming", TotalFound = folders.Count };
         foreach (var f in folders)
