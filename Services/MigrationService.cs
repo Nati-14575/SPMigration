@@ -555,7 +555,7 @@ public class MigrationService
         foreach (var r in sent)
         {
             if (migrated.Contains(r.Id)) { result.AlreadyMigrated++; if (!includeMigrated) continue; }
-            result.Records.Add(r);
+            result.Ids.Add(r.Id);
         }
         return result;
     }
@@ -575,7 +575,7 @@ public class MigrationService
         foreach (var f in folders)
         {
             if (migrated.Contains(f.Id)) { result.AlreadyMigrated++; if (!includeMigrated) continue; }
-            result.Records.Add(f);
+            result.Ids.Add(f.Id);
         }
         return result;
     }

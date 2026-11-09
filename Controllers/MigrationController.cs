@@ -306,7 +306,7 @@ namespace SPMigration.Controllers
 
         /// <summary>
         /// User_Records ready for migration. Already-migrated items are counted but omitted unless includeMigrated=true.
-        /// limit caps the records returned (default 100; 0 = no cap); totalReady always has the full number.
+        /// limit caps the ids returned (default 100; 0 = no cap); totalReady always has the full number.
         /// Swagger UI freezes on very large bodies, so for the full list use download=true (saves it as a JSON file).
         /// Example: GET /api/migration/ready/user-records?limit=100
         /// </summary>
@@ -345,7 +345,7 @@ namespace SPMigration.Controllers
         // download=true returns the whole list (limit ignored) as a JSON file so Swagger doesn't have to render it.
         private IActionResult ReadyResponse(ReadyRecordsResult result, int limit, bool download, string fileName)
         {
-            result.TotalReady = result.Records.Count;
+            result.TotalReady = result.Ids.Count;
             if (download)
             {
                 var bytes = JsonSerializer.SerializeToUtf8Bytes(result, new JsonSerializerOptions
@@ -357,7 +357,7 @@ namespace SPMigration.Controllers
                 return File(bytes, "application/json", fileName);
             }
 
-            if (limit > 0) result.Records = result.Records.Take(limit).ToList();
+            if (limit > 0) result.Ids = result.Ids.Take(limit).ToList();
             return Ok(result);
         }
 

@@ -18,10 +18,10 @@
         public string Source { get; set; } = string.Empty;
         public int TotalFound { get; set; }
         public int AlreadyMigrated { get; set; }
-        /// <summary>Total ready items, even when Records is truncated by the limit parameter.</summary>
+        /// <summary>Total ready items, even when Ids is truncated by the limit parameter.</summary>
         public int TotalReady { get; set; }
-        /// <summary>Number of records actually returned in this response.</summary>
-        public int Count => Records.Count;
-        public List<ReadyRecordItem> Records { get; set; } = new();
+        /// <summary>Number of ids actually returned in this response.</summary>
+        public int Count => Ids.Count;
+        public List<int> Ids { get; set; } = new();
     }
 }
