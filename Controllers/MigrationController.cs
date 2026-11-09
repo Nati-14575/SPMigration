@@ -304,6 +304,26 @@ namespace SPMigration.Controllers
             }
         }
 
+        /// <summary>
+        /// Lists the records that are ready for migration, as two result sets:
+        /// userRecords (User_Records) and incomingRecords (Records/Incoming).
+        /// Already-migrated items are counted but omitted unless includeMigrated=true.
+        /// Example: GET /api/migration/ready
+        /// </summary>
+        [HttpGet("ready")]
+        public async Task<IActionResult> GetReadyForMigration([FromQuery] bool includeMigrated = false)
+        {
+            try
+            {
+                return Ok(await _migrationService.GetReadyForMigrationAsync(includeMigrated));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Failed to list records ready for migration");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
         [HttpPost("retry-from-errors")]
         public async Task<IActionResult> RetryFromErrors([FromQuery] string fileName)
         {

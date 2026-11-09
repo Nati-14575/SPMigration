@@ -539,6 +539,74 @@ public class MigrationService
         }
     }
 
+    /// <summary>
+    /// Lists what can be migrated right now, as two separate result sets:
+    ///  - UserRecords: User_Records items with Status = Sent. Unless InternalMemo, the records officer
+    ///    must also have dispatched them (a matching item in the Records library), as RunMigrationAsync requires.
+    ///  - IncomingRecords: folders under Records/Incoming.
+    /// IDs found in the *_success.json files are reported as already migrated and left out unless includeMigrated is set.
+    /// </summary>
+    public async Task<ReadyForMigrationResponse> GetReadyForMigrationAsync(bool includeMigrated = false)
+    {
+        var recordsList = _configuration["SharePoint:RecordsListName"] ?? "User_Records";
+
+        var migratedUser = await LoadMigratedIdsAsync(isIncoming: false);
+        var migratedIncoming = await LoadMigratedIdsAsync(isIncoming: true);
+
+        // ---- User_Records ----
+        var sent = await _sharePointService.GetSentRecordSummariesAsync(recordsList);
+        var dispatched = await _sharePointService.GetDispatchedRecordIdsAsync();
+
+        var userResult = new ReadyRecordsResult { Source = recordsList, TotalFound = sent.Count };
+        foreach (var r in sent)
+        {
+            var isInternalMemo = string.Equals(r.RecordType, "InternalMemo", StringComparison.OrdinalIgnoreCase);
+            if (!isInternalMemo && !dispatched.Contains(r.Id)) { userResult.SkippedNotReady++; continue; }
+            if (migratedUser.Contains(r.Id)) { userResult.AlreadyMigrated++; if (!includeMigrated) continue; }
+            userResult.Records.Add(r);
+        }
+
+        // ---- Records/Incoming ----
+        var folders = await _sharePointService.GetIncomingFolderSummariesAsync("Records", "Incoming");
+        var incomingResult = new ReadyRecordsResult { Source = "Records/Incoming", TotalFound = folders.Count };
+        foreach (var f in folders)
+        {
+            if (migratedIncoming.Contains(f.Id)) { incomingResult.AlreadyMigrated++; if (!includeMigrated) continue; }
+            incomingResult.Records.Add(f);
+        }
+
+        return new ReadyForMigrationResponse { UserRecords = userResult, IncomingRecords = incomingResult };
+    }
+
+    // Collects record IDs from every success log. Incoming runs write "<library>_doclib_success.json";
+    // User_Records runs write "<start>_<end>_success.json".
+    private async Task<HashSet<int>> LoadMigratedIdsAsync(bool isIncoming)
+    {
+        var ids = new HashSet<int>();
+        var basePath = _configuration["SharePoint:SuccessFilePath"] ?? AppContext.BaseDirectory;
+        if (!Directory.Exists(basePath)) return ids;
+
+        foreach (var file in Directory.EnumerateFiles(basePath, "*_success.json"))
+        {
+            var isDocLib = Path.GetFileName(file).EndsWith("_doclib_success.json", StringComparison.OrdinalIgnoreCase);
+            if (isDocLib != isIncoming) continue;
+
+            try
+            {
+                var json = await File.ReadAllTextAsync(file);
+                if (string.IsNullOrWhiteSpace(json)) continue;
+                foreach (var s in JsonSerializer.Deserialize<List<MigrationSuccess>>(json) ?? new())
+                    ids.Add(s.RecordId);
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogWarning(ex, "⚠️ Could not read success log {File}", file);
+            }
+        }
+
+        return ids;
+    }
+
     public async Task RunDocumentLibraryMigrationAsync()
     {
         var incomingTasksList = _configuration["SharePoint:IncomingTasksListName"] ?? "Incoming_Record_Associated_Task";

@@ -643,6 +643,158 @@ public class SharePointService
         return ids;
     }
 
+    /// <summary>
+    /// Lists every item in a list with Status = Sent (the only records the migration accepts).
+    /// Pages by ID so it is not limited to a single RowLimit page.
+    /// </summary>
+    public async Task<List<ReadyRecordItem>> GetSentRecordSummariesAsync(string listTitle)
+    {
+        var result = new List<ReadyRecordItem>();
+        const int pageSize = 2000;
+        var lastId = 0;
+
+        while (true)
+        {
+            var viewXml = $@"
+<View>
+  <Query>
+    <Where>
+      <And>
+        <Gt><FieldRef Name='ID' /><Value Type='Counter'>{lastId}</Value></Gt>
+        <Eq><FieldRef Name='Status' /><Value Type='Text'>Sent</Value></Eq>
+      </And>
+    </Where>
+    <OrderBy><FieldRef Name='ID' Ascending='True' /></OrderBy>
+  </Query>
+  <ViewFields>
+    <FieldRef Name='ID' /><FieldRef Name='Title' /><FieldRef Name='Subject' />
+    <FieldRef Name='Record_Type' /><FieldRef Name='Reference_Number' /><FieldRef Name='Created' />
+  </ViewFields>
+  <RowLimit>{pageSize}</RowLimit>
+</View>";
+
+            using var doc = await InvokeRLDSAsync(listTitle, viewXml);
+            if (!doc.RootElement.TryGetProperty("Row", out var rows)) break;
+
+            var count = 0;
+            foreach (var r in rows.EnumerateArray())
+            {
+                count++;
+                if (!int.TryParse(r.GetStringSafe("ID"), out var id)) continue;
+                lastId = Math.Max(lastId, id);
+                result.Add(new ReadyRecordItem
+                {
+                    Id = id,
+                    Title = r.GetStringSafe("Title"),
+                    Subject = r.GetStringSafe("Subject"),
+                    RecordType = r.GetStringSafe("Record_Type"),
+                    ReferenceNumber = r.GetStringSafe("Reference_Number"),
+                    Created = r.GetStringSafe("Created"),
+                    Source = listTitle
+                });
+            }
+
+            if (count < pageSize) break;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// IDs of User_Records that the records officer has dispatched, i.e. a matching item
+    /// exists in the "Records" library (RecordId = User_Records.ID). Needed for every type except InternalMemo.
+    /// </summary>
+    public async Task<HashSet<int>> GetDispatchedRecordIdsAsync(string libraryName = "Records")
+    {
+        var ids = new HashSet<int>();
+        const int pageSize = 2000;
+        var lastId = 0;
+
+        while (true)
+        {
+            var viewXml = $@"
+<View Scope='RecursiveAll'>
+  <Query>
+    <Where>
+      <And>
+        <Gt><FieldRef Name='ID' /><Value Type='Counter'>{lastId}</Value></Gt>
+        <IsNotNull><FieldRef Name='RecordId' /></IsNotNull>
+      </And>
+    </Where>
+    <OrderBy><FieldRef Name='ID' Ascending='True' /></OrderBy>
+  </Query>
+  <ViewFields><FieldRef Name='ID' /><FieldRef Name='RecordId' /></ViewFields>
+  <RowLimit>{pageSize}</RowLimit>
+</View>";
+
+            using var doc = await InvokeRLDSAsync(libraryName, viewXml);
+            if (!doc.RootElement.TryGetProperty("Row", out var rows)) break;
+
+            var count = 0;
+            foreach (var r in rows.EnumerateArray())
+            {
+                count++;
+                if (int.TryParse(r.GetStringSafe("ID"), out var id)) lastId = Math.Max(lastId, id);
+
+                var digits = new string((r.GetStringSafe("RecordId") ?? "").Where(char.IsDigit).ToArray());
+                if (int.TryParse(digits, out var recordId)) ids.Add(recordId);
+            }
+
+            if (count < pageSize) break;
+        }
+
+        return ids;
+    }
+
+    /// <summary>Summaries of every folder under Records/Incoming, fetched in one call.</summary>
+    public async Task<List<ReadyRecordItem>> GetIncomingFolderSummariesAsync(
+        string libraryName = "Records", string incomingFolderName = "Incoming")
+    {
+        var result = new List<ReadyRecordItem>();
+        const int pageSize = 5000;
+        var lastId = 0;
+
+        while (true)
+        {
+            var endpoint =
+                $"{_siteUrl}/_api/web/GetFolderByServerRelativeUrl('{libraryName}/{incomingFolderName}')/Folders" +
+                $"?$filter=ListItemAllFields/Id gt {lastId}" +
+                "&$select=Name,ListItemAllFields/Id,ListItemAllFields/Subject,ListItemAllFields/Reference_Number,ListItemAllFields/Created" +
+                $"&$expand=ListItemAllFields&$orderby=ListItemAllFields/Id asc&$top={pageSize}";
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("Accept", "application/json;odata=nometadata");
+            var response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            if (!doc.RootElement.TryGetProperty("value", out var folders)) break;
+
+            var count = 0;
+            foreach (var f in folders.EnumerateArray())
+            {
+                count++;
+                if (!f.TryGetProperty("ListItemAllFields", out var d) || !d.TryGetProperty("Id", out var idEl)) continue;
+                var id = idEl.GetInt32();
+                lastId = Math.Max(lastId, id);
+                result.Add(new ReadyRecordItem
+                {
+                    Id = id,
+                    Title = f.GetStringSafe("Name"),
+                    Subject = d.GetStringSafe("Subject"),
+                    ReferenceNumber = d.GetStringSafe("Reference_Number"),
+                    Created = d.GetStringSafe("Created"),
+                    RecordType = "Incoming",
+                    Source = $"{libraryName}/{incomingFolderName}"
+                });
+            }
+
+            if (count < pageSize) break;
+        }
+
+        return result;
+    }
+
     public async Task<SharePointFolder?> GetIncomingFolderByIdAsync(string libraryName, int itemId, List<UserMapping> userMappings = null)
     {
         var endpoint =
