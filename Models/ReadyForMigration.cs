@@ -1,4 +1,4 @@
-namespace SPMigration.Models
+﻿namespace SPMigration.Models
 {
     /// <summary>One SharePoint item that is eligible for migration.</summary>
     public class ReadyRecordItem
@@ -19,6 +19,9 @@ namespace SPMigration.Models
         public int TotalFound { get; set; }
         public int AlreadyMigrated { get; set; }
         public int SkippedNotReady { get; set; }
+        /// <summary>Total ready items, even when Records is truncated by the limit parameter.</summary>
+        public int TotalReady { get; set; }
+        /// <summary>Number of records actually returned in this response.</summary>
         public int Count => Records.Count;
         public List<ReadyRecordItem> Records { get; set; } = new();
     }
