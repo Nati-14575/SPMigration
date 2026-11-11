@@ -1371,6 +1371,10 @@ public class MigrationService
 
     private static string SafeTitle(string title) =>
         string.IsNullOrWhiteSpace(title) ? "record" : title.Trim();
+
+    // Records with a blank subject fail to migrate, so send a placeholder instead.
+    private static string SubjectOrDefault(string? subject) =>
+        string.IsNullOrWhiteSpace(subject) ? "Empty Subject" : subject;
     private static string MapRecordType(string type)
     {
         if (string.IsNullOrWhiteSpace(type)) return "internal"; // default
@@ -1460,7 +1464,7 @@ public class MigrationService
         var contentItem = new ContentItem
         {
             body = record.Original_Content ?? "",
-            subject = record.Subject ?? "",
+            subject = SubjectOrDefault(record.Subject),
             date = record.GregorianDate.HasValue
                 ? DateTime.SpecifyKind(record.GregorianDate.Value, DateTimeKind.Utc)
                 : null,
@@ -1611,7 +1615,7 @@ public class MigrationService
 
             dispatchedBy = folder.Author ?? "",
 
-            subject = folder.Subject ?? "",
+            subject = SubjectOrDefault(folder.Subject),
             body = "",
             id = folder.ID.ToString() ?? "",
 
