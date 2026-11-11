@@ -1255,117 +1255,119 @@ public class MigrationService
         return await _minioService.UploadFilesAsync(recordId, files, SafeTitle(recordTitle));
     }
 
-    public async Task LogErrorToFileAsync(MigrationError error, string fileName)
-    {
-        // Base folder path from config
-        string basePath = _configuration["SharePoint:ErrorFilePath"] ?? AppContext.BaseDirectory;
+    public Task LogErrorToFileAsync(MigrationError error, string fileName) =>
+        AppendToJsonListFileAsync(ErrorFilePath(fileName), error);
 
-        // Final path includes the fileName
-        string errorFilePath = Path.Combine(basePath, fileName);
+    public Task LogIncomingErrorToFileAsync(MigrationError error, string fileName) =>
+        AppendToJsonListFileAsync(ErrorFilePath(fileName), error);
 
-        List<MigrationError> existing = new();
+    public Task LogSuccessToFileAsync(MigrationSuccess success, string fileName) =>
+        AppendToJsonListFileAsync(SuccessFilePath(fileName), success);
 
-        // Read existing errors if file exists
-        if (File.Exists(errorFilePath))
-        {
-            var json = await File.ReadAllTextAsync(errorFilePath);
-            if (!string.IsNullOrWhiteSpace(json))
-            {
-                existing = JsonSerializer.Deserialize<List<MigrationError>>(json) ?? new List<MigrationError>();
-            }
-        }
-
-        // Append new error
-        existing.Add(error);
-
-        // Write back to file (formatted for readability)
-        var updatedJson = JsonSerializer.Serialize(existing, new JsonSerializerOptions { WriteIndented = true });
-        await File.WriteAllTextAsync(errorFilePath, updatedJson);
-    }
-    public async Task LogIncomingErrorToFileAsync(MigrationError error, string fileName)
-    {
-        // Base folder path from config
-        string basePath = _configuration["SharePoint:ErrorFilePath"] ?? AppContext.BaseDirectory;
-
-        // Final path includes the fileName
-        string errorFilePath = Path.Combine(basePath, fileName);
-
-        List<MigrationError> existing = new();
-
-        // Read existing errors if file exists
-        if (File.Exists(errorFilePath))
-        {
-            var json = await File.ReadAllTextAsync(errorFilePath);
-            if (!string.IsNullOrWhiteSpace(json))
-            {
-                existing = JsonSerializer.Deserialize<List<MigrationError>>(json) ?? new List<MigrationError>();
-            }
-        }
-
-        // Append new error
-        existing.Add(error);
-
-        // Write back to file (formatted for readability)
-        var updatedJson = JsonSerializer.Serialize(existing, new JsonSerializerOptions { WriteIndented = true });
-        await File.WriteAllTextAsync(errorFilePath, updatedJson);
-    }
-
-    public async Task LogSuccessToFileAsync(MigrationSuccess success, string fileName)
-    {
-        string basePath = _configuration["SharePoint:SuccessFilePath"] ?? AppContext.BaseDirectory;
-        string successFilePath = Path.Combine(basePath, fileName);
-
-        List<MigrationSuccess> existing = new();
-
-        if (File.Exists(successFilePath))
-        {
-            var json = await File.ReadAllTextAsync(successFilePath);
-            if (!string.IsNullOrWhiteSpace(json))
-            {
-                existing = JsonSerializer.Deserialize<List<MigrationSuccess>>(json) ?? new List<MigrationSuccess>();
-            }
-        }
-
-        existing.Add(success);
-
-        var updatedJson = JsonSerializer.Serialize(existing, new JsonSerializerOptions { WriteIndented = true });
-        await File.WriteAllTextAsync(successFilePath, updatedJson);
-    }
-    private async Task LogIncomingSuccessToFileAsync(MigrationSuccess success, string fileName)
-    {
-        string basePath = _configuration["SharePoint:SuccessFilePath"] ?? AppContext.BaseDirectory;
-        string successFilePath = Path.Combine(basePath, fileName);
-
-        List<MigrationSuccess> existing = new();
-
-        if (File.Exists(successFilePath))
-        {
-            var json = await File.ReadAllTextAsync(successFilePath);
-            if (!string.IsNullOrWhiteSpace(json))
-            {
-                existing = JsonSerializer.Deserialize<List<MigrationSuccess>>(json) ?? new List<MigrationSuccess>();
-            }
-        }
-
-        existing.Add(success);
-
-        var updatedJson = JsonSerializer.Serialize(existing, new JsonSerializerOptions { WriteIndented = true });
-        await File.WriteAllTextAsync(successFilePath, updatedJson);
-    }
+    private Task LogIncomingSuccessToFileAsync(MigrationSuccess success, string fileName) =>
+        AppendToJsonListFileAsync(SuccessFilePath(fileName), success);
 
     public async Task<List<MigrationError>> LoadErrorsFromFileAsync(string fileName)
     {
-        string basePath = _configuration["SharePoint:ErrorFilePath"] ?? AppContext.BaseDirectory;
-        string errorFilePath = Path.Combine(basePath, fileName);
+        await _resultFileLock.WaitAsync();
+        try
+        {
+            return await ReadJsonListFileAsync<MigrationError>(ErrorFilePath(fileName));
+        }
+        finally
+        {
+            _resultFileLock.Release();
+        }
+    }
 
-        if (!File.Exists(errorFilePath))
-            return new List<MigrationError>();
+    private string ErrorFilePath(string fileName) =>
+        Path.Combine(_configuration["SharePoint:ErrorFilePath"] ?? AppContext.BaseDirectory, fileName);
 
-        var json = await File.ReadAllTextAsync(errorFilePath);
+    private string SuccessFilePath(string fileName) =>
+        Path.Combine(_configuration["SharePoint:SuccessFilePath"] ?? AppContext.BaseDirectory, fileName);
+
+    // The error/success/run files are JSON arrays rewritten in full on every append. Rewriting in place
+    // left a cut-off file whenever the app was stopped mid-write, so writes now go to a temp file that
+    // replaces the original in one step. One lock serialises them: the service is a singleton shared by requests.
+    private static readonly SemaphoreSlim _resultFileLock = new(1, 1);
+    private static readonly JsonSerializerOptions _resultFileJson = new() { WriteIndented = true };
+
+    private async Task AppendToJsonListFileAsync<T>(string path, T item)
+    {
+        await _resultFileLock.WaitAsync();
+        try
+        {
+            var items = await ReadJsonListFileAsync<T>(path);
+            items.Add(item);
+            await WriteJsonListFileAsync(path, items);
+        }
+        finally
+        {
+            _resultFileLock.Release();
+        }
+    }
+
+    // Caller must hold _resultFileLock.
+    private async Task<List<T>> ReadJsonListFileAsync<T>(string path)
+    {
+        if (!File.Exists(path))
+            return new List<T>();
+
+        var json = await File.ReadAllTextAsync(path);
         if (string.IsNullOrWhiteSpace(json))
-            return new List<MigrationError>();
+            return new List<T>();
 
-        return JsonSerializer.Deserialize<List<MigrationError>>(json) ?? new List<MigrationError>();
+        try
+        {
+            return JsonSerializer.Deserialize<List<T>>(json) ?? new List<T>();
+        }
+        catch (JsonException ex)
+        {
+            // Damaged file (e.g. cut off by an earlier crash): keep every complete entry, save the original
+            // next to it, and rewrite the file so it loads normally from now on.
+            var recovered = SalvageJsonList<T>(System.Text.Encoding.UTF8.GetBytes(json));
+            var backupPath = $"{path}.corrupt-{DateTime.Now:yyyyMMdd-HHmmss}";
+            File.Copy(path, backupPath, overwrite: true);
+            await WriteJsonListFileAsync(path, recovered);
+
+            _logger.LogWarning(ex,
+                "⚠️ {Path} was damaged. Recovered {Count} complete entries; the damaged original was saved as {Backup}.",
+                path, recovered.Count, backupPath);
+            return recovered;
+        }
+    }
+
+    private static async Task WriteJsonListFileAsync<T>(string path, List<T> items)
+    {
+        var tempPath = path + ".tmp";
+        await File.WriteAllTextAsync(tempPath, JsonSerializer.Serialize(items, _resultFileJson));
+        File.Move(tempPath, path, overwrite: true);
+    }
+
+    // Returns the complete elements of a JSON array, stopping at the first one that is cut off or malformed.
+    private static List<T> SalvageJsonList<T>(byte[] utf8)
+    {
+        var items = new List<T>();
+        var reader = new Utf8JsonReader(utf8);
+        try
+        {
+            if (!reader.Read() || reader.TokenType != JsonTokenType.StartArray)
+                return items;
+
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+            {
+                var start = (int)reader.TokenStartIndex;
+                reader.Skip(); // throws if this element never closes
+                var element = JsonSerializer.Deserialize<T>(utf8.AsSpan(start, (int)reader.BytesConsumed - start));
+                if (element != null)
+                    items.Add(element);
+            }
+        }
+        catch (JsonException)
+        {
+            // The damaged element and anything after it are dropped here; they remain in the backup file.
+        }
+        return items;
     }
 
 
@@ -1528,27 +1530,10 @@ public class MigrationService
         return payload;
     }
 
-    private async Task LogRunAsync(MigrationRunLog runLog, string fileName)
-    {
-        string basePath = _configuration["SharePoint:RunLogPath"] ?? AppContext.BaseDirectory;
-        string filePath = Path.Combine(basePath, fileName);
-
-        List<MigrationRunLog> existing = new();
-
-        if (File.Exists(filePath))
-        {
-            var json = await File.ReadAllTextAsync(filePath);
-            if (!string.IsNullOrWhiteSpace(json))
-            {
-                existing = JsonSerializer.Deserialize<List<MigrationRunLog>>(json) ?? new List<MigrationRunLog>();
-            }
-        }
-
-        existing.Add(runLog);
-
-        var updatedJson = JsonSerializer.Serialize(existing, new JsonSerializerOptions { WriteIndented = true });
-        await File.WriteAllTextAsync(filePath, updatedJson);
-    }
+    private Task LogRunAsync(MigrationRunLog runLog, string fileName) =>
+        AppendToJsonListFileAsync(
+            Path.Combine(_configuration["SharePoint:RunLogPath"] ?? AppContext.BaseDirectory, fileName),
+            runLog);
 
 
     private IncomingRecordMigrationPayload MapToIncomingRecordPayload(
