@@ -44,60 +44,9 @@ namespace SPMigration.Controllers
                     endId
                 );
 
-                List<UserMapping>? userMappings = null;
-
-                // Only deserialize when a file is provided
-                if (file != null && file.Length > 0)
-                {
-                    if (!file.FileName.EndsWith(
-                        ".json",
-                        StringComparison.OrdinalIgnoreCase))
-                    {
-                        return BadRequest(new
-                        {
-                            error = "Only JSON files are supported."
-                        });
-                    }
-
-                    using var reader = new StreamReader(file.OpenReadStream());
-
-                    var fileContent = await reader.ReadToEndAsync();
-
-                    if (string.IsNullOrWhiteSpace(fileContent))
-                    {
-                        return BadRequest(new
-                        {
-                            error = "JSON file is empty."
-                        });
-                    }
-
-                    userMappings = JsonSerializer.Deserialize<List<UserMapping>>(
-                        fileContent,
-                        new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        }
-                    );
-
-                    if (userMappings == null)
-                    {
-                        return BadRequest(new
-                        {
-                            error = "JSON must contain a valid user mapping array."
-                        });
-                    }
-
-                    _logger.LogInformation(
-                        "📁 Loaded {Count} user mappings.",
-                        userMappings.Count
-                    );
-                }
-                else
-                {
-                    _logger.LogInformation(
-                        "No user mapping file provided. Proceeding without mappings."
-                    );
-                }
+                var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
+                if (mappingError != null)
+                    return mappingError;
 
                 await _migrationService.RunMigrationAsync(
                     startId,
@@ -208,37 +157,9 @@ namespace SPMigration.Controllers
                     startId,
                     endId);
 
-                List<UserMapping>? userMappings = null;
-
-                if (file != null && file.Length > 0)
-                {
-                    if (!file.FileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                    {
-                        return BadRequest(new { error = "Only JSON files are supported." });
-                    }
-
-                    using var reader = new StreamReader(file.OpenReadStream());
-                    var fileContent = await reader.ReadToEndAsync();
-
-                    if (string.IsNullOrWhiteSpace(fileContent))
-                    {
-                        return BadRequest(new { error = "JSON file is empty." });
-                    }
-
-                    userMappings = JsonSerializer.Deserialize<List<UserMapping>>(
-                        fileContent,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                    if (userMappings == null)
-                    {
-                        return BadRequest(new
-                        {
-                            error = "JSON must contain a valid user mapping array."
-                        });
-                    }
-
-                    _logger.LogInformation("📁 Loaded {Count} user mappings.", userMappings.Count);
-                }
+                var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
+                if (mappingError != null)
+                    return mappingError;
 
                 await _migrationService.RunMigrationForRecordIdsDocLibraryAsync(
                     startId,
@@ -342,6 +263,43 @@ namespace SPMigration.Controllers
             }
         }
 
+        // Reads the optional user-mapping JSON upload. No file → (null, null), i.e. run without mappings.
+        private async Task<(List<UserMapping>? Mappings, IActionResult? Error)> ReadUserMappingsAsync(IFormFile? file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                _logger.LogInformation("No user mapping file provided. Proceeding without mappings.");
+                return (null, null);
+            }
+
+            if (!file.FileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                return (null, BadRequest(new { error = "Only JSON files are supported." }));
+
+            using var reader = new StreamReader(file.OpenReadStream());
+            var fileContent = await reader.ReadToEndAsync();
+
+            if (string.IsNullOrWhiteSpace(fileContent))
+                return (null, BadRequest(new { error = "JSON file is empty." }));
+
+            List<UserMapping>? userMappings;
+            try
+            {
+                userMappings = JsonSerializer.Deserialize<List<UserMapping>>(
+                    fileContent,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            }
+            catch (JsonException ex)
+            {
+                return (null, BadRequest(new { error = $"Invalid JSON format: {ex.Message}" }));
+            }
+
+            if (userMappings == null)
+                return (null, BadRequest(new { error = "JSON must contain a valid user mapping array." }));
+
+            _logger.LogInformation("📁 Loaded {Count} user mappings.", userMappings.Count);
+            return (userMappings, null);
+        }
+
         // download=true returns the whole list (limit ignored) as a JSON file so Swagger doesn't have to render it.
         private IActionResult ReadyResponse(ReadyRecordsResult result, int limit, bool download, string fileName)
         {
@@ -366,16 +324,23 @@ namespace SPMigration.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Retries the records in an errors file. Optionally accepts a JSON user-mapping file as multipart/form-data.
+        /// </summary>
         [HttpPost("retry-from-errors")]
-        public async Task<IActionResult> RetryFromErrors([FromQuery] string fileName)
+        public async Task<IActionResult> RetryFromErrors([FromQuery] string fileName, IFormFile? file = null)
         {
             if (string.IsNullOrWhiteSpace(fileName))
                 return BadRequest(new { error = "File name must be provided." });
 
+            var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
+            if (mappingError != null)
+                return mappingError;
+
             try
             {
 
-                await _migrationService.RetryErrors(fileName);
+                await _migrationService.RetryErrors(fileName, userMappings);
 
                 return Ok(new { message = $"Migration completed successfully." });
             }
@@ -386,16 +351,23 @@ namespace SPMigration.Controllers
             }
         }
 
+        /// <summary>
+        /// Retries the folders in a doc-library errors file. Optionally accepts a JSON user-mapping file as multipart/form-data.
+        /// </summary>
         [HttpPost("retry-from-errors-doc-lib")]
-        public async Task<IActionResult> RetryFromErrorsDocLib([FromQuery] string fileName)
+        public async Task<IActionResult> RetryFromErrorsDocLib([FromQuery] string fileName, IFormFile? file = null)
         {
             if (string.IsNullOrWhiteSpace(fileName))
                 return BadRequest(new { error = "File name must be provided." });
 
+            var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
+            if (mappingError != null)
+                return mappingError;
+
             try
             {
 
-                await _migrationService.RetryErrorsDocLib(fileName);
+                await _migrationService.RetryErrorsDocLib(fileName, userMappings);
 
                 return Ok(new { message = $"Migration completed successfully." });
             }

@@ -812,7 +812,7 @@ public class MigrationService
         }
     }
 
-    public async Task RetryErrors(string fileName)
+    public async Task RetryErrors(string fileName, List<UserMapping>? userMappings = null)
     {
 
         var errors = await LoadErrorsFromFileAsync(fileName);
@@ -833,7 +833,8 @@ public class MigrationService
                     error.TasksList,
                     error.InternalList,
                     error.InternalTasksList,
-                    error.RecordId
+                    error.RecordId,
+                    userMappings
                 );
 
                 if (success)
@@ -895,9 +896,9 @@ public class MigrationService
         }
     }
 
-    public async Task<bool> ProcessFolderById(string libraryName, int folderId, string incomingList, string incomingTasksList )
+    public async Task<bool> ProcessFolderById(string libraryName, int folderId, string incomingList, string incomingTasksList, List<UserMapping>? userMappings = null)
     {
-        var folder = await _sharePointService.GetIncomingFolderByIdAsync(libraryName, folderId);
+        var folder = await _sharePointService.GetIncomingFolderByIdAsync(libraryName, folderId, userMappings);
         string folderName = folder.FileLeafRef;
         string folderServerRelativeUrl = folder.FileRef;
 
@@ -908,7 +909,7 @@ public class MigrationService
         try
         {
             // 2) Process this folder (payload + tasks + files)
-            await ProcessExternalRecordAsync(folder, folderName, folderServerRelativeUrl, folderId, incomingList, incomingTasksList);
+            await ProcessExternalRecordAsync(folder, folderName, folderServerRelativeUrl, folderId, incomingList, incomingTasksList, userMappings: userMappings);
 
             // 3) Save checkpoint
             await SaveExternalIncomingCheckpointAsync(folderId);
@@ -965,7 +966,7 @@ public class MigrationService
         }
 
     }
-    public async Task RetryErrorsDocLib(string fileName)
+    public async Task RetryErrorsDocLib(string fileName, List<UserMapping>? userMappings = null)
     {
 
         var errors = await LoadErrorsFromFileAsync(fileName);
@@ -985,7 +986,8 @@ public class MigrationService
                     "Records",
                     error.RecordId,
                     error.IncomingList,
-                    error.IncomingTasksList
+                    error.IncomingTasksList,
+                    userMappings
                 );
 
                 if (success)
@@ -1052,14 +1054,15 @@ public class MigrationService
     string tasksList,
     string internalList,
     string internalTasksList,
-    int recordId)
+    int recordId,
+    List<UserMapping>? userMappings = null)
     {
         SharePointRecord? record = null;
 
         try
         {
             // ✅ Fetch record
-            record = await _sharePointService.GetRecordByIdAsync(recordsList, recordId);
+            record = await _sharePointService.GetRecordByIdAsync(recordsList, recordId, userMappings);
 
             if (record == null)
             {
@@ -1068,7 +1071,7 @@ public class MigrationService
             }
 
             // ✅ Process record (attachments, payload build, save to DB, etc.)
-            await ProcessRecordAsync(record, recordsList, tasksList, internalList, internalTasksList);
+            await ProcessRecordAsync(record, recordsList, tasksList, internalList, internalTasksList, userMappings);
 
             // ✅ Save checkpoint after successful processing
             await SaveCheckpointAsync(record.ID);
