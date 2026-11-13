@@ -276,7 +276,7 @@ public class MigrationService
             _logger.LogError(ex, "💥 Migration failed unexpectedly.");
         }
     }
-    public async Task RunMigrationForRecordIdsAsync(List<string> recordIds)
+    public async Task RunMigrationForRecordIdsAsync(List<string> recordIds, List<UserMapping>? userMappings = null)
     {
         var startTime = DateTime.UtcNow;
         var processedCount = 0;
@@ -307,7 +307,7 @@ public class MigrationService
                 
                 try
                 {
-                    var record = await _sharePointService.GetRecordByIdAsync(recordsList, id);
+                    var record = await _sharePointService.GetRecordByIdAsync(recordsList, id, userMappings);
 
                     if (record == null)
                     {
@@ -317,7 +317,7 @@ public class MigrationService
 
                     if (record.Record_Type != "InternalMemo")
                     {
-                        var recordOfficerRecord = await _sharePointService.GetRecordOfficerDetailsByIdAsync(id);
+                        var recordOfficerRecord = await _sharePointService.GetRecordOfficerDetailsByIdAsync(id, userMappings);
                         if (recordOfficerRecord == null)
                         {
                             continue;
@@ -328,7 +328,7 @@ public class MigrationService
                         record.RecordId = recordOfficerRecord.ID;
                     }
 
-                    await ProcessRecordAsync(record, recordsList, tasksList, internalList, internalTasksList);
+                    await ProcessRecordAsync(record, recordsList, tasksList, internalList, internalTasksList, userMappings);
                     await SaveCheckpointAsync(record.ID);
                     processedCount++;
 
@@ -896,6 +896,24 @@ public class MigrationService
         }
     }
 
+    /// <summary>
+    /// Migrates the given Records/Incoming folder IDs (no range scan), applying the user mappings.
+    /// </summary>
+    public async Task RunIncomingForFolderIdsAsync(List<int> folderIds, List<UserMapping>? userMappings = null)
+    {
+        var incomingTasksList = _configuration["SharePoint:IncomingTasksListName"] ?? "Incoming_Record_Associated_Task";
+        var incomingList = _configuration["SharePoint:IncomingListName"] ?? "IncomingRecords";
+
+        if (!await _apiService.LoginAsync())
+        {
+            _logger.LogError("❌ Failed to login to API, aborting incoming migration");
+            return;
+        }
+
+        foreach (var id in folderIds.Distinct())
+            await ProcessFolderById("Records", id, incomingList, incomingTasksList, userMappings);
+    }
+
     public async Task<bool> ProcessFolderById(string libraryName, int folderId, string incomingList, string incomingTasksList, List<UserMapping>? userMappings = null)
     {
         var folder = await _sharePointService.GetIncomingFolderByIdAsync(libraryName, folderId, userMappings);
@@ -1415,6 +1433,7 @@ public class MigrationService
             case "In Progress": return "draft";
             case "Draft": return "draft";
             case "Accepted": return "accepted";
+            case "Responded": return "accepted";
             case "Rejected": return "rejected";
             case "Reassigned": return "re_assigned";
             case "Returned": return "rejected";

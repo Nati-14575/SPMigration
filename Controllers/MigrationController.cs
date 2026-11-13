@@ -132,6 +132,43 @@ namespace SPMigration.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+        /// <summary>Migrates the given Records/Incoming folder IDs with the supplied user mapping.</summary>
+        [HttpPost("incoming-by-ids")]
+        public async Task<IActionResult> MigrateIncomingByIds([FromBody] MigrateByIdsRequest request)
+        {
+            if (request.Ids == null || request.Ids.Count == 0)
+                return BadRequest(new { error = "ids must be a non-empty array." });
+            try
+            {
+                await _migrationService.RunIncomingForFolderIdsAsync(request.Ids, request.UserMappings);
+                return Ok(new { message = $"Incoming migration finished for {request.Ids.Count} id(s)." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Incoming migration by ids failed");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        /// <summary>Migrates the given User_Records IDs with the supplied user mapping.</summary>
+        [HttpPost("user-records-by-ids")]
+        public async Task<IActionResult> MigrateUserRecordsByIds([FromBody] MigrateByIdsRequest request)
+        {
+            if (request.Ids == null || request.Ids.Count == 0)
+                return BadRequest(new { error = "ids must be a non-empty array." });
+            try
+            {
+                await _migrationService.RunMigrationForRecordIdsAsync(
+                    request.Ids.Select(i => i.ToString()).ToList(), request.UserMappings);
+                return Ok(new { message = $"User_Records migration finished for {request.Ids.Count} id(s)." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ User_Records migration by ids failed");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
         /// <summary>
         /// Run the document-library migration for a specific inclusive range of folder IDs.
         /// Optionally accepts a JSON user-mapping file as multipart/form-data.
@@ -460,4 +497,10 @@ public class RetryRequest
     public string RecordsList { get; set; } = string.Empty;
     public string TasksList { get; set; } = string.Empty;
     public List<int> RecordIds { get; set; } = new();
+}
+
+public class MigrateByIdsRequest
+{
+    public List<int> Ids { get; set; } = new();
+    public List<SPMigration.Models.UserMapping>? UserMappings { get; set; }
 }
