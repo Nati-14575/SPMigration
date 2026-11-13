@@ -132,7 +132,7 @@ namespace SPMigration.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
-        /// <summary>Migrates the given Records/Incoming folder IDs with an optional user-mapping JSON file (multipart/form-data). ids is a JSON array, e.g. [9141,9174,9177].</summary>
+        /// <summary>Migrates the given Records/Incoming folder IDs with an optional user-mapping JSON file (multipart/form-data). ids is JSON text: { "ids": [9141, 9174] }.</summary>
         [HttpPost("incoming-by-ids")]
         public async Task<IActionResult> MigrateIncomingByIds([FromForm] string ids, IFormFile? file = null)
         {
@@ -156,7 +156,7 @@ namespace SPMigration.Controllers
             }
         }
 
-        /// <summary>Migrates the given User_Records IDs with an optional user-mapping JSON file (multipart/form-data). ids is a JSON array, e.g. [9141,9174,9177].</summary>
+        /// <summary>Migrates the given User_Records IDs with an optional user-mapping JSON file (multipart/form-data). ids is JSON text: { "ids": [9141, 9174] }.</summary>
         [HttpPost("user-records-by-ids")]
         public async Task<IActionResult> MigrateUserRecordsByIds([FromForm] string ids, IFormFile? file = null)
         {
@@ -312,21 +312,32 @@ namespace SPMigration.Controllers
             }
         }
 
-        // Parses the "ids" form field, a JSON array such as [9141,9174].
+        // Parses the "ids" form field: JSON such as {"ids":[9141,9174]} (a bare array [9141,9174] also works).
         private static (List<int>? Ids, IActionResult? Error) ParseIds(string? ids)
         {
+            const string msg = "ids must be JSON like { \"ids\": [9141, 9174] } with at least one number.";
             if (string.IsNullOrWhiteSpace(ids))
-                return (null, new BadRequestObjectResult(new { error = "ids must be a non-empty JSON array." }));
+                return (null, new BadRequestObjectResult(new { error = msg }));
             try
             {
-                var list = JsonSerializer.Deserialize<List<int>>(ids);
+                using var doc = JsonDocument.Parse(ids, new JsonDocumentOptions { AllowTrailingCommas = true });
+                var root = doc.RootElement;
+                if (root.ValueKind == JsonValueKind.Object)
+                {
+                    var prop = root.EnumerateObject()
+                        .FirstOrDefault(p => p.Name.Equals("ids", StringComparison.OrdinalIgnoreCase));
+                    if (prop.Value.ValueKind != JsonValueKind.Array)
+                        return (null, new BadRequestObjectResult(new { error = msg }));
+                    root = prop.Value;
+                }
+                var list = JsonSerializer.Deserialize<List<int>>(root.GetRawText());
                 if (list == null || list.Count == 0)
-                    return (null, new BadRequestObjectResult(new { error = "ids must be a non-empty JSON array." }));
+                    return (null, new BadRequestObjectResult(new { error = msg }));
                 return (list, null);
             }
             catch (JsonException ex)
             {
-                return (null, new BadRequestObjectResult(new { error = $"ids is not a valid JSON array of numbers: {ex.Message}" }));
+                return (null, new BadRequestObjectResult(new { error = $"{msg} {ex.Message}" }));
             }
         }
 
