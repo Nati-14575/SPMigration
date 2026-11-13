@@ -126,6 +126,7 @@ public class MigrationService
                         InternalList = internalList,
                         InternalTasksList = internalTasksList,
                         ErrorMessage = ex.ToString(),
+                        ErrorType = ErrorTypeOf(ex),
                         Payload = payloadJson,
                         Timestamp = DateTime.UtcNow
                     };
@@ -245,6 +246,7 @@ public class MigrationService
                         InternalList = internalList,
                         InternalTasksList = internalTasksList,
                         ErrorMessage = ex.ToString(),
+                        ErrorType = ErrorTypeOf(ex),
                         Payload = payloadJson,
                         Timestamp = DateTime.UtcNow
                     };
@@ -360,6 +362,7 @@ public class MigrationService
                         InternalList = internalList,
                         InternalTasksList = internalTasksList,
                         ErrorMessage = ex.ToString(),
+                        ErrorType = ErrorTypeOf(ex),
                         Payload = payloadJson,
                         Timestamp = DateTime.UtcNow
                     };
@@ -514,6 +517,7 @@ public class MigrationService
                         RecordsList = libraryName,
                         TasksList = incomingFolderName,
                         ErrorMessage = ex.ToString(),
+                        ErrorType = ErrorTypeOf(ex),
                         Timestamp = endTime,
                         StartTime = startTime,
                         Payload = payloadJson,
@@ -705,6 +709,7 @@ public class MigrationService
                         RecordsList = libraryName,
                         TasksList = incomingFolderName,
                         ErrorMessage = ex.ToString(),
+                        ErrorType = ErrorTypeOf(ex),
                         Timestamp = endTime,
                         StartTime = startTime,
                         Payload = payloadJson,
@@ -786,6 +791,7 @@ public class MigrationService
                         RecordsList = libraryName,
                         TasksList = incomingFolderName,
                         ErrorMessage = ex.ToString(),
+                        ErrorType = ErrorTypeOf(ex),
                         Timestamp = endTime,
                         StartTime = startTime,
                         Payload = payloadJson,
@@ -863,6 +869,7 @@ public class MigrationService
                         InternalList = error.InternalList,
                         InternalTasksList = error.InternalTasksList,
                         ErrorMessage = "Retry failed again",
+                        ErrorType = error.ErrorType,
                         Payload = error.Payload, // keep original payload for reference
                         Timestamp = DateTime.UtcNow
                     };
@@ -883,6 +890,7 @@ public class MigrationService
                     InternalList = error.InternalList,
                     InternalTasksList = error.InternalTasksList,
                     ErrorMessage = ex.ToString(),
+                        ErrorType = ErrorTypeOf(ex),
                     Payload = error.Payload,
                     Timestamp = DateTime.UtcNow
                 };
@@ -968,6 +976,7 @@ public class MigrationService
                 RecordId = folderId,
                 RecordsList = libraryName,
                 ErrorMessage = ex.ToString(),
+                        ErrorType = ErrorTypeOf(ex),
                 Timestamp = endTime,
                 StartTime = startTime,
                 Payload = payloadJson,
@@ -1034,6 +1043,7 @@ public class MigrationService
                         InternalList = error.InternalList,
                         InternalTasksList = error.InternalTasksList,
                         ErrorMessage = "Retry failed again",
+                        ErrorType = error.ErrorType,
                         Payload = error.Payload, // keep original payload for reference
                         Timestamp = DateTime.UtcNow
                     };
@@ -1054,6 +1064,7 @@ public class MigrationService
                     InternalList = error.InternalList,
                     InternalTasksList = error.InternalTasksList,
                     ErrorMessage = ex.ToString(),
+                        ErrorType = ErrorTypeOf(ex),
                     Payload = error.Payload,
                     Timestamp = DateTime.UtcNow
                 };
@@ -1169,7 +1180,8 @@ public class MigrationService
                 {
                     throw new MigrationException(
                         $"❌ Failed to update file info for Record ID: {record.ID}",
-                        fileUpdate
+                        fileUpdate,
+                        errorType: MigrationErrorTypes.FileInfo
                     );
                 }
 
@@ -1240,7 +1252,7 @@ public class MigrationService
             var updateOk = await _apiService.UpdateRecordFilesAsync(fileUpdate);
             if (!updateOk)
             {
-                throw new MigrationException($"❌ Failed to update file info for Record ID: {record.ID}", fileUpdate);
+                throw new MigrationException($"❌ Failed to update file info for Record ID: {record.ID}", fileUpdate, errorType: MigrationErrorTypes.FileInfo);
             }
 
             _logger.LogInformation("   📎 File info updated for folder {Id}", folderId);
@@ -1272,6 +1284,9 @@ public class MigrationService
 
         return await _minioService.UploadFilesAsync(recordId, files, SafeTitle(recordTitle));
     }
+
+    private static string ErrorTypeOf(Exception ex) =>
+        (ex as MigrationException)?.ErrorType ?? MigrationErrorTypes.Migration;
 
     public Task LogErrorToFileAsync(MigrationError error, string fileName) =>
         AppendToJsonListFileAsync(ErrorFilePath(fileName), error);

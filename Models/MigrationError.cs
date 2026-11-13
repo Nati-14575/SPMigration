@@ -10,6 +10,8 @@
         public string IncomingTasksList { get; set; } = string.Empty;
         public string IncomingList { get; set; } = string.Empty;
         public string ErrorMessage { get; set; } = string.Empty;
+        /// <summary>"Migration" or "FileInfo" (see MigrationErrorTypes).</summary>
+        public string ErrorType { get; set; } = MigrationErrorTypes.Migration;
         public string? Payload { get; set; } // 👉 serialized payload JSON
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         public DateTime StartTime { get; set; }
