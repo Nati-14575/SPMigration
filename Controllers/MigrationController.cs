@@ -397,6 +397,8 @@ namespace SPMigration.Controllers
             {
                 result.Ids = result.Ids.Take(limit).ToList();
                 result.FailedIds = result.FailedIds.Take(limit).ToList();
+                result.FailedDetails = result.FailedDetails.Take(limit).ToList();
+                result.FailedByCategory = result.FailedByCategory.ToDictionary(k => k.Key, k => k.Value.Take(limit).ToList());
                 result.NotMigratedIds = result.NotMigratedIds.Take(limit).ToList();
             }
             return Ok(result);

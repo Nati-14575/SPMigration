@@ -26,7 +26,26 @@
         public List<int> Ids { get; set; } = new();
         /// <summary>Ids whose last logged attempt failed (in an *_errors.json log, never in a success log).</summary>
         public List<int> FailedIds { get; set; } = new();
+        /// <summary>Why each failed id failed: its last logged error, classified. Same ids as FailedIds.</summary>
+        public List<FailedRecordInfo> FailedDetails { get; set; } = new();
+        /// <summary>Failed ids grouped by category (e.g. MissingRequiredField, NoFiles, NotFound).</summary>
+        public Dictionary<string, List<int>> FailedByCategory { get; set; } = new();
+        /// <summary>Number of failed ids per category (never truncated by limit).</summary>
+        public Dictionary<string, int> FailureSummary { get; set; } = new();
         /// <summary>Ids never attempted: not in any success or error log.</summary>
         public List<int> NotMigratedIds { get; set; } = new();
+    }
+
+    /// <summary>The classified last failure of one id.</summary>
+    public class FailedRecordInfo
+    {
+        public int Id { get; set; }
+        /// <summary>"Migration" (payload step) or "FileInfo" (file-info update step).</summary>
+        public string ErrorType { get; set; } = string.Empty;
+        /// <summary>Best-effort classification from the logged error text.</summary>
+        public string Category { get; set; } = string.Empty;
+        /// <summary>The API's message when it was logged, otherwise the exception message.</summary>
+        public string Reason { get; set; } = string.Empty;
+        public DateTime FailedAt { get; set; }
     }
 }

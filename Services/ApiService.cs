@@ -17,6 +17,8 @@ public class ApiService
     public string? Token => _token;
     public string? RefreshToken => _refreshToken;
     public string? LastLoginError { get; private set; }
+    /// <summary>Status and body of the last failed migrate/file-info call (null when it succeeded). Copied into the error log.</summary>
+    public string? LastError { get; private set; }
 
     public ApiService(HttpClient httpClient, IConfiguration configuration, ILogger<ApiService> logger)
     {
@@ -237,6 +239,7 @@ public class ApiService
     {
         try
         {
+            LastError = null;
             var migrateUrl = _configuration["Api:MigrateUrl"];
 
             var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions
@@ -274,6 +277,7 @@ public class ApiService
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogError("❌ Failed to migrate record: {StatusCode} {Message}", response.StatusCode, responseContent);
+                    LastError = $"{(int)response.StatusCode} {responseContent}";
                 }
             }
 
@@ -282,6 +286,7 @@ public class ApiService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error migrating record");
+            LastError = ex.Message;
             return false;
         }
     }
@@ -290,6 +295,7 @@ public class ApiService
     {
         try
         {
+            LastError = null;
             var migrateUrl = _configuration["Api:MigrateIncomingUrl"];
 
             var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions
@@ -326,6 +332,7 @@ public class ApiService
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogError("❌ Failed to migrate external record: {StatusCode} {Message}", response.StatusCode, responseContent);
+                    LastError = $"{(int)response.StatusCode} {responseContent}";
                 }
             }
 
@@ -334,6 +341,7 @@ public class ApiService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error migrating record");
+            LastError = ex.Message;
             return false;
         }
     }
@@ -342,6 +350,7 @@ public class ApiService
     {
         try
         {
+            LastError = null;
             var updateUrl = $"{_configuration["Api:UpdateFilesUrl"]}{fileInfoDto.Id}";
             var payload = new
             {
@@ -392,12 +401,14 @@ public class ApiService
 
             _logger.LogError("❌ Failed to update file details for record {Id}: {StatusCode} {Message}",
                 fileInfoDto.Id, response.StatusCode, responseContent);
+            LastError = $"{(int)response.StatusCode} {responseContent}";
 
             return false;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error updating file details for record {Id}", fileInfoDto.Id);
+            LastError = ex.Message;
             return false;
         }
     }

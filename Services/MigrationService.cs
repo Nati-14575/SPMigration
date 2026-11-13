@@ -552,7 +552,7 @@ public class MigrationService
     {
         var recordsList = _configuration["SharePoint:RecordsListName"] ?? "User_Records";
         var migrated = await LoadMigratedIdsAsync(isIncoming: false);
-        var failed = await LoadFailedIdsAsync(isIncoming: false);
+        var failed = await LoadLatestErrorsAsync(isIncoming: false);
 
         _logger.LogInformation("[ready] Loading Sent items from {List}", recordsList);
         var sent = await _sharePointService.GetSentRecordSummariesAsync(recordsList);
@@ -561,7 +561,7 @@ public class MigrationService
         foreach (var r in sent)
         {
             if (migrated.Contains(r.Id)) { result.AlreadyMigrated++; if (!includeMigrated) continue; }
-            else if (failed.Contains(r.Id)) result.FailedIds.Add(r.Id);
+            else if (failed.TryGetValue(r.Id, out var err)) AddFailed(result, r.Id, err);
             else result.NotMigratedIds.Add(r.Id);
             result.Ids.Add(r.Id);
         }
@@ -575,7 +575,7 @@ public class MigrationService
     public async Task<ReadyRecordsResult> GetReadyIncomingRecordsAsync(bool includeMigrated = false)
     {
         var migrated = await LoadMigratedIdsAsync(isIncoming: true);
-        var failed = await LoadFailedIdsAsync(isIncoming: true);
+        var failed = await LoadLatestErrorsAsync(isIncoming: true);
 
         _logger.LogInformation("[ready] Loading Records/Incoming folders");
         var folders = await _sharePointService.GetIncomingFolderSummariesAsync("Records", "Incoming");
@@ -584,27 +584,96 @@ public class MigrationService
         foreach (var f in folders)
         {
             if (migrated.Contains(f.Id)) { result.AlreadyMigrated++; if (!includeMigrated) continue; }
-            else if (failed.Contains(f.Id)) result.FailedIds.Add(f.Id);
+            else if (failed.TryGetValue(f.Id, out var err)) AddFailed(result, f.Id, err);
             else result.NotMigratedIds.Add(f.Id);
             result.Ids.Add(f.Id);
         }
         return result;
     }
 
+    private static void AddFailed(ReadyRecordsResult result, int id, MigrationError error)
+    {
+        var (category, reason) = ClassifyFailure(error);
+        result.FailedIds.Add(id);
+        result.FailedDetails.Add(new FailedRecordInfo
+        {
+            Id = id,
+            ErrorType = string.IsNullOrEmpty(error.ErrorType) ? MigrationErrorTypes.Migration : error.ErrorType,
+            Category = category,
+            Reason = reason,
+            FailedAt = error.Timestamp
+        });
+        if (!result.FailedByCategory.TryGetValue(category, out var ids))
+            result.FailedByCategory[category] = ids = new List<int>();
+        ids.Add(id);
+        result.FailureSummary[category] = ids.Count;
+    }
+
+    // Best-effort classification from the logged error text. The API's own message (after " | API: ") is preferred
+    // because it names the real cause; entries logged before that was captured fall back to the exception text.
+    private static (string Category, string Reason) ClassifyFailure(MigrationError error)
+    {
+        var text = error.ErrorMessage ?? string.Empty;
+        var apiAt = text.IndexOf(ApiMarker, StringComparison.Ordinal);
+        string reason;
+        if (apiAt >= 0)
+        {
+            reason = text[(apiAt + ApiMarker.Length)..];
+            var stack = reason.IndexOf("\n   at ", StringComparison.Ordinal);
+            if (stack >= 0) reason = reason[..stack];
+        }
+        else
+        {
+            reason = text.Split('\n')[0].Trim();
+        }
+        reason = reason.Trim();
+        if (reason.Length > 300) reason = reason[..300] + "…";
+
+        var t = text.ToLowerInvariant();
+        string category;
+        if (t.Contains("violates not-null")) category = "MissingRequiredField";
+        else if (t.Contains("violates foreign key")) category = "InvalidReference";
+        else if (t.Contains("duplicate key") || t.Contains("already exists")) category = "Duplicate";
+        else if (t.Contains("fileinfo should not be empty")) category = "NoFiles";
+        else if (t.Contains("jwt") || t.Contains(" api: 401") || t.Contains(" api: 403")) category = "Auth";
+        else if (t.Contains(" api: 404") || t.Contains("not found")) category = "NotFound";
+        else if (t.Contains("minio") || t.Contains("s3exception") || t.Contains("amazons3")) category = "Storage";
+        else if (t.Contains("timeout") || t.Contains("task was canceled") || t.Contains("httprequestexception") || t.Contains("connection")) category = "Network";
+        else if (t.Contains(" api: 5")) category = "ApiServerError";
+        else if (t.Contains(" api: 4")) category = "ApiRejected";
+        else if (error.ErrorType == MigrationErrorTypes.FileInfo) category = "FileInfoUnknown";
+        else category = "Unknown";
+
+        return (category, reason);
+    }
+
+    // Last logged error per id across the matching *_errors.json logs.
+    private async Task<Dictionary<int, MigrationError>> LoadLatestErrorsAsync(bool isIncoming)
+    {
+        var latest = new Dictionary<int, MigrationError>();
+        foreach (var e in await ReadLogEntriesAsync<MigrationError>(_configuration["SharePoint:ErrorFilePath"], "*_errors.json", "_doclib_errors.json", isIncoming))
+            if (!latest.TryGetValue(e.RecordId, out var prev) || e.Timestamp >= prev.Timestamp)
+                latest[e.RecordId] = e;
+        return latest;
+    }
+
     // Success logs: Incoming runs write "<library>_doclib_success.json"; User_Records runs write "<start>_<end>_success.json".
     private async Task<HashSet<int>> LoadMigratedIdsAsync(bool isIncoming) =>
         await LoadLoggedIdsAsync(_configuration["SharePoint:SuccessFilePath"], "*_success.json", "_doclib_success.json", isIncoming);
 
-    // Error logs follow the same naming with "_errors.json". An id that later succeeded is excluded by the caller
-    // (migrated is checked first), so retried-and-fixed records don't show as failed.
-    private async Task<HashSet<int>> LoadFailedIdsAsync(bool isIncoming) =>
-        await LoadLoggedIdsAsync(_configuration["SharePoint:ErrorFilePath"], "*_errors.json", "_doclib_errors.json", isIncoming);
-
     private async Task<HashSet<int>> LoadLoggedIdsAsync(string? configuredPath, string pattern, string docLibSuffix, bool isIncoming)
     {
         var ids = new HashSet<int>();
+        foreach (var e in await ReadLogEntriesAsync<LoggedId>(configuredPath, pattern, docLibSuffix, isIncoming))
+            ids.Add(e.RecordId);
+        return ids;
+    }
+
+    private async Task<List<T>> ReadLogEntriesAsync<T>(string? configuredPath, string pattern, string docLibSuffix, bool isIncoming)
+    {
+        var entries = new List<T>();
         var basePath = configuredPath ?? AppContext.BaseDirectory;
-        if (!Directory.Exists(basePath)) return ids;
+        if (!Directory.Exists(basePath)) return entries;
 
         foreach (var file in Directory.EnumerateFiles(basePath, pattern))
         {
@@ -615,8 +684,7 @@ public class MigrationService
             {
                 var json = await File.ReadAllTextAsync(file);
                 if (string.IsNullOrWhiteSpace(json)) continue;
-                foreach (var e in JsonSerializer.Deserialize<List<LoggedId>>(json) ?? new())
-                    ids.Add(e.RecordId);
+                entries.AddRange(JsonSerializer.Deserialize<List<T>>(json) ?? new());
             }
             catch (JsonException ex)
             {
@@ -624,7 +692,7 @@ public class MigrationService
             }
         }
 
-        return ids;
+        return entries;
     }
 
     private class LoggedId { public int RecordId { get; set; } }
@@ -1145,7 +1213,7 @@ public class MigrationService
             if (!ok)
             {
                 throw new MigrationException(
-                    $"❌ Failed to migrate Record ID: {record.ID}",
+                    $"❌ Failed to migrate Record ID: {record.ID}{ApiDetail()}",
                     payload
                 );
             }
@@ -1179,7 +1247,7 @@ public class MigrationService
                 if (!updateOk)
                 {
                     throw new MigrationException(
-                        $"❌ Failed to update file info for Record ID: {record.ID}",
+                        $"❌ Failed to update file info for Record ID: {record.ID}{ApiDetail()}",
                         fileUpdate,
                         errorType: MigrationErrorTypes.FileInfo
                     );
@@ -1220,7 +1288,7 @@ public class MigrationService
             var ok = await _apiService.MigrateExternalRecordAsync(payload);
             if (!ok)
             {
-                throw new MigrationException($"❌ Failed to migrate folder {folderName}", payload);
+                throw new MigrationException($"❌ Failed to migrate folder {folderName}{ApiDetail()}", payload);
             }
             _logger.LogInformation("   ✅ Payload migration succeeded for folder {Id}", folderId);
 
@@ -1252,7 +1320,7 @@ public class MigrationService
             var updateOk = await _apiService.UpdateRecordFilesAsync(fileUpdate);
             if (!updateOk)
             {
-                throw new MigrationException($"❌ Failed to update file info for Record ID: {record.ID}", fileUpdate, errorType: MigrationErrorTypes.FileInfo);
+                throw new MigrationException($"❌ Failed to update file info for Record ID: {record.ID}{ApiDetail()}", fileUpdate, errorType: MigrationErrorTypes.FileInfo);
             }
 
             _logger.LogInformation("   📎 File info updated for folder {Id}", folderId);
@@ -1284,6 +1352,12 @@ public class MigrationService
 
         return await _minioService.UploadFilesAsync(recordId, files, SafeTitle(recordTitle));
     }
+
+    private const string ApiMarker = " | API: ";
+
+    // Appends the target API's last error body so the error log says why the API refused.
+    private string ApiDetail() =>
+        string.IsNullOrWhiteSpace(_apiService.LastError) ? string.Empty : ApiMarker + _apiService.LastError;
 
     private static string ErrorTypeOf(Exception ex) =>
         (ex as MigrationException)?.ErrorType ?? MigrationErrorTypes.Migration;
