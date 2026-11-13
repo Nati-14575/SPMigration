@@ -132,16 +132,21 @@ namespace SPMigration.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
-        /// <summary>Migrates the given Records/Incoming folder IDs with the supplied user mapping.</summary>
+        /// <summary>Migrates the given Records/Incoming folder IDs with an optional user-mapping JSON file (multipart/form-data; repeat the ids field per id).</summary>
         [HttpPost("incoming-by-ids")]
-        public async Task<IActionResult> MigrateIncomingByIds([FromBody] MigrateByIdsRequest request)
+        public async Task<IActionResult> MigrateIncomingByIds([FromForm] List<int> ids, IFormFile? file = null)
         {
-            if (request.Ids == null || request.Ids.Count == 0)
+            if (ids == null || ids.Count == 0)
                 return BadRequest(new { error = "ids must be a non-empty array." });
+
+            var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
+            if (mappingError != null)
+                return mappingError;
+
             try
             {
-                await _migrationService.RunIncomingForFolderIdsAsync(request.Ids, request.UserMappings);
-                return Ok(new { message = $"Incoming migration finished for {request.Ids.Count} id(s)." });
+                await _migrationService.RunIncomingForFolderIdsAsync(ids, userMappings);
+                return Ok(new { message = $"Incoming migration finished for {ids.Count} id(s)." });
             }
             catch (Exception ex)
             {
@@ -150,17 +155,22 @@ namespace SPMigration.Controllers
             }
         }
 
-        /// <summary>Migrates the given User_Records IDs with the supplied user mapping.</summary>
+        /// <summary>Migrates the given User_Records IDs with an optional user-mapping JSON file (multipart/form-data; repeat the ids field per id).</summary>
         [HttpPost("user-records-by-ids")]
-        public async Task<IActionResult> MigrateUserRecordsByIds([FromBody] MigrateByIdsRequest request)
+        public async Task<IActionResult> MigrateUserRecordsByIds([FromForm] List<int> ids, IFormFile? file = null)
         {
-            if (request.Ids == null || request.Ids.Count == 0)
+            if (ids == null || ids.Count == 0)
                 return BadRequest(new { error = "ids must be a non-empty array." });
+
+            var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
+            if (mappingError != null)
+                return mappingError;
+
             try
             {
                 await _migrationService.RunMigrationForRecordIdsAsync(
-                    request.Ids.Select(i => i.ToString()).ToList(), request.UserMappings);
-                return Ok(new { message = $"User_Records migration finished for {request.Ids.Count} id(s)." });
+                    ids.Select(i => i.ToString()).ToList(), userMappings);
+                return Ok(new { message = $"User_Records migration finished for {ids.Count} id(s)." });
             }
             catch (Exception ex)
             {
@@ -497,10 +507,4 @@ public class RetryRequest
     public string RecordsList { get; set; } = string.Empty;
     public string TasksList { get; set; } = string.Empty;
     public List<int> RecordIds { get; set; } = new();
-}
-
-public class MigrateByIdsRequest
-{
-    public List<int> Ids { get; set; } = new();
-    public List<SPMigration.Models.UserMapping>? UserMappings { get; set; }
 }
