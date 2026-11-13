@@ -26,7 +26,8 @@ public class MigrationService
         _logger = logger;
     }
 
-    public async Task RunMigrationAsync(int? startId = null, int? endId = null, List<UserMapping> userMappings = null)
+    /// <param name="recordType">Optional Record_Type filter (case-insensitive); comma-separate several. Records of other types are skipped.</param>
+    public async Task RunMigrationAsync(int? startId = null, int? endId = null, List<UserMapping> userMappings = null, string? recordType = null)
     {
         var startTime = DateTime.UtcNow;
         var processedCount = 0;
@@ -48,6 +49,9 @@ public class MigrationService
             var internalList = _configuration["SharePoint:InternalListName"] ?? "Internal_Records";
             var rowLimit = _configuration.GetValue<int?>("SharePoint:RowLimit") ?? 500;
             var lastProcessedId = await GetLastProcessedIdAsync();
+            var wantedTypes = ParseRecordTypes(recordType);
+            if (wantedTypes.Count > 0)
+                _logger.LogInformation("🔎 Only migrating Record_Type: {Types}", string.Join(",", wantedTypes));
 
             List<int> recordIds;
             string runMode;
@@ -78,6 +82,12 @@ public class MigrationService
                     if (record == null)
                     {
                         _logger.LogWarning("⚠️ Record {Id} not found in SharePoint.", id);
+                        continue;
+                    }
+
+                    if (wantedTypes.Count > 0 && !wantedTypes.Contains(RecordTypeKey(record.Record_Type)))
+                    {
+                        _logger.LogInformation("⏭ Skipping record {Id}: Record_Type {Type} is not in the requested filter.", id, record.Record_Type);
                         continue;
                     }
 
@@ -548,7 +558,8 @@ public class MigrationService
     /// User_Records items ready for migration: every item in the list with Status = Sent.
     /// IDs in the *_success.json logs are counted as already migrated and omitted unless includeMigrated is set.
     /// </summary>
-    public async Task<ReadyRecordsResult> GetReadyUserRecordsAsync(bool includeMigrated = false)
+    /// <param name="recordType">Optional Record_Type filter (case-insensitive); comma-separate several, e.g. "Internal,Outgoing".</param>
+    public async Task<ReadyRecordsResult> GetReadyUserRecordsAsync(bool includeMigrated = false, string? recordType = null)
     {
         var recordsList = _configuration["SharePoint:RecordsListName"] ?? "User_Records";
         var migrated = await LoadMigratedIdsAsync(isIncoming: false);
@@ -557,7 +568,19 @@ public class MigrationService
         _logger.LogInformation("[ready] Loading Sent items from {List}", recordsList);
         var sent = await _sharePointService.GetSentRecordSummariesAsync(recordsList);
 
-        var result = new ReadyRecordsResult { Source = recordsList, TotalFound = sent.Count };
+        // Counts of every Record_Type among the Sent items, so the valid filter values are visible.
+        var availableTypes = sent
+            .GroupBy(r => RecordTypeKey(r.RecordType))
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        var wanted = ParseRecordTypes(recordType);
+        if (wanted.Count > 0)
+        {
+            sent = sent.Where(r => wanted.Contains(RecordTypeKey(r.RecordType))).ToList();
+            _logger.LogInformation("[ready] Filtered to Record_Type {Types}: {Count} item(s)", string.Join(",", wanted), sent.Count);
+        }
+
+        var result = new ReadyRecordsResult { Source = recordsList, TotalFound = sent.Count, AvailableRecordTypes = availableTypes };
         foreach (var r in sent)
         {
             if (migrated.Contains(r.Id)) { result.AlreadyMigrated++; if (!includeMigrated) continue; }
@@ -590,6 +613,15 @@ public class MigrationService
         }
         return result;
     }
+
+    // "Internal, Outgoing" -> {"Internal","Outgoing"} (case-insensitive). Empty set = no filter.
+    private static HashSet<string> ParseRecordTypes(string? recordType) =>
+        (recordType ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+    private static string RecordTypeKey(string? type) =>
+        string.IsNullOrWhiteSpace(type) ? "(none)" : type.Trim();
 
     private static void AddFailed(ReadyRecordsResult result, int id, MigrationError error)
     {

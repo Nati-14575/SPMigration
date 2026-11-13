@@ -18,6 +18,8 @@
         public string Source { get; set; } = string.Empty;
         public int TotalFound { get; set; }
         public int AlreadyMigrated { get; set; }
+        /// <summary>Record_Type values (with counts) among all Sent User_Records, before any recordType filter. Null for Incoming.</summary>
+        public Dictionary<string, int>? AvailableRecordTypes { get; set; }
         /// <summary>Total ready items, even when Ids is truncated by the limit parameter.</summary>
         public int TotalReady { get; set; }
         /// <summary>Number of ids actually returned in this response.</summary>

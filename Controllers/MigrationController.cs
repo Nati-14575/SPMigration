@@ -20,13 +20,15 @@ namespace SPMigration.Controllers
 
         /// <summary>
         /// Run the migration process for a specific range of IDs.
-        /// Example: GET /api/migration/run?startId=0&endId=300
+        /// Optional recordType (case-insensitive, comma-separate several) migrates only records of that Record_Type and skips the rest.
+        /// Example: POST /api/migration/run?startId=0&endId=300&recordType=Internal
         /// </summary>
         [HttpPost("run")]
         public async Task<IActionResult> RunMigration(
         [FromQuery] int startId,
         [FromQuery] int endId,
-        IFormFile? file = null)
+        IFormFile? file = null,
+        [FromQuery] string? recordType = null)
         {
             if (startId < 0 || endId <= startId)
             {
@@ -51,7 +53,8 @@ namespace SPMigration.Controllers
                 await _migrationService.RunMigrationAsync(
                     startId,
                     endId,
-                    userMappings
+                    userMappings,
+                    recordType
                 );
 
                 return Ok(new
@@ -278,14 +281,15 @@ namespace SPMigration.Controllers
         /// User_Records ready for migration. Already-migrated items are counted but omitted unless includeMigrated=true.
         /// limit caps the ids returned (default 100; 0 = no cap); totalReady always has the full number.
         /// Swagger UI freezes on very large bodies, so for the full list use download=true (saves it as a JSON file).
-        /// Example: GET /api/migration/ready/user-records?limit=100
+        /// recordType filters on the SharePoint Record_Type (case-insensitive, comma-separate several); availableRecordTypes in the response lists the valid values.
+        /// Example: GET /api/migration/ready/user-records?limit=100&amp;recordType=Internal
         /// </summary>
         [HttpGet("ready/user-records")]
-        public async Task<IActionResult> GetReadyUserRecords([FromQuery] bool includeMigrated = false, [FromQuery] int limit = 100, [FromQuery] bool download = false)
+        public async Task<IActionResult> GetReadyUserRecords([FromQuery] bool includeMigrated = false, [FromQuery] int limit = 100, [FromQuery] bool download = false, [FromQuery] string? recordType = null)
         {
             try
             {
-                return ReadyResponse(await _migrationService.GetReadyUserRecordsAsync(includeMigrated), limit, download, "ready-user-records.json");
+                return ReadyResponse(await _migrationService.GetReadyUserRecordsAsync(includeMigrated, recordType), limit, download, "ready-user-records.json");
             }
             catch (Exception ex)
             {
