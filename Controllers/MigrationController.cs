@@ -132,12 +132,13 @@ namespace SPMigration.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
-        /// <summary>Migrates the given Records/Incoming folder IDs with an optional user-mapping JSON file (multipart/form-data; repeat the ids field per id).</summary>
+        /// <summary>Migrates the given Records/Incoming folder IDs with an optional user-mapping JSON file (multipart/form-data). ids is a JSON array, e.g. [9141,9174,9177].</summary>
         [HttpPost("incoming-by-ids")]
-        public async Task<IActionResult> MigrateIncomingByIds([FromForm] List<int> ids, IFormFile? file = null)
+        public async Task<IActionResult> MigrateIncomingByIds([FromForm] string ids, IFormFile? file = null)
         {
-            if (ids == null || ids.Count == 0)
-                return BadRequest(new { error = "ids must be a non-empty array." });
+            var (idList, idsError) = ParseIds(ids);
+            if (idsError != null)
+                return idsError;
 
             var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
             if (mappingError != null)
@@ -145,8 +146,8 @@ namespace SPMigration.Controllers
 
             try
             {
-                await _migrationService.RunIncomingForFolderIdsAsync(ids, userMappings);
-                return Ok(new { message = $"Incoming migration finished for {ids.Count} id(s)." });
+                await _migrationService.RunIncomingForFolderIdsAsync(idList!, userMappings);
+                return Ok(new { message = $"Incoming migration finished for {idList!.Count} id(s)." });
             }
             catch (Exception ex)
             {
@@ -155,12 +156,13 @@ namespace SPMigration.Controllers
             }
         }
 
-        /// <summary>Migrates the given User_Records IDs with an optional user-mapping JSON file (multipart/form-data; repeat the ids field per id).</summary>
+        /// <summary>Migrates the given User_Records IDs with an optional user-mapping JSON file (multipart/form-data). ids is a JSON array, e.g. [9141,9174,9177].</summary>
         [HttpPost("user-records-by-ids")]
-        public async Task<IActionResult> MigrateUserRecordsByIds([FromForm] List<int> ids, IFormFile? file = null)
+        public async Task<IActionResult> MigrateUserRecordsByIds([FromForm] string ids, IFormFile? file = null)
         {
-            if (ids == null || ids.Count == 0)
-                return BadRequest(new { error = "ids must be a non-empty array." });
+            var (idList, idsError) = ParseIds(ids);
+            if (idsError != null)
+                return idsError;
 
             var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
             if (mappingError != null)
@@ -169,8 +171,8 @@ namespace SPMigration.Controllers
             try
             {
                 await _migrationService.RunMigrationForRecordIdsAsync(
-                    ids.Select(i => i.ToString()).ToList(), userMappings);
-                return Ok(new { message = $"User_Records migration finished for {ids.Count} id(s)." });
+                    idList!.Select(i => i.ToString()).ToList(), userMappings);
+                return Ok(new { message = $"User_Records migration finished for {idList!.Count} id(s)." });
             }
             catch (Exception ex)
             {
@@ -307,6 +309,24 @@ namespace SPMigration.Controllers
             {
                 _logger.LogError(ex, "❌ Failed to list Records/Incoming ready for migration");
                 return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        // Parses the "ids" form field, a JSON array such as [9141,9174].
+        private static (List<int>? Ids, IActionResult? Error) ParseIds(string? ids)
+        {
+            if (string.IsNullOrWhiteSpace(ids))
+                return (null, new BadRequestObjectResult(new { error = "ids must be a non-empty JSON array." }));
+            try
+            {
+                var list = JsonSerializer.Deserialize<List<int>>(ids);
+                if (list == null || list.Count == 0)
+                    return (null, new BadRequestObjectResult(new { error = "ids must be a non-empty JSON array." }));
+                return (list, null);
+            }
+            catch (JsonException ex)
+            {
+                return (null, new BadRequestObjectResult(new { error = $"ids is not a valid JSON array of numbers: {ex.Message}" }));
             }
         }
 
