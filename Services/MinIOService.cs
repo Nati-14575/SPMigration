@@ -12,6 +12,7 @@ public sealed class MinIOService
     private readonly string _bucket;
     private readonly FileExtensionContentTypeProvider _mime = new();
     private readonly string _unitKey;
+    private const string RecordContentType = "application/pdf";
     
     public MinIOService(IConfiguration config)
     {
@@ -62,19 +63,22 @@ public sealed class MinIOService
             : $"migrated/{_unitKey}/record-{Id}/attachments/{fileTitle}";
 
 
+            // The main record is always a PDF, even if SharePoint reported octet-stream.
+            var uploadContentType = isRecord ? RecordContentType : contentType;
+
             using var mem = new MemoryStream(bytes);
             await _minio.PutObjectAsync(new PutObjectArgs()
                 .WithBucket(_bucket)
                 .WithObject(key)
                 .WithStreamData(mem)
                 .WithObjectSize(mem.Length)
-                .WithContentType(contentType)); // TODO: detect MIME type if needed
+                .WithContentType(uploadContentType)); // TODO: detect MIME type if needed
 
             var obj = new MinIOFileInfo
             {
                 Bucket = _bucket,
                 FileName = key,
-                ContentType = contentType,
+                ContentType = uploadContentType,
                 Size = mem.Length,
                 Originalname = fileName
             };
@@ -113,19 +117,22 @@ public sealed class MinIOService
             : $"migrated/{_unitKey}/record-{Id}/attachments/{fileTitle}";
 
 
+            // The main record is always a PDF, even if SharePoint reported octet-stream.
+            var uploadContentType = isRecord ? RecordContentType : contentType;
+
             using var mem = new MemoryStream(bytes);
             await _minio.PutObjectAsync(new PutObjectArgs()
                 .WithBucket(_bucket)
                 .WithObject(key)
                 .WithStreamData(mem)
                 .WithObjectSize(mem.Length)
-                .WithContentType(contentType)); // TODO: detect MIME type if needed
+                .WithContentType(uploadContentType)); // TODO: detect MIME type if needed
 
             var obj = new MinIOFileInfo
             {
                 Bucket = _bucket,
                 FileName = key,
-                ContentType = contentType,
+                ContentType = uploadContentType,
                 Size = mem.Length,
                 Originalname = fileName
             };
@@ -176,6 +183,7 @@ public sealed class MinIOService
             return (null, new List<MinIOFileInfo>());
 
         var main = files.FirstOrDefault(f => f.FileName.Contains("/records/")) ?? files.First();
+        main.ContentType = RecordContentType;
         var atts = files.Where(f => f != main).ToList();
 
         return (main, atts);
@@ -215,6 +223,7 @@ public sealed class MinIOService
             return (null, new List<MinIOFileInfo>());
 
         var main = files.FirstOrDefault(f => f.FileName.Contains("/records/")) ?? files.First();
+        main.ContentType = RecordContentType;
         var atts = files.Where(f => f != main).ToList();
 
         return (main, atts);
