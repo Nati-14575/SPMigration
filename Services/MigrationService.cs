@@ -91,7 +91,7 @@ public class MigrationService
                         continue;
                     }
 
-                    if (record.Record_Type != "InternalMemo")
+                    if (record.Record_Type != "InternalMemo" && record.Record_Type != "Direct")
                     {
                         var recordOfficerRecord = await _sharePointService.GetRecordOfficerDetailsByIdAsync(id, userMappings);
                         if(recordOfficerRecord == null)
@@ -223,7 +223,7 @@ public class MigrationService
                         continue;
                     }
 
-                    if (record.Record_Type != "InternalMemo")
+                    if (record.Record_Type != "InternalMemo" && record.Record_Type != "Direct")
                     {
                         var recordOfficerRecord = await _sharePointService.GetRecordOfficerDetailsByIdAsync(id);
                         if(recordOfficerRecord == null)
@@ -327,7 +327,7 @@ public class MigrationService
                         continue;
                     }
 
-                    if (record.Record_Type != "InternalMemo")
+                    if (record.Record_Type != "InternalMemo" && record.Record_Type != "Direct")
                     {
                         var recordOfficerRecord = await _sharePointService.GetRecordOfficerDetailsByIdAsync(id, userMappings);
                         if (recordOfficerRecord == null)
@@ -1232,7 +1232,7 @@ public class MigrationService
         _logger.LogInformation("  → Found {Count} tasks for record {Id}", tasks.Count, record.ID);
 
         var incomingTasks = await _sharePointService.GetParentWithIncomingTasksAsync(
-            internalList, internalTasksList, record.RecordId, userMappings
+            internalList, internalTasksList, record.RecordId != 0 ? record.RecordId : record.ID, userMappings
         );
         _logger.LogInformation("  → Found {Count} incoming tasks for record {Id}", incomingTasks.Count, record.ID);
 
@@ -1687,7 +1687,11 @@ public class MigrationService
             assignedAt = t.Created,
             //assignerUsername = "fanuelsmart",
             assignerUsername = t.Author,
-            parentAssignmentId = t.Parent_x0020_ID == 0 ? null : t.Parent_x0020_ID.ToString(),
+            parentAssignmentId = t.Parent_x0020_ID > 0
+    ? t.Parent_x0020_ID.ToString()
+    : t.Parent_task_id > 0
+        ? t.Parent_task_id.ToString()
+        : null,
             //assigneePositionKey = "nazifjadwa",
             assigneePositionKey = t.AssignedTo,
             //assigneeUsername = "nazifjadwa",

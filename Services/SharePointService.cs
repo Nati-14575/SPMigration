@@ -476,7 +476,7 @@ public class SharePointService
     {
         var url =
             $"{_siteUrl}/_api/web/lists/getbytitle('{listTitle}')/items?" +
-            $"$select=Id,ParentId,RecordID,Created,Modified,Body,TaskStatus,Reassign_x0020_Remark,Parent_task_idId," +
+            $"$select=Id,ParentId,RecordID,Created,Modified,Body,TaskStatus,Reassign_x0020_Remark,Parent_task_idId,Parent_TaskId," +
             $"Author/Id,Author/Title,Author/Name," +
             $"AssignedTo/Id,AssignedTo/Title,AssignedTo/Name" +
             $"&$expand=Author,AssignedTo" +
@@ -509,15 +509,23 @@ public class SharePointService
 
                 // Handle parent task id (string or number)
                 int parentTaskId = 0;
-                if (row.TryGetProperty("Parent_task_idId", out var ptid))
+                foreach (var propertyName in new[] { "Parent_TaskId", "Parent_task_idId" })
                 {
-                    if (ptid.ValueKind == JsonValueKind.String && int.TryParse(ptid.GetString(), out var parsed))
+                    if (!row.TryGetProperty(propertyName, out var ptid))
+                        continue;
+
+                    if (ptid.ValueKind == JsonValueKind.Number &&
+                        ptid.TryGetInt32(out var number) && number > 0) 
+                    {
+                        parentTaskId = number;
+                        break;
+                    }
+
+                    if (ptid.ValueKind == JsonValueKind.String &&
+                        int.TryParse(ptid.GetString(), out var parsed) && parsed > 0)
                     {
                         parentTaskId = parsed;
-                    }
-                    else if (ptid.ValueKind == JsonValueKind.Number)
-                    {
-                        parentTaskId = ptid.GetInt32();
+                        break;
                     }
                 }
                 int Id = row.GetProperty("Id").GetInt32();
