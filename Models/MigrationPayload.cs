@@ -85,9 +85,9 @@ namespace SPMigration.Models
 
         public string assignerUsername { get; set; }
 
-        public string assigneeUsername { get; set; }
+        public List<string> assigneeUsername { get; set; } = new();
 
-        public string assigneePositionKey { get; set; }
+        public List<string> assigneePositionKey { get; set; } = new();
     }
 
 

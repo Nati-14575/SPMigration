@@ -1562,6 +1562,38 @@ public class MigrationService
         }
     }
 
+    private static List<IncomingInstance> MapIncomingInstances(List<SharePointTask> tasks)
+    {
+        return tasks
+            .GroupBy(task => task.ID)
+            .Select(group =>
+            {
+                var task = group.First();
+                var assignees = group
+                    .Select(item => item.AssignedTo)
+                    .Where(assignedTo => !string.IsNullOrWhiteSpace(assignedTo))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+                return new IncomingInstance
+                {
+                    id = task.ID.ToString(),
+                    assignedAt = task.Created,
+                    assignerUsername = task.Author,
+                    parentAssignmentId = task.Parent_x0020_ID > 0
+                        ? task.Parent_x0020_ID.ToString()
+                        : task.Parent_task_id > 0
+                            ? task.Parent_task_id.ToString()
+                            : null,
+                    assigneePositionKey = assignees,
+                    assigneeUsername = assignees,
+                    status = MapIncomingStatusKey(task.TaskStatus ?? ""),
+                    comment = task.Reassign_x0020_Remark ?? ""
+                };
+            })
+            .ToList();
+    }
+
     // ===== Mapping =====
     private MigrationPayload MapToMigrationPayload(
         SharePointRecord record,
@@ -1579,20 +1611,7 @@ public class MigrationService
             comment = t.Reassign_x0020_Remark ?? ""
         }).ToList();
 
-        var incomingInstances = incomingTasks.Select(t => new IncomingInstance
-        {
-            id = t.ID.ToString(),
-            assignedAt = t.Created,
-            //assignerUsername = "fanuelsmart",
-            assignerUsername = t.Author,
-            parentAssignmentId = t.Parent_task_id == 0 ? null : t.Parent_task_id.ToString(),
-            //assigneePositionKey = "nazifjadwa",
-            assigneePositionKey = t.AssignedTo,
-            //assigneeUsername = "nazifjadwa",
-            assigneeUsername = t.AssignedTo,
-            status = MapIncomingStatusKey(t.TaskStatus ?? ""),
-            comment = t.Reassign_x0020_Remark ?? ""
-        }).ToList();
+        var incomingInstances = MapIncomingInstances(incomingTasks);
 
         if (taskInstances.Any())
         {
@@ -1681,23 +1700,7 @@ public class MigrationService
     
     List<SharePointTask> incomingTasks)
     {
-        var incomingInstances = incomingTasks.Select(t => new IncomingInstance
-        {
-            id = t.ID.ToString(),
-            assignedAt = t.Created,
-            //assignerUsername = "fanuelsmart",
-            assignerUsername = t.Author,
-            parentAssignmentId = t.Parent_x0020_ID > 0
-    ? t.Parent_x0020_ID.ToString()
-    : t.Parent_task_id > 0
-        ? t.Parent_task_id.ToString()
-        : null,
-            //assigneePositionKey = "nazifjadwa",
-            assigneePositionKey = t.AssignedTo,
-            //assigneeUsername = "nazifjadwa",
-            assigneeUsername = t.AssignedTo,
-            status = MapIncomingStatusKey(t.TaskStatus ?? ""),
-        }).ToList();
+        var incomingInstances = MapIncomingInstances(incomingTasks);
 
         if (incomingInstances.Any())
         {
