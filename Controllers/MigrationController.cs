@@ -535,6 +535,57 @@ namespace SPMigration.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Takes existing IAM groups (the array the IAM groups API returns), reads each group's members from the AD service
+        /// and sends { "unitKey": unitKey, "groupName": key, "userNames": [usernames + nested group keys] } to IamGroups:GroupMembersUrl,
+        /// one request per group. unitKey (query) is applied to every group. dryRun=true (default) sends nothing and returns the
+        /// exact requests under "requests". A real run writes a report and a retry file (failed groups, same input format).
+        /// Set download=true to get the whole report as a JSON file instead of rendering it in Swagger.
+        /// Optional per group: "adGroupName" when the AD group is not named like name.en.
+        /// </summary>
+        [HttpPost("iam-group-members")]
+        public async Task<IActionResult> UpdateIamGroupMembers(
+            [FromServices] IamGroupMembersService groupMembers,
+            [FromBody] List<IamGroupInput> groups,
+            [FromQuery] string unitKey,
+            [FromQuery] bool dryRun = true,
+            [FromQuery] bool download = false,
+            CancellationToken ct = default)
+        {
+            if (groups == null || groups.Count == 0)
+                return BadRequest(new { error = "Request body must be a non-empty array of IAM groups." });
+            if (string.IsNullOrWhiteSpace(unitKey))
+                return BadRequest(new { error = "unitKey is required (it is sent in every payload)." });
+
+            try
+            {
+                var report = await groupMembers.RunAsync(groups, unitKey, dryRun, ct);
+
+                if (download)
+                {
+                    var bytes = JsonSerializer.SerializeToUtf8Bytes(report, new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                    });
+                    return File(bytes, "application/json", dryRun ? "iam-group-members-dryrun.json" : "iam-group-members-report.json");
+                }
+
+                return Ok(report);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ IAM group members update failed");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
     }
 
 }

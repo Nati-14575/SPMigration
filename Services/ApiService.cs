@@ -202,7 +202,13 @@ public class ApiService
     /// <summary>
     /// POSTs a JSON body to an arbitrary IAM URL with the bearer token, logging in / refreshing when needed.
     /// </summary>
-    public async Task<(bool Success, int StatusCode, string Body)> PostJsonAsync(string url, object payload)
+    public Task<(bool Success, int StatusCode, string Body)> PostJsonAsync(string url, object payload) =>
+        SendJsonAsync(HttpMethod.Post, url, payload);
+
+    /// <summary>
+    /// Sends a JSON body with the given method (POST, PATCH, PUT...) to an arbitrary IAM URL, logging in / refreshing when needed.
+    /// </summary>
+    public async Task<(bool Success, int StatusCode, string Body)> SendJsonAsync(HttpMethod method, string url, object payload)
     {
         var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions
         {
@@ -215,7 +221,7 @@ public class ApiService
 
         async Task<HttpResponseMessage> SendAsync()
         {
-            using var request = new HttpRequestMessage(HttpMethod.Post, url)
+            using var request = new HttpRequestMessage(method, url)
             {
                 Content = new StringContent(json, Encoding.UTF8, "application/json")
             };

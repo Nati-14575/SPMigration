@@ -26,6 +26,28 @@ public class AdExplorerService
         return doc.RootElement.Clone();
     }
 
+    /// <summary>
+    /// Users that are direct members of an AD group (ADExplorer/GetGroupMembers). Throws HttpRequestException
+    /// carrying the status code and body when the AD service answers with an error.
+    /// </summary>
+    public async Task<List<AdUser>> GetGroupMembersAsync(string groupName, CancellationToken ct = default)
+    {
+        var baseUrl = _configuration["AdService:BaseUrl"]?.TrimEnd('/')
+            ?? throw new InvalidOperationException("AdService:BaseUrl is not configured.");
+        var url = $"{baseUrl}/ADExplorer/GetGroupMembers?group={Uri.EscapeDataString(groupName)}";
+
+        using var response = await _httpClient.GetAsync(url, ct);
+        var body = await response.Content.ReadAsStringAsync(ct);
+        if (!response.IsSuccessStatusCode)
+        {
+            var shown = body.Length > 500 ? body[..500] : body;
+            throw new HttpRequestException($"AD service returned {(int)response.StatusCode}: {shown}", null, response.StatusCode);
+        }
+
+        return JsonSerializer.Deserialize<List<AdUser>>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+            ?? new List<AdUser>();
+    }
+
     /// <summary>Groups items by Path and attaches AD members to each group.</summary>
     public async Task<List<PathGroupsResult>> GetMembersByPathAsync(IEnumerable<GroupItem> items, CancellationToken ct = default)
     {

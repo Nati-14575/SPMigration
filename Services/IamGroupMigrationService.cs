@@ -99,7 +99,7 @@ public class IamGroupMigrationService
             ? description.Trim() : name.Trim()
     };
 
-    private static string ToKey(string name) =>
+    internal static string ToKey(string name) =>
         Regex.Replace(name.ToLowerInvariant(), @"[^a-z0-9]+", "-").Trim('-');
 
     private static string Norm(string v) => v.Trim().ToLowerInvariant();
