@@ -27,11 +27,12 @@ public class IamGroupMembersService
     // One group after its AD lookup: the result so far, plus the request when it can be sent.
     private sealed record Prepared(IamGroupInput Input, IamGroupMembersResult Result, IamGroupMembersRequest? Request);
 
-    public async Task<IamGroupMembersReport> RunAsync(List<IamGroupInput> input, string unitKey, bool dryRun, CancellationToken ct = default)
+    public async Task<IamGroupMembersReport> RunAsync(List<IamGroupInput> input, bool dryRun, CancellationToken ct = default)
     {
-        if (string.IsNullOrWhiteSpace(unitKey))
-            throw new ArgumentException("unitKey is required.", nameof(unitKey));
-        unitKey = unitKey.Trim();
+        // Same unit key the record migration payloads already send.
+        var unitKey = _config["MinIO:UnitKey"]?.Trim();
+        if (string.IsNullOrEmpty(unitKey))
+            throw new InvalidOperationException("MinIO:UnitKey is not configured.");
 
         // The URL is only needed to send; a dry run works without it so the payloads can be checked first.
         var url = _config["IamGroups:GroupMembersUrl"]?.Trim();
