@@ -29,9 +29,9 @@ namespace SPMigration.Models
     {
         public string UnitKey { get; set; } = string.Empty;
         /// <summary>The IAM group's key.</summary>
-        public string GroupName { get; set; } = string.Empty;
+        public string GroupKey { get; set; } = string.Empty;
         /// <summary>Usernames (SamAccountName) followed by the keys of nested groups.</summary>
-        public List<string> UserNames { get; set; } = new();
+        public List<string> Usernames { get; set; } = new();
     }
 
     public class IamGroupMembersRequest
@@ -80,9 +80,9 @@ namespace SPMigration.Models
         public string? Reason { get; set; }
         /// <summary>Entries AD returned for the group.</summary>
         public int MembersFound { get; set; }
-        /// <summary>Entries in userNames (users + nested groups).</summary>
+        /// <summary>Entries in usernames (users + nested groups).</summary>
         public int MembersSent { get; set; }
-        /// <summary>How many of the userNames are nested groups. 0 for every group usually means GetGroupMembers does not return groups.</summary>
+        /// <summary>How many of the usernames are nested groups. 0 for every group usually means GetGroupMembers does not return groups.</summary>
         public int NestedGroups { get; set; }
         public int? HttpStatus { get; set; }
         public string? Response { get; set; }

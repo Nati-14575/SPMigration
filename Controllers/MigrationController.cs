@@ -538,7 +538,7 @@ namespace SPMigration.Controllers
 
         /// <summary>
         /// Takes existing IAM groups (the array the IAM groups API returns), reads each group's members from the AD service
-        /// and sends { "unitKey": unitKey, "groupName": key, "userNames": [usernames + nested group keys] } to IamGroups:GroupMembersUrl,
+        /// and sends { "unitKey": unitKey, "groupKey": key, "usernames": [usernames + nested group keys] } to IamGroups:GroupMembersUrl,
         /// one request per group. unitKey is MinIO:UnitKey from appsettings. dryRun=true (default) sends nothing and returns the
         /// exact requests under "requests". A real run writes a report and a retry file (failed groups, same input format).
         /// Set download=true to get the whole report as a JSON file instead of rendering it in Swagger.

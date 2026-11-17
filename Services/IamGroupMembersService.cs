@@ -83,9 +83,9 @@ public class IamGroupMembersService
             return new Prepared(g, result, null);
         }
 
-        // The group's key is sent as groupName, so it is always required.
+        // The group's key is sent as groupKey, so it is always required.
         if (string.IsNullOrEmpty(groupKey))
-            return Stop("Failed", IamGroupMemberStages.Validation, IamGroupMemberFailures.InvalidInput, "key is missing (it is sent as groupName).");
+            return Stop("Failed", IamGroupMemberStages.Validation, IamGroupMemberFailures.InvalidInput, "key is missing (it is sent as groupKey).");
 
         // The members are read from AD by name: name.en, unless adGroupName says otherwise.
         var adName = (!string.IsNullOrWhiteSpace(g.AdGroupName) ? g.AdGroupName : g.Name?.En)?.Trim();
@@ -94,7 +94,7 @@ public class IamGroupMembersService
         result.AdGroupName = adName;
         if (string.IsNullOrEmpty(result.Group)) result.Group = adName;
 
-        // The API only receives unitKey + groupName, so a repeated key would send the same payload twice.
+        // The API only receives unitKey + groupKey, so a repeated key would send the same payload twice.
         lock (seenGroups)
         {
             if (!seenGroups.Add(groupKey))
@@ -125,7 +125,7 @@ public class IamGroupMembersService
         }
         finally { gate.Release(); }
 
-        // userNames = the users' SamAccountName, then the keys of nested groups (same key rule as the group creation run).
+        // usernames = the users' SamAccountName, then the keys of nested groups (same key rule as the group creation run).
         var userNames = new List<string>();
         var seenNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var m in users)
@@ -165,7 +165,7 @@ public class IamGroupMembersService
             Group = result.Group,
             Method = method.Method,
             Url = url,
-            Body = new IamGroupMembersPayload { UnitKey = unitKey, GroupName = groupKey, UserNames = userNames }
+            Body = new IamGroupMembersPayload { UnitKey = unitKey, GroupKey = groupKey, Usernames = userNames }
         };
         return new Prepared(g, result, request);
     }
