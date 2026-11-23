@@ -15,6 +15,8 @@ public class SharePointService
     private readonly string _userFile;
     // Internal name of the task field holding Record / CC / ForYourRef. Selecting a field that does not exist makes SharePoint answer 400.
     private readonly string _taskRecordTypeField;
+    // Second CC people/group column on User_Records; its names are merged into ccPosition after CC_To.
+    private const string RecordCcEmployeeField = "Employee_CC";
     private readonly HashSet<string> _uniqueUsers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     public SharePointService(IConfiguration config)
     {
@@ -22,7 +24,6 @@ public class SharePointService
         _absUrl = config["SharePoint:AbsUrl"];
         _userFile = config["SharePoint:UniqueUsers"];
         _taskRecordTypeField = config["SharePoint:TaskRecordTypeField"]?.Trim() ?? "RecordType";
-
         var handler = new HttpClientHandler
         {
             Credentials = new NetworkCredential(
@@ -240,19 +241,39 @@ public class SharePointService
     public async Task<SharePointRecord?> GetRecordByIdAsync(string listTitle, int id, List<UserMapping> userMappings = null)
     {
         // Build query with expand for user fields
-        var url = $"{_siteUrl}/_api/web/lists/getbytitle('{listTitle}')/items({id})" +
-                  "?$select=*," +
-                  "Author/Id,Author/Title,Author/Name," +
-                  "Editor/Id,Editor/Title,Editor/Name," +
-                  "Receiving_Users/Id,Receiving_Users/Title,Receiving_Users/Name," +
-                  "Receiving_Department/Id,Receiving_Department/Title,Receiving_Department/Name," +
-                  "CC_To/Id,CC_To/Title,CC_To/Name" +
-                  "&$expand=Author,Editor,Receiving_Users,Receiving_Department,CC_To";
+        string BuildUrl(bool withCcEmployees)
+        {
+            const string cc = RecordCcEmployeeField;
+            return $"{_siteUrl}/_api/web/lists/getbytitle('{listTitle}')/items({id})" +
+                   "?$select=*," +
+                   "Author/Id,Author/Title,Author/Name," +
+                   "Editor/Id,Editor/Title,Editor/Name," +
+                   "Receiving_Users/Id,Receiving_Users/Title,Receiving_Users/Name," +
+                   "Receiving_Department/Id,Receiving_Department/Title,Receiving_Department/Name," +
+                   "CC_To/Id,CC_To/Title,CC_To/Name" +
+                   (withCcEmployees ? $",{cc}/Id,{cc}/Title,{cc}/Name" : "") +
+                   "&$expand=Author,Editor,Receiving_Users,Receiving_Department,CC_To" +
+                   (withCcEmployees ? $",{cc}" : "");
+        }
 
-        var req = new HttpRequestMessage(HttpMethod.Get, url);
-        req.Headers.Add("Accept", "application/json;odata=verbose");
+        async Task<HttpResponseMessage> GetItemAsync(string itemUrl)
+        {
+            var itemReq = new HttpRequestMessage(HttpMethod.Get, itemUrl);
+            itemReq.Headers.Add("Accept", "application/json;odata=verbose");
+            return await _client.SendAsync(itemReq);
+        }
 
-        var res = await _client.SendAsync(req);
+        var res = await GetItemAsync(BuildUrl(true));
+        if (!res.IsSuccessStatusCode)
+        {
+            // A column SharePoint does not know makes the whole item request fail, which would look like a missing record and
+            // skip every record silently. If the item reads fine without it, fail with a message that names the column instead.
+            var withoutCc = await GetItemAsync(BuildUrl(false));
+            if (withoutCc.IsSuccessStatusCode)
+                throw new InvalidOperationException(
+                    $"Could not read column '{RecordCcEmployeeField}' of {listTitle} item {id}. Check that the column exists on the list.");
+            res = withoutCc;
+        }
         if (!res.IsSuccessStatusCode) return null;
 
         var raw = await res.Content.ReadAsStringAsync();
@@ -294,6 +315,7 @@ public class SharePointService
             Receiving_Users = d.ResolveUsersOrGroups("Receiving_Users", userMappings),
             Receiving_Department = d.ResolveUsersOrGroups("Receiving_Department", userMappings),
             CC_To = d.ResolveUsersOrGroups("CC_To", userMappings),
+            Employee_CC = d.ResolveUsersOrGroups(RecordCcEmployeeField, userMappings),
             Sending_Department = d.TryGetProperty("Sending_Department", out var sd) ? sd.GetString() : null
         };
         TrackUser(newRecord.Author);
@@ -301,6 +323,7 @@ public class SharePointService
         TrackUser(newRecord.Receiving_Department);
         TrackUser(newRecord.Receiving_Users);
         TrackUser(newRecord.CC_To);
+        TrackUser(newRecord.Employee_CC);
         return newRecord;
     }
 

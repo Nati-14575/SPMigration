@@ -1626,7 +1626,11 @@ public class MigrationService
             receiverEmployees = record.Receiving_Users,
             receiverPositions = record.Receiving_Department,
             //ccPosition = ["የኮሚኒኬሽን ዳይሬክቶሬት ዳይሬክተር"],
-            ccPosition = record.CC_To,
+            // CC_To first, then Employee_CC; a name in both columns is sent once.
+            ccPosition = (record.CC_To ?? Array.Empty<string>())
+                .Concat(record.Employee_CC ?? Array.Empty<string>())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray(),
 
             // ✅ tasks
             outgoingInstances = taskInstances,

@@ -19,6 +19,8 @@
         public string[] Receiving_Users { get; set; }
         public string[] Receiving_Department { get; set; }
         public string[] CC_To { get; set; }
+        /// <summary>Second CC people/group column (Employee_CC); merged with CC_To into ccPosition.</summary>
+        public string[] Employee_CC { get; set; } = Array.Empty<string>();
         public string RecordLanguage { get; set; }
         public string Record_Type { get; set; }
         public string Status { get; set; }
