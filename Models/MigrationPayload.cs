@@ -22,6 +22,8 @@ namespace SPMigration.Models
         public MetadataBlock metadata { get; set; }
         public List<ContentItem> content { get; set; } = new();
         public List<IncomingInstance> incomingInstances { get; set; } = new();
+        public List<IncomingInstance> ccInstances { get; set; } = new();
+        public List<IncomingInstance> forYourRefInstances { get; set; } = new();
 
     }
 

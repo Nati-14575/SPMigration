@@ -13,12 +13,15 @@ public class SharePointService
     private readonly string _siteUrl;
     private readonly string _absUrl;
     private readonly string _userFile;
+    // Internal name of the task field holding Record / CC / ForYourRef. Selecting a field that does not exist makes SharePoint answer 400.
+    private readonly string _taskRecordTypeField;
     private readonly HashSet<string> _uniqueUsers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     public SharePointService(IConfiguration config)
     {
         _siteUrl = config["SharePoint:SiteUrl"];
         _absUrl = config["SharePoint:AbsUrl"];
         _userFile = config["SharePoint:UniqueUsers"];
+        _taskRecordTypeField = config["SharePoint:TaskRecordTypeField"]?.Trim() ?? "RecordType";
 
         var handler = new HttpClientHandler
         {
@@ -477,6 +480,7 @@ public class SharePointService
         var url =
             $"{_siteUrl}/_api/web/lists/getbytitle('{listTitle}')/items?" +
             $"$select=Id,ParentId,RecordID,Created,Modified,Body,TaskStatus,Reassign_x0020_Remark,Parent_task_idId,Parent_TaskId," +
+            (string.IsNullOrEmpty(_taskRecordTypeField) ? "" : $"{_taskRecordTypeField},") +
             $"Author/Id,Author/Title,Author/Name," +
             $"AssignedTo/Id,AssignedTo/Title,AssignedTo/Name" +
             $"&$expand=Author,AssignedTo" +
@@ -506,6 +510,12 @@ public class SharePointService
                     // ❌ skip tasks without AssignedTo
                     continue;
                 }
+
+                var taskRecordType = !string.IsNullOrEmpty(_taskRecordTypeField) &&
+                                     row.TryGetProperty(_taskRecordTypeField, out var rtProp) &&
+                                     rtProp.ValueKind == JsonValueKind.String
+                    ? rtProp.GetString() ?? ""
+                    : "";
 
                 // Handle parent task id (string or number)
                 int parentTaskId = 0;
@@ -540,8 +550,9 @@ public class SharePointService
                         Reassign_x0020_Remark = row.TryGetProperty("Reassign_x0020_Remark", out var remark) ? remark.GetString() ?? "" : "",
                         Author = row.GetUserFieldSafe("Author", userMappings),
                         AssignedTo = assigned,
+                        RecordType = taskRecordType,
                         Parent_task_id = (parentTaskId == Id) ? 0 : parentTaskId
-                    }; 
+                    };
                     tasks.Add(newTask);
                     TrackUser(newTask.AssignedTo);
                     TrackUser(newTask.Author);

@@ -15,6 +15,8 @@ public class IncomingRecordMigrationPayload
     public string subject { get; set; }
     public string body { get; set; }
     public List<IncomingInstance> incomingInstances { get; set; }
+    public List<IncomingInstance> ccInstances { get; set; } = new();
+    public List<IncomingInstance> forYourRefInstances { get; set; } = new();
 }
 
 public class Metadata

@@ -1579,7 +1579,7 @@ public class MigrationService
             comment = t.Reassign_x0020_Remark ?? ""
         }).ToList();
 
-        var incomingInstances = incomingTasks.Select(t => new IncomingInstance
+        var (incomingInstances, ccInstances, forYourRefInstances) = SplitIncomingInstances(incomingTasks, t => new IncomingInstance
         {
             id = t.ID.ToString(),
             assignedAt = t.Created,
@@ -1592,7 +1592,7 @@ public class MigrationService
             assigneeUsername = t.AssignedTo,
             status = MapIncomingStatusKey(t.TaskStatus ?? ""),
             comment = t.Reassign_x0020_Remark ?? ""
-        }).ToList();
+        }, $"record {record.ID}");
 
         if (taskInstances.Any())
         {
@@ -1652,6 +1652,8 @@ public class MigrationService
             unitId = new List<int>(),
             unitKey = unitKey,
             incomingInstances = incomingInstances,
+            ccInstances = ccInstances,
+            forYourRefInstances = forYourRefInstances,
             metadata = new MetadataBlock
             {
                 organizationName = record.Sending_Organization_Name ?? "",
@@ -1681,7 +1683,7 @@ public class MigrationService
     
     List<SharePointTask> incomingTasks)
     {
-        var incomingInstances = incomingTasks.Select(t => new IncomingInstance
+        var (incomingInstances, ccInstances, forYourRefInstances) = SplitIncomingInstances(incomingTasks, t => new IncomingInstance
         {
             id = t.ID.ToString(),
             assignedAt = t.Created,
@@ -1697,7 +1699,7 @@ public class MigrationService
             //assigneeUsername = "nazifjadwa",
             assigneeUsername = t.AssignedTo,
             status = MapIncomingStatusKey(t.TaskStatus ?? ""),
-        }).ToList();
+        }, $"folder {folder.ID}");
 
         if (incomingInstances.Any())
         {
@@ -1748,8 +1750,48 @@ public class MigrationService
             body = "",
             id = folder.ID.ToString() ?? "",
 
-            incomingInstances = incomingInstances ?? new List<IncomingInstance>()
+            incomingInstances = incomingInstances,
+            ccInstances = ccInstances,
+            forYourRefInstances = forYourRefInstances
         };
+    }
+
+    /// <summary>
+    /// Splits the incoming tasks by their Record / CC / ForYourRef type into the three instance lists the API takes.
+    /// An empty or unrecognised type stays in incomingInstances (nothing is dropped) and is logged with the task id.
+    /// </summary>
+    private (List<IncomingInstance> Incoming, List<IncomingInstance> Cc, List<IncomingInstance> ForYourRef) SplitIncomingInstances(
+        IEnumerable<SharePointTask> tasks, Func<SharePointTask, IncomingInstance> toInstance, string owner)
+    {
+        var incoming = new List<IncomingInstance>();
+        var cc = new List<IncomingInstance>();
+        var forYourRef = new List<IncomingInstance>();
+        var unrecognised = new SortedSet<int>();
+
+        foreach (var t in tasks)
+        {
+            var instance = toInstance(t);
+            // "For Your Ref", "for_your_ref", "FYR" all count as ForYourRef.
+            var key = new string((t.RecordType ?? string.Empty).Where(char.IsLetterOrDigit).ToArray()).ToLowerInvariant();
+            switch (key)
+            {
+                case "cc": cc.Add(instance); break;
+                case "foryourref" or "fyr": forYourRef.Add(instance); break;
+                case "record": incoming.Add(instance); break;
+                default:
+                    incoming.Add(instance);
+                    unrecognised.Add(t.ID);
+                    break;
+            }
+        }
+
+        _logger.LogInformation("  → Incoming instances for {Owner}: record={Record} cc={Cc} forYourRef={ForYourRef}",
+            owner, incoming.Count, cc.Count, forYourRef.Count);
+        if (unrecognised.Count > 0)
+            _logger.LogWarning("⚠️ {Owner}: task(s) {Ids} have an empty or unknown RecordType and were sent as incomingInstances",
+                owner, string.Join(",", unrecognised));
+
+        return (incoming, cc, forYourRef);
     }
 
 

@@ -11,6 +11,8 @@
         public string Reassign_x0020_Remark { get; set; } = string.Empty;
         public string Author { get; set; } = string.Empty;
         public int Parent_task_id { get; set; }
+        /// <summary>"Record", "CC" or "ForYourRef" on the incoming task lists; empty when the list has no such value.</summary>
+        public string RecordType { get; set; } = string.Empty;
 
 
         public SharePointTask() { }
