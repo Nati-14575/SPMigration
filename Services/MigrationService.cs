@@ -1631,6 +1631,8 @@ public class MigrationService
                 .Concat(record.Employee_CC ?? Array.Empty<string>())
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToArray(),
+            // Only the ForYouRefs column feeds this one.
+            forYourReferencePosition = record.ForYouRefs ?? Array.Empty<string>(),
 
             // ✅ tasks
             outgoingInstances = taskInstances,

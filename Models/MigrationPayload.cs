@@ -48,6 +48,7 @@ namespace SPMigration.Models
         public string[] receiverEmployees { get; set; }
         public string[]  receiverPositions { get; set; }
         public string[] ccPosition { get; set; }
+        public string[] forYourReferencePosition { get; set; } = Array.Empty<string>();
         public List<OutgoingInstance> outgoingInstances { get; set; } = new();
         public List<object> outgoingHistories { get; set; } = new();
     }

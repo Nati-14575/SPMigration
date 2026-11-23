@@ -17,6 +17,8 @@ public class SharePointService
     private readonly string _taskRecordTypeField;
     // Second CC people/group column on User_Records; its names are merged into ccPosition after CC_To.
     private const string RecordCcEmployeeField = "Employee_CC";
+    // "For your reference" people/group column on User_Records; sent as forYourReferencePosition.
+    private const string RecordForYouRefsField = "ForYouRefs";
     private readonly HashSet<string> _uniqueUsers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     public SharePointService(IConfiguration config)
     {
@@ -241,9 +243,10 @@ public class SharePointService
     public async Task<SharePointRecord?> GetRecordByIdAsync(string listTitle, int id, List<UserMapping> userMappings = null)
     {
         // Build query with expand for user fields
-        string BuildUrl(bool withCcEmployees)
+        string BuildUrl(bool withExtraColumns)
         {
             const string cc = RecordCcEmployeeField;
+            const string fy = RecordForYouRefsField;
             return $"{_siteUrl}/_api/web/lists/getbytitle('{listTitle}')/items({id})" +
                    "?$select=*," +
                    "Author/Id,Author/Title,Author/Name," +
@@ -251,9 +254,9 @@ public class SharePointService
                    "Receiving_Users/Id,Receiving_Users/Title,Receiving_Users/Name," +
                    "Receiving_Department/Id,Receiving_Department/Title,Receiving_Department/Name," +
                    "CC_To/Id,CC_To/Title,CC_To/Name" +
-                   (withCcEmployees ? $",{cc}/Id,{cc}/Title,{cc}/Name" : "") +
+                   (withExtraColumns ? $",{cc}/Id,{cc}/Title,{cc}/Name,{fy}/Id,{fy}/Title,{fy}/Name" : "") +
                    "&$expand=Author,Editor,Receiving_Users,Receiving_Department,CC_To" +
-                   (withCcEmployees ? $",{cc}" : "");
+                   (withExtraColumns ? $",{cc},{fy}" : "");
         }
 
         async Task<HttpResponseMessage> GetItemAsync(string itemUrl)
@@ -267,12 +270,12 @@ public class SharePointService
         if (!res.IsSuccessStatusCode)
         {
             // A column SharePoint does not know makes the whole item request fail, which would look like a missing record and
-            // skip every record silently. If the item reads fine without it, fail with a message that names the column instead.
-            var withoutCc = await GetItemAsync(BuildUrl(false));
-            if (withoutCc.IsSuccessStatusCode)
+            // skip every record silently. If the item reads fine without them, fail with a message that names the columns instead.
+            var withoutExtra = await GetItemAsync(BuildUrl(false));
+            if (withoutExtra.IsSuccessStatusCode)
                 throw new InvalidOperationException(
-                    $"Could not read column '{RecordCcEmployeeField}' of {listTitle} item {id}. Check that the column exists on the list.");
-            res = withoutCc;
+                    $"Could not read column '{RecordCcEmployeeField}' or '{RecordForYouRefsField}' of {listTitle} item {id}. Check that both columns exist on the list.");
+            res = withoutExtra;
         }
         if (!res.IsSuccessStatusCode) return null;
 
@@ -316,6 +319,7 @@ public class SharePointService
             Receiving_Department = d.ResolveUsersOrGroups("Receiving_Department", userMappings),
             CC_To = d.ResolveUsersOrGroups("CC_To", userMappings),
             Employee_CC = d.ResolveUsersOrGroups(RecordCcEmployeeField, userMappings),
+            ForYouRefs = d.ResolveUsersOrGroups(RecordForYouRefsField, userMappings),
             Sending_Department = d.TryGetProperty("Sending_Department", out var sd) ? sd.GetString() : null
         };
         TrackUser(newRecord.Author);
@@ -324,6 +328,7 @@ public class SharePointService
         TrackUser(newRecord.Receiving_Users);
         TrackUser(newRecord.CC_To);
         TrackUser(newRecord.Employee_CC);
+        TrackUser(newRecord.ForYouRefs);
         return newRecord;
     }
 
