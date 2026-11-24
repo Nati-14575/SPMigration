@@ -503,12 +503,14 @@ public class SharePointService
         return tasks;
     }
 
-    public async Task<List<SharePointTask>> GetIncomingTasksForRecordAsync(string listTitle, int recordId, int rowLimit = 500, List<UserMapping> userMappings = null )
+    /// <param name="readRecordType">True only for lists that have the Record / CC / ForYourRef column (Internal_Records_Associated_Task).</param>
+    public async Task<List<SharePointTask>> GetIncomingTasksForRecordAsync(string listTitle, int recordId, int rowLimit = 500, List<UserMapping> userMappings = null, bool readRecordType = false)
     {
+        var typeField = readRecordType ? _taskRecordTypeField : "";
         var url =
             $"{_siteUrl}/_api/web/lists/getbytitle('{listTitle}')/items?" +
             $"$select=Id,ParentId,RecordID,Created,Modified,Body,TaskStatus,Reassign_x0020_Remark,Parent_task_idId,Parent_TaskId," +
-            (string.IsNullOrEmpty(_taskRecordTypeField) ? "" : $"{_taskRecordTypeField},") +
+            (string.IsNullOrEmpty(typeField) ? "" : $"{typeField},") +
             $"Author/Id,Author/Title,Author/Name," +
             $"AssignedTo/Id,AssignedTo/Title,AssignedTo/Name" +
             $"&$expand=Author,AssignedTo" +
@@ -516,10 +518,24 @@ public class SharePointService
             $"&$orderby=Id asc" +
             $"&$top={rowLimit}";
 
-        var req = new HttpRequestMessage(HttpMethod.Get, url);
-        req.Headers.Add("Accept", "application/json;odata=verbose");
+        async Task<HttpResponseMessage> GetTasksAsync(string tasksUrl)
+        {
+            var taskReq = new HttpRequestMessage(HttpMethod.Get, tasksUrl);
+            taskReq.Headers.Add("Accept", "application/json;odata=verbose");
+            return await _client.SendAsync(taskReq);
+        }
 
-        var res = await _client.SendAsync(req);
+        var res = await GetTasksAsync(url);
+        if (!res.IsSuccessStatusCode && !string.IsNullOrEmpty(typeField))
+        {
+            // A column SharePoint does not know makes the whole request fail with a bare 400. If it reads fine without the
+            // record-type column, fail with a message that names the column and the setting instead.
+            var withoutType = url.Replace($"{typeField},", "");
+            if ((await GetTasksAsync(withoutType)).IsSuccessStatusCode)
+                throw new InvalidOperationException(
+                    $"Could not read column '{typeField}' of list '{listTitle}'. Set SharePoint:TaskRecordTypeField to the internal name " +
+                    "of the Record / CC / ForYourRef column on that list (empty = do not read it).");
+        }
         res.EnsureSuccessStatusCode();
 
         var raw = await res.Content.ReadAsStringAsync();
@@ -539,8 +555,8 @@ public class SharePointService
                     continue;
                 }
 
-                var taskRecordType = !string.IsNullOrEmpty(_taskRecordTypeField) &&
-                                     row.TryGetProperty(_taskRecordTypeField, out var rtProp) &&
+                var taskRecordType = !string.IsNullOrEmpty(typeField) &&
+                                     row.TryGetProperty(typeField, out var rtProp) &&
                                      rtProp.ValueKind == JsonValueKind.String
                     ? rtProp.GetString() ?? ""
                     : "";
@@ -596,7 +612,8 @@ public class SharePointService
     public async Task<List<SharePointTask>> GetParentWithIncomingTasksAsync(
     string listTitle, string subTaskListTitle, int recordId, List<UserMapping> userMappings = null )
     {
-        var subs = await GetIncomingTasksForRecordAsync(subTaskListTitle, recordId, 500, userMappings);
+        // User_Records flow: subTaskListTitle is Internal_Records_Associated_Task, which has the Record / CC / ForYourRef column.
+        var subs = await GetIncomingTasksForRecordAsync(subTaskListTitle, recordId, 500, userMappings, readRecordType: true);
 
         return subs;
     }
