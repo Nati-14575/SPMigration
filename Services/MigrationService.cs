@@ -614,6 +614,30 @@ public class MigrationService
         return result;
     }
 
+    /// <summary>
+    /// User_Records ids that have at least one CC or ForYourRef task on Internal_Records_Associated_Task. The task RecordID is the
+    /// User_Records id. Migrated and never-migrated records are both included: the purpose is to send them again with the new lists.
+    /// </summary>
+    public async Task<CcForYourRefScanResult> FindRecordsWithCcOrForYourRefAsync()
+    {
+        var internalTasksList = _configuration["SharePoint:InternalTasksListName"] ?? "Internal_Records_Associated_Task";
+        _logger.LogInformation("[cc-fyr] Scanning {List} for CC / ForYourRef tasks", internalTasksList);
+
+        var found = await _sharePointService.GetRecordIdsByTaskTypeAsync(internalTasksList, "CC", "ForYourRef");
+        var result = new CcForYourRefScanResult
+        {
+            Source = internalTasksList,
+            TotalFound = found.Count,
+            WithCc = found.Count(kv => kv.Value.Contains("CC")),
+            WithForYourRef = found.Count(kv => kv.Value.Contains("ForYourRef")),
+            WithBoth = found.Count(kv => kv.Value.Contains("CC") && kv.Value.Contains("ForYourRef")),
+            Ids = found.Keys.ToList()
+        };
+        _logger.LogInformation("[cc-fyr] {Total} record(s): cc={Cc} forYourRef={Fyr} both={Both}",
+            result.TotalFound, result.WithCc, result.WithForYourRef, result.WithBoth);
+        return result;
+    }
+
     // "Internal, Outgoing" -> {"Internal","Outgoing"} (case-insensitive). Empty set = no filter.
     private static HashSet<string> ParseRecordTypes(string? recordType) =>
         (recordType ?? string.Empty)
@@ -1592,7 +1616,9 @@ public class MigrationService
             assigneeUsername = t.AssignedTo,
             status = MapIncomingStatusKey(t.TaskStatus ?? ""),
             comment = t.Reassign_x0020_Remark ?? ""
-        }, $"record {record.ID}");
+        }, $"record {record.ID}",
+        // Outgoing records are not received by anyone, so they get no incomingInstances; their CC and ForYourRef tasks are kept.
+        includeRecordTasks: !string.Equals(record.Record_Type?.Trim(), "Outgoing", StringComparison.OrdinalIgnoreCase));
 
         if (taskInstances.Any())
         {
@@ -1767,12 +1793,14 @@ public class MigrationService
     /// An empty or unrecognised type stays in incomingInstances (nothing is dropped) and is logged with the task id.
     /// </summary>
     private (List<IncomingInstance> Incoming, List<IncomingInstance> Cc, List<IncomingInstance> ForYourRef) SplitIncomingInstances(
-        IEnumerable<SharePointTask> tasks, Func<SharePointTask, IncomingInstance> toInstance, string owner)
+        IEnumerable<SharePointTask> tasks, Func<SharePointTask, IncomingInstance> toInstance, string owner,
+        bool includeRecordTasks = true)
     {
         var incoming = new List<IncomingInstance>();
         var cc = new List<IncomingInstance>();
         var forYourRef = new List<IncomingInstance>();
         var unrecognised = new SortedSet<int>();
+        var leftOut = 0;
 
         foreach (var t in tasks)
         {
@@ -1783,9 +1811,11 @@ public class MigrationService
             {
                 case "cc": cc.Add(instance); break;
                 case "foryourref" or "fyr": forYourRef.Add(instance); break;
-                case "record": incoming.Add(instance); break;
+                case "record":
+                    if (includeRecordTasks) incoming.Add(instance); else leftOut++;
+                    break;
                 default:
-                    incoming.Add(instance);
+                    if (includeRecordTasks) incoming.Add(instance); else leftOut++;
                     unrecognised.Add(t.ID);
                     break;
             }
@@ -1793,9 +1823,12 @@ public class MigrationService
 
         _logger.LogInformation("  → Incoming instances for {Owner}: record={Record} cc={Cc} forYourRef={ForYourRef}",
             owner, incoming.Count, cc.Count, forYourRef.Count);
+        // includeRecordTasks=false (Outgoing records): only CC and ForYourRef tasks are kept, there are no incomingInstances.
+        if (leftOut > 0)
+            _logger.LogInformation("  → {Owner}: {Count} Record / untyped task(s) left out (no incomingInstances for this record type)", owner, leftOut);
         if (unrecognised.Count > 0)
-            _logger.LogWarning("⚠️ {Owner}: task(s) {Ids} have an empty or unknown RecordType and were sent as incomingInstances",
-                owner, string.Join(",", unrecognised));
+            _logger.LogWarning("⚠️ {Owner}: task(s) {Ids} have an empty or unknown RecordType and were {Action}",
+                owner, string.Join(",", unrecognised), includeRecordTasks ? "sent as incomingInstances" : "left out");
 
         return (incoming, cc, forYourRef);
     }

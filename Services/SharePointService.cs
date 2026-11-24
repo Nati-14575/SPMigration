@@ -776,6 +776,114 @@ public class SharePointService
         return result;
     }
 
+    /// <summary>
+    /// Record ids (the RecordID column) of the tasks on an Internal_Records_Associated_Task-style list whose record-type column
+    /// (SharePoint:TaskRecordTypeField) equals one of <paramref name="types"/> exactly, e.g. "CC" and "ForYourRef".
+    /// Maps each record id to the types it has. Pages by ID so it is not limited to a single RowLimit page.
+    /// </summary>
+    public async Task<SortedDictionary<int, SortedSet<string>>> GetRecordIdsByTaskTypeAsync(string listTitle, params string[] types)
+    {
+        if (string.IsNullOrEmpty(_taskRecordTypeField))
+            throw new InvalidOperationException("SharePoint:TaskRecordTypeField is not configured.");
+        if (types.Length == 0)
+            throw new ArgumentException("At least one type is required.", nameof(types));
+
+        string Eq(string t) =>
+            $"<Eq><FieldRef Name='{_taskRecordTypeField}' /><Value Type='Text'>{System.Security.SecurityElement.Escape(t)}</Value></Eq>";
+        // CAML <Or> takes exactly two children, so nest it for more than two types.
+        string Any(string[] ts) => ts.Length == 1 ? Eq(ts[0]) : $"<Or>{Eq(ts[0])}{Any(ts[1..])}</Or>";
+        var typeFilter = Any(types);
+
+        var result = new SortedDictionary<int, SortedSet<string>>();
+        const int pageSize = 2000;
+        var lastId = 0;
+        var tasksWithoutRecordId = 0;
+
+        while (true)
+        {
+            var viewXml = $@"
+<View>
+  <Query>
+    <Where>
+      <And>
+        <Gt><FieldRef Name='ID' /><Value Type='Counter'>{lastId}</Value></Gt>
+        {typeFilter}
+      </And>
+    </Where>
+    <OrderBy><FieldRef Name='ID' Ascending='True' /></OrderBy>
+  </Query>
+  <ViewFields>
+    <FieldRef Name='ID' /><FieldRef Name='RecordID' /><FieldRef Name='{_taskRecordTypeField}' />
+  </ViewFields>
+  <RowLimit>{pageSize}</RowLimit>
+</View>";
+
+            Console.WriteLine($"[cc-fyr] {listTitle}: fetching tasks with ID > {lastId}...");
+            using var doc = await InvokeRLDSAsync(listTitle, viewXml);
+            if (!doc.RootElement.TryGetProperty("Row", out var rows))
+            {
+                // An error answer must not look like "no tasks found".
+                var text = doc.RootElement.ToString();
+                if (text.Contains("error", StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidOperationException(
+                        $"SharePoint could not list tasks of '{listTitle}': {text[..Math.Min(300, text.Length)]}");
+                break;
+            }
+
+            var count = 0;
+            var startLast = lastId;
+            foreach (var r in rows.EnumerateArray())
+            {
+                count++;
+                if (!int.TryParse(r.GetStringSafe("ID"), out var id)) continue;
+                lastId = Math.Max(lastId, id);
+
+                var recordId = ParseLooseInt(r, "RecordID");
+                if (recordId is null or <= 0) { tasksWithoutRecordId++; continue; }
+
+                // Store the type as requested (the filter matched it case-insensitively).
+                var rawType = (r.GetStringSafe(_taskRecordTypeField) ?? "").Trim();
+                var type = types.FirstOrDefault(t => t.Equals(rawType, StringComparison.OrdinalIgnoreCase)) ?? rawType;
+
+                if (!result.TryGetValue(recordId.Value, out var set))
+                    result[recordId.Value] = set = new SortedSet<string>(StringComparer.Ordinal);
+                set.Add(type);
+            }
+
+            Console.WriteLine($"[cc-fyr] {listTitle}: got {count} tasks (records so far {result.Count}).");
+            if (count < pageSize || lastId == startLast) break;
+        }
+
+        if (tasksWithoutRecordId > 0)
+            Console.WriteLine($"[cc-fyr] {listTitle}: {tasksWithoutRecordId} task(s) have no RecordID and were left out.");
+        return result;
+    }
+
+    // A numeric/lookup cell as RenderListDataAsStream returns it: 123, "1,234", "123.00" or [{ "lookupId": 123, ... }].
+    private static int? ParseLooseInt(JsonElement row, string name)
+    {
+        if (!row.TryGetProperty(name, out var p)) return null;
+        if (p.ValueKind == JsonValueKind.Array) p = p.EnumerateArray().FirstOrDefault();
+        if (p.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var key in new[] { "lookupId", "LookupId", "id" })
+                if (p.TryGetProperty(key, out var inner)) { p = inner; break; }
+        }
+
+        var text = p.ValueKind switch
+        {
+            JsonValueKind.Number => p.ToString(),
+            JsonValueKind.String => p.GetString(),
+            _ => null
+        };
+        if (string.IsNullOrWhiteSpace(text)) return null;
+
+        return decimal.TryParse(text.Replace(",", "").Trim(), System.Globalization.NumberStyles.Number,
+                   System.Globalization.CultureInfo.InvariantCulture, out var d) && d == decimal.Truncate(d)
+            ? (int)d
+            : null;
+    }
+
     /// <summary>Summaries of every folder under Records/Incoming, fetched in one call.</summary>
     public async Task<List<ReadyRecordItem>> GetIncomingFolderSummariesAsync(
         string libraryName = "Records", string incomingFolderName = "Incoming")

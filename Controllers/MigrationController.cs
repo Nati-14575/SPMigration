@@ -185,6 +185,42 @@ namespace SPMigration.Controllers
         }
 
         /// <summary>
+        /// Finds the User_Records that have a CC or ForYourRef task on Internal_Records_Associated_Task (task RecordType) and migrates
+        /// them again with the optional user-mapping file (multipart/form-data). dryRun=true (default) only lists the ids, with counts.
+        /// limit migrates only the first N ids (0 = all), so one record can be tried first. Already migrated records are not skipped.
+        /// </summary>
+        [HttpPost("user-records-with-cc-fyr")]
+        public async Task<IActionResult> MigrateUserRecordsWithCcOrForYourRef(
+            [FromQuery] bool dryRun = true,
+            [FromQuery] int limit = 0,
+            IFormFile? file = null)
+        {
+            try
+            {
+                var scan = await _migrationService.FindRecordsWithCcOrForYourRefAsync();
+                if (limit > 0) scan.Ids = scan.Ids.Take(limit).ToList();
+                if (dryRun || scan.Ids.Count == 0) return Ok(scan);
+
+                var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
+                if (mappingError != null)
+                    return mappingError;
+
+                await _migrationService.RunMigrationForRecordIdsAsync(
+                    scan.Ids.Select(i => i.ToString()).ToList(), userMappings);
+                return Ok(new
+                {
+                    message = $"User_Records migration finished for {scan.Ids.Count} record(s) with CC / ForYourRef tasks.",
+                    scan
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ CC / ForYourRef migration failed");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Run the document-library migration for a specific inclusive range of folder IDs.
         /// Optionally accepts a JSON user-mapping file as multipart/form-data.
         /// </summary>
