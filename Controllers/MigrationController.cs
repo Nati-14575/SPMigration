@@ -232,7 +232,6 @@ namespace SPMigration.Controllers
             [FromForm] string password,
             [FromForm] string runType,
             [FromForm] string? recordType = null,
-            [FromForm] string? domain = null,
             [FromForm] bool dryRun = true,
             [FromForm] int limit = 0,
             IFormFile? file = null)
@@ -266,7 +265,7 @@ namespace SPMigration.Controllers
 
             try
             {
-                var scan = await _migrationService.FindRecordsForUserAsync(username, password, domain, external, types);
+                var scan = await _migrationService.FindRecordsForUserAsync(username, password, null, external, types);
                 var totalFound = scan.Ids.Count;
                 if (limit > 0) scan.Ids = scan.Ids.Take(limit).ToList();
                 if (dryRun || scan.Ids.Count == 0) return Ok(new { dryRun, totalFound, scan });

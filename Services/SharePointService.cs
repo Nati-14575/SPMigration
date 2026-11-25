@@ -901,6 +901,8 @@ public class SharePointService
         var user = username.Trim();
         var dom = string.IsNullOrWhiteSpace(domain) ? _defaultDomain : domain.Trim();
         if (user.Contains('\\')) { var parts = user.Split('\\', 2); dom = parts[0]; user = parts[1]; }
+        // A UPN (user@domain) is sent as the user name with no separate domain; adding one makes NTLM fail.
+        else if (user.Contains('@')) dom = null;
 
         var handler = new HttpClientHandler { Credentials = new NetworkCredential(user, password, dom) };
         if (!_rejectUnauthorized)
@@ -912,8 +914,11 @@ public class SharePointService
         {
             me.Headers.Add("Accept", "application/json;odata=nometadata");
             using var meResp = await client.SendAsync(me);
-            if (meResp.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
-                throw new UnauthorizedAccessException("SharePoint rejected the username or password.");
+            if (meResp.StatusCode == HttpStatusCode.Unauthorized)
+                throw new UnauthorizedAccessException(
+                    $"SharePoint rejected the username or password (401) for user '{user}', domain '{dom}'. " +
+                    $"Challenge: {string.Join(", ", meResp.Headers.WwwAuthenticate.Select(h => h.Scheme))}. " +
+                    "Try DOMAIN\\user, or user@upn with an empty domain.");
             meResp.EnsureSuccessStatusCode();
         }
 
