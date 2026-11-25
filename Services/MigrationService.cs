@@ -401,6 +401,35 @@ public class MigrationService
             _logger.LogError(ex, "💥 Migration failed unexpectedly.");
         }
     }
+    /// <summary>
+    /// Authenticates the user, lists the tasks assigned to them (Internal: Internal_Records_Associated_Task filtered by record type;
+    /// External: Incoming_Record_Associated_Task, no type filter) and returns the distinct record ids.
+    /// </summary>
+    public async Task<UserTaskScanResult> FindRecordsForUserAsync(string username, string password, string? domain, bool external, IReadOnlyList<string>? recordTypes)
+    {
+        var list = external
+            ? _configuration["SharePoint:IncomingTasksListName"] ?? "Incoming_Record_Associated_Task"
+            : _configuration["SharePoint:InternalTasksListName"] ?? "Internal_Records_Associated_Task";
+        var types = external ? null : recordTypes;
+
+        var (taskCount, ids) = await _sharePointService.GetRecordIdsAssignedToUserAsync(username, password, domain, list, types);
+        _logger.LogInformation("[by-user] {User}: {Tasks} task(s) on {List} -> {Records} record(s)", username, taskCount, list, ids.Count);
+        return new UserTaskScanResult
+        {
+            User = username,
+            RunType = external ? "External" : "Internal",
+            Source = list,
+            RecordTypes = types?.ToList() ?? new List<string>(),
+            TaskCount = taskCount,
+            Ids = ids
+        };
+    }
+
+    public Task RunMigrationForUserScanAsync(UserTaskScanResult scan, List<UserMapping>? userMappings) =>
+        scan.RunType == "External"
+            ? RunIncomingForFolderIdsAsync(scan.Ids, userMappings)
+            : RunMigrationForRecordIdsAsync(scan.Ids.Select(i => i.ToString()).ToList(), userMappings);
+
     public async Task RunMigrationForRecordIdsDocLibraryAsync(
         int startId,
         int endId,

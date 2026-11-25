@@ -19,6 +19,8 @@ public class SharePointService
     private const string RecordCcEmployeeField = "Employee_CC";
     // "For your reference" people/group column on User_Records; sent as forYourReferencePosition.
     private const string RecordForYouRefsField = "ForYouRefs";
+    private readonly bool _rejectUnauthorized;
+    private readonly string _defaultDomain;
     private readonly HashSet<string> _uniqueUsers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     public SharePointService(IConfiguration config)
     {
@@ -38,6 +40,8 @@ public class SharePointService
         // Equivalent to Node.js rejectUnauthorized: false. Keep validation enabled
         // unless the setting is explicitly disabled for a trusted migration network.
         var rejectUnauthorized = config.GetValue("SharePoint:RejectUnauthorized", true);
+        _rejectUnauthorized = rejectUnauthorized;
+        _defaultDomain = config["SharePoint:Domain"];
         if (!rejectUnauthorized)
         {
             handler.ServerCertificateCustomValidationCallback =
@@ -882,6 +886,117 @@ public class SharePointService
                    System.Globalization.CultureInfo.InvariantCulture, out var d) && d == decimal.Truncate(d)
             ? (int)d
             : null;
+    }
+
+    /// <summary>
+    /// Authenticates <paramref name="username"/> against SharePoint (NTLM) and returns the record ids (the RecordID column) of the tasks
+    /// assigned to that user, directly or through a group they belong to, on <paramref name="listTitle"/>.
+    /// <paramref name="types"/> filters the task record-type column (Record / CC / ForYourRef); null or empty = no filter.
+    /// Follows ListData.NextHref until it is empty. Throws UnauthorizedAccessException when the credentials are rejected.
+    /// </summary>
+    public async Task<(int TaskCount, List<int> RecordIds)> GetRecordIdsAssignedToUserAsync(
+        string username, string password, string? domain, string listTitle, IReadOnlyList<string>? types)
+    {
+        // "DOMAIN\\user" or "user@domain" in the username wins over the separate domain field.
+        var user = username.Trim();
+        var dom = string.IsNullOrWhiteSpace(domain) ? _defaultDomain : domain.Trim();
+        if (user.Contains('\\')) { var parts = user.Split('\\', 2); dom = parts[0]; user = parts[1]; }
+
+        var handler = new HttpClientHandler { Credentials = new NetworkCredential(user, password, dom) };
+        if (!_rejectUnauthorized)
+            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+        using var client = new HttpClient(handler) { Timeout = TimeSpan.FromMinutes(10) };
+
+        // 1) Authenticate: only the user's own credentials can read their identity.
+        using (var me = new HttpRequestMessage(HttpMethod.Get, $"{_siteUrl}/_api/web/currentuser"))
+        {
+            me.Headers.Add("Accept", "application/json;odata=nometadata");
+            using var meResp = await client.SendAsync(me);
+            if (meResp.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
+                throw new UnauthorizedAccessException("SharePoint rejected the username or password.");
+            meResp.EnsureSuccessStatusCode();
+        }
+
+        // 2) Digest for the POSTs.
+        string digest;
+        using (var ctx = new HttpRequestMessage(HttpMethod.Post, $"{_siteUrl}/_api/contextinfo"))
+        {
+            ctx.Headers.Add("Accept", "application/json;odata=verbose");
+            using var ctxResp = await client.SendAsync(ctx);
+            ctxResp.EnsureSuccessStatusCode();
+            using var ctxDoc = JsonDocument.Parse(await ctxResp.Content.ReadAsStringAsync());
+            digest = ctxDoc.RootElement.GetProperty("d").GetProperty("GetContextWebInformation")
+                .GetProperty("FormDigestValue").GetString()!;
+        }
+
+        // 3) Tasks assigned to the user (or one of their groups), optionally of the given record types.
+        var typeField = string.IsNullOrEmpty(_taskRecordTypeField) ? null : _taskRecordTypeField;
+        var useTypes = typeField != null && types is { Count: > 0 };
+        string Eq(string t) =>
+            $"<Eq><FieldRef Name='{typeField}'/><Value Type='Text'>{System.Security.SecurityElement.Escape(t)}</Value></Eq>";
+        string Any(IReadOnlyList<string> ts, int i = 0) => i == ts.Count - 1 ? Eq(ts[i]) : $"<Or>{Eq(ts[i])}{Any(ts, i + 1)}</Or>";
+
+        const string assigned =
+            "<Or><Eq><FieldRef Name='AssignedTo' LookupId='TRUE' /><Value Type='Integer'><UserID/></Value></Eq>" +
+            "<Membership Type='CurrentUserGroups'><FieldRef Name='AssignedTo' /></Membership></Or>";
+        var where = useTypes ? $"<And>{assigned}{Any(types!)}</And>" : assigned;
+        var viewXml =
+            $"<View><Query><OrderBy><FieldRef Name='ID' Ascending='FALSE'/></OrderBy><Where>{where}</Where></Query>" +
+            "<RowLimit Paged=\"TRUE\">5000</RowLimit>" +
+            "<ViewFields><FieldRef Name='Id' /><FieldRef Name='RecordID' /></ViewFields></View>";
+        var body = JsonSerializer.Serialize(new
+        {
+            parameters = new Dictionary<string, object>
+            {
+                ["__metadata"] = new { type = "SP.RenderListDataParameters" },
+                ["RenderOptions"] = 7,
+                ["ViewXml"] = viewXml
+            }
+        });
+
+        var baseUrl = $"{_siteUrl}/_api/web/lists/getbytitle('{listTitle}')/RenderListDataAsStream";
+        var nextHref = "";
+        var taskCount = 0;
+        var noRecordId = 0;
+        var ids = new SortedSet<int>();
+        var seenHrefs = new HashSet<string>();
+
+        do
+        {
+            using var req = new HttpRequestMessage(HttpMethod.Post, baseUrl + nextHref);
+            req.Headers.Add("Accept", "application/json;odata=verbose");
+            req.Headers.Add("X-RequestDigest", digest);
+            req.Content = new StringContent(body, Encoding.UTF8, "application/json");
+            using var resp = await client.SendAsync(req);
+            var text = await resp.Content.ReadAsStringAsync();
+            if (!resp.IsSuccessStatusCode)
+                throw new InvalidOperationException(
+                    $"SharePoint could not list tasks of '{listTitle}' ({(int)resp.StatusCode}): {text[..Math.Min(300, text.Length)]}");
+
+            using var doc = JsonDocument.Parse(text);
+            var root = doc.RootElement;
+            if (!root.TryGetProperty("ListData", out var listData) && root.TryGetProperty("d", out var d))
+                d.TryGetProperty("ListData", out listData);
+            if (listData.ValueKind != JsonValueKind.Object || !listData.TryGetProperty("Row", out var rows))
+                throw new InvalidOperationException($"Unexpected answer listing tasks of '{listTitle}': {text[..Math.Min(300, text.Length)]}");
+
+            foreach (var r in rows.EnumerateArray())
+            {
+                taskCount++;
+                var recordId = ParseLooseInt(r, "RecordID");
+                if (recordId is null or <= 0) { noRecordId++; continue; }
+                ids.Add(recordId.Value);
+            }
+
+            nextHref = listData.TryGetProperty("NextHref", out var nh) && nh.ValueKind == JsonValueKind.String ? nh.GetString() ?? "" : "";
+            Console.WriteLine($"[by-user] {listTitle}: {taskCount} task(s) so far, {ids.Count} record(s){(nextHref.Length > 0 ? ", next page..." : ".")}");
+            // Guard against a server that keeps answering with the same link.
+            if (nextHref.Length > 0 && !seenHrefs.Add(nextHref)) break;
+        } while (nextHref.Length > 0);
+
+        if (noRecordId > 0)
+            Console.WriteLine($"[by-user] {listTitle}: {noRecordId} task(s) have no RecordID and were left out.");
+        return (taskCount, ids.ToList());
     }
 
     /// <summary>Summaries of every folder under Records/Incoming, fetched in one call.</summary>

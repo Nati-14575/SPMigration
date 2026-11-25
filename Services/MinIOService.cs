@@ -112,9 +112,11 @@ public sealed class MinIOService
                 isRecord = true;
             }
             var fileTitle = SanitizeObjectName(fileName);
+            // Incoming folders live under externalIncoming/, the prefix GetRecordFilesFromFolderAsync checks. Folder ids and
+            // User_Records ids overlap, so they must not share migrated/{unitKey}/record-{id}/.
             var key = isRecord
-            ? $"migrated/{_unitKey}/record-{Id}/records/{fileTitle}"
-            : $"migrated/{_unitKey}/record-{Id}/attachments/{fileTitle}";
+            ? $"migrated/externalIncoming/{_unitKey}/record-{Id}/records/{fileTitle}"
+            : $"migrated/externalIncoming/{_unitKey}/record-{Id}/attachments/{fileTitle}";
 
 
             // The main record is always a PDF, even if SharePoint reported octet-stream.

@@ -221,6 +221,76 @@ namespace SPMigration.Controllers
         }
 
         /// <summary>
+        /// Authenticates a SharePoint user, finds the tasks assigned to them (or to their groups) and migrates the record of each task.
+        /// runType Internal: tasks from Internal_Records_Associated_Task filtered by recordType (Record, CC, ForYourRef; comma-separate several),
+        /// migrated as User_Records. runType External: tasks from Incoming_Record_Associated_Task (recordType is ignored), migrated as incoming folders.
+        /// dryRun=true (default) only lists the ids. limit migrates only the first N ids (0 = all). Optional mapping.json as multipart file.
+        /// </summary>
+        [HttpPost("migrate-by-user")]
+        public async Task<IActionResult> MigrateByUser(
+            [FromForm] string username,
+            [FromForm] string password,
+            [FromForm] string runType,
+            [FromForm] string? recordType = null,
+            [FromForm] string? domain = null,
+            [FromForm] bool dryRun = true,
+            [FromForm] int limit = 0,
+            IFormFile? file = null)
+        {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrEmpty(password))
+                return BadRequest(new { error = "username and password are required." });
+
+            var external = runType?.Trim().Equals("External", StringComparison.OrdinalIgnoreCase) == true;
+            if (!external && runType?.Trim().Equals("Internal", StringComparison.OrdinalIgnoreCase) != true)
+                return BadRequest(new { error = "runType must be \"Internal\" or \"External\"." });
+
+            List<string>? types = null;
+            if (!external)
+            {
+                var allowed = new[] { "Record", "CC", "ForYourRef" };
+                types = new List<string>();
+                foreach (var t in (recordType ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                {
+                    var match = allowed.FirstOrDefault(a => a.Equals(t, StringComparison.OrdinalIgnoreCase));
+                    if (match == null)
+                        return BadRequest(new { error = $"Unknown recordType \"{t}\". Use Record, CC or ForYourRef." });
+                    if (!types.Contains(match)) types.Add(match);
+                }
+                if (types.Count == 0)
+                    return BadRequest(new { error = "recordType is required for Internal (Record, CC, ForYourRef)." });
+            }
+
+            var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
+            if (mappingError != null)
+                return mappingError;
+
+            try
+            {
+                var scan = await _migrationService.FindRecordsForUserAsync(username, password, domain, external, types);
+                var totalFound = scan.Ids.Count;
+                if (limit > 0) scan.Ids = scan.Ids.Take(limit).ToList();
+                if (dryRun || scan.Ids.Count == 0) return Ok(new { dryRun, totalFound, scan });
+
+                await _migrationService.RunMigrationForUserScanAsync(scan, userMappings);
+                return Ok(new
+                {
+                    message = $"{scan.RunType} migration finished for {scan.Ids.Count} record(s) of {username}.",
+                    totalFound,
+                    scan
+                });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Migration by user failed");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Run the document-library migration for a specific inclusive range of folder IDs.
         /// Optionally accepts a JSON user-mapping file as multipart/form-data.
         /// </summary>
