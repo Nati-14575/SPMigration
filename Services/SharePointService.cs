@@ -951,12 +951,7 @@ public class SharePointService
             "<ViewFields><FieldRef Name='Id' /><FieldRef Name='RecordID' /></ViewFields></View>";
         var body = JsonSerializer.Serialize(new
         {
-            parameters = new Dictionary<string, object>
-            {
-                ["__metadata"] = new { type = "SP.RenderListDataParameters" },
-                ["RenderOptions"] = 7,
-                ["ViewXml"] = viewXml
-            }
+            parameters = new { RenderOptions = 7, ViewXml = viewXml }
         });
 
         var baseUrl = $"{_siteUrl}/_api/web/lists/getbytitle('{listTitle}')/RenderListDataAsStream";
