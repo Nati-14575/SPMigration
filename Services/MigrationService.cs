@@ -288,7 +288,10 @@ public class MigrationService
             _logger.LogError(ex, "💥 Migration failed unexpectedly.");
         }
     }
-    public async Task RunMigrationForRecordIdsAsync(List<string> recordIds, List<UserMapping>? userMappings = null)
+    /// <param name="useOfficerRecordId">True (default): for records that are not InternalMemo/Direct, RecordId is set to the Records-list item id and
+    /// the internal tasks are read with it. False (user migration): RecordId stays 0, so the internal tasks are read with the record's own id,
+    /// which is the id the user's task carries.</param>
+    public async Task RunMigrationForRecordIdsAsync(List<string> recordIds, List<UserMapping>? userMappings = null, bool useOfficerRecordId = true)
     {
         var startTime = DateTime.UtcNow;
         var processedCount = 0;
@@ -337,7 +340,7 @@ public class MigrationService
                         record.Reference_Number = recordOfficerRecord.Reference_Number;
                         record.DateOfDispatch = recordOfficerRecord.DateOfDispatch;
                         record.DispatchedBy = recordOfficerRecord.DispatchedBy;
-                        record.RecordId = recordOfficerRecord.ID;
+                        if (useOfficerRecordId) record.RecordId = recordOfficerRecord.ID;
                     }
 
                     await ProcessRecordAsync(record, recordsList, tasksList, internalList, internalTasksList, userMappings);
@@ -428,7 +431,7 @@ public class MigrationService
     public Task RunMigrationForUserScanAsync(UserTaskScanResult scan, List<UserMapping>? userMappings) =>
         scan.RunType == "External"
             ? RunIncomingForFolderIdsAsync(scan.Ids, userMappings)
-            : RunMigrationForRecordIdsAsync(scan.Ids.Select(i => i.ToString()).ToList(), userMappings);
+            : RunMigrationForRecordIdsAsync(scan.Ids.Select(i => i.ToString()).ToList(), userMappings, useOfficerRecordId: false);
 
     public async Task RunMigrationForRecordIdsDocLibraryAsync(
         int startId,
