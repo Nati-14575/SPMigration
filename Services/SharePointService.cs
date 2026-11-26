@@ -244,6 +244,17 @@ public class SharePointService
                    .Where(id => id > 0)
                    .ToList();
     }
+    /// <summary>True when the list has an item with this id (any status). A 404 means the id was never used or the item was deleted.</summary>
+    public async Task<bool> ListItemExistsAsync(string listTitle, int id)
+    {
+        using var req = new HttpRequestMessage(HttpMethod.Get, $"{_siteUrl}/_api/web/lists/getbytitle('{listTitle}')/items({id})?$select=Id");
+        req.Headers.Add("Accept", "application/json;odata=nometadata");
+        using var res = await _client.SendAsync(req);
+        if (res.StatusCode == HttpStatusCode.NotFound) return false;
+        res.EnsureSuccessStatusCode();
+        return true;
+    }
+
     public async Task<SharePointRecord?> GetRecordByIdAsync(string listTitle, int id, List<UserMapping> userMappings = null)
     {
         // Build query with expand for user fields

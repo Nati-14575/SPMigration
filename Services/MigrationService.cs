@@ -288,10 +288,10 @@ public class MigrationService
             _logger.LogError(ex, "💥 Migration failed unexpectedly.");
         }
     }
-    /// <param name="useOfficerRecordId">True (default): for records that are not InternalMemo/Direct, RecordId is set to the Records-list item id and
-    /// the internal tasks are read with it. False (user migration): RecordId stays 0, so the internal tasks are read with the record's own id,
-    /// which is the id the user's task carries.</param>
-    public async Task RunMigrationForRecordIdsAsync(List<string> recordIds, List<UserMapping>? userMappings = null, bool useOfficerRecordId = true)
+    /// <param name="fromUserTasks">True for ids that come from a user's tasks (default false). Then (1) RecordId stays 0 instead of being set to the
+    /// Records-list item id, so the internal tasks are read with the id the task carries, and (2) an id with no User_Records item is treated as
+    /// a Records-library item id: its RecordId column gives the User_Records id, and the tasks are still read with the id the task carries.</param>
+    public async Task RunMigrationForRecordIdsAsync(List<string> recordIds, List<UserMapping>? userMappings = null, bool fromUserTasks = false)
     {
         var startTime = DateTime.UtcNow;
         var processedCount = 0;
@@ -324,6 +324,23 @@ public class MigrationService
                 {
                     var record = await _sharePointService.GetRecordByIdAsync(recordsList, id, userMappings);
 
+                    // The id may be a Records-library item id (older tasks). Only when no User_Records item exists at all: a record that
+                    // exists but is not Sent also reads as null, and must not be swapped for an unrelated folder.
+                    int? taskRecordId = null;
+                    if (record == null && fromUserTasks && !await _sharePointService.ListItemExistsAsync(recordsList, id))
+                    {
+                        var folder = await _sharePointService.GetIncomingFolderByIdAsync("Records", id, userMappings);
+                        var resolved = decimal.TryParse(folder?.RecordNumber?.Replace(",", "").Trim(),
+                            System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out var rn) ? (int)rn : 0;
+                        if (resolved > 0 && resolved != id)
+                        {
+                            _logger.LogInformation("↪ {Id} is not in {List}; Records folder {Id} points to {Resolved}.", id, recordsList, id, resolved);
+                            taskRecordId = id;
+                            id = resolved;
+                            record = await _sharePointService.GetRecordByIdAsync(recordsList, id, userMappings);
+                        }
+                    }
+
                     if (record == null)
                     {
                         _logger.LogWarning("⚠️ Record {Id} not found in SharePoint.", id);
@@ -340,8 +357,11 @@ public class MigrationService
                         record.Reference_Number = recordOfficerRecord.Reference_Number;
                         record.DateOfDispatch = recordOfficerRecord.DateOfDispatch;
                         record.DispatchedBy = recordOfficerRecord.DispatchedBy;
-                        if (useOfficerRecordId) record.RecordId = recordOfficerRecord.ID;
+                        if (!fromUserTasks) record.RecordId = recordOfficerRecord.ID;
                     }
+
+                    // The tasks of such a record carry the Records-library id.
+                    if (taskRecordId != null) record.RecordId = taskRecordId.Value;
 
                     await ProcessRecordAsync(record, recordsList, tasksList, internalList, internalTasksList, userMappings);
                     await SaveCheckpointAsync(record.ID);
@@ -431,7 +451,7 @@ public class MigrationService
     public Task RunMigrationForUserScanAsync(UserTaskScanResult scan, List<UserMapping>? userMappings) =>
         scan.RunType == "External"
             ? RunIncomingForFolderIdsAsync(scan.Ids, userMappings)
-            : RunMigrationForRecordIdsAsync(scan.Ids.Select(i => i.ToString()).ToList(), userMappings, useOfficerRecordId: false);
+            : RunMigrationForRecordIdsAsync(scan.Ids.Select(i => i.ToString()).ToList(), userMappings, fromUserTasks: true);
 
     public async Task RunMigrationForRecordIdsDocLibraryAsync(
         int startId,
