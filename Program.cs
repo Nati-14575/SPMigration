@@ -19,6 +19,8 @@ builder.Services.AddHttpClient<AdExplorerService>();
 builder.Services.AddSingleton<MigrationService>();
 builder.Services.AddTransient<IamGroupMigrationService>();
 builder.Services.AddTransient<IamGroupMembersService>();
+builder.Services.AddTransient<IamPositionResolver>();
+builder.Services.AddTransient<IamGroupSyncService>();
 
 var app = builder.Build();
 
