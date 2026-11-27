@@ -422,6 +422,32 @@ namespace SPMigration.Controllers
         }
 
         // Parses the "ids" form field: JSON such as {"ids":[9141,9174]} (a bare array [9141,9174] also works).
+        // The GroupsList.json array. Also accepts the usual paste variations: an invisible BOM or whitespace in front, the array wrapped in
+        // an object ({ "groupList": [...] } or { "groups": [...] }), or the array pasted as a quoted JSON string.
+        private static List<GroupItem>? ParseGroupList(string text, int depth = 0)
+        {
+            text = text.Trim().TrimStart('\uFEFF').Trim();
+            using var doc = JsonDocument.Parse(text, new JsonDocumentOptions { AllowTrailingCommas = true });
+            var root = doc.RootElement;
+
+            if (root.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var prop in root.EnumerateObject())
+                {
+                    if (prop.Name.Equals("groupList", StringComparison.OrdinalIgnoreCase) || prop.Name.Equals("groups", StringComparison.OrdinalIgnoreCase))
+                    {
+                        root = prop.Value;
+                        break;
+                    }
+                }
+            }
+
+            if (root.ValueKind == JsonValueKind.String && depth < 2)
+                return ParseGroupList(root.GetString() ?? string.Empty, depth + 1);
+
+            return root.Deserialize<List<GroupItem>>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true, AllowTrailingCommas = true });
+        }
+
         private static (List<int>? Ids, IActionResult? Error) ParseIds(string? ids)
         {
             const string msg = "ids must be JSON like { \"ids\": [9141, 9174] } with at least one number.";
@@ -660,12 +686,13 @@ namespace SPMigration.Controllers
             List<GroupItem>? list;
             try
             {
-                list = JsonSerializer.Deserialize<List<GroupItem>>(request.GroupList,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true, AllowTrailingCommas = true });
+                list = ParseGroupList(request.GroupList);
             }
             catch (JsonException ex)
             {
-                return BadRequest(new { error = $"Invalid groupList JSON: {ex.Message}" });
+                var start = request.GroupList.Trim().Replace("\r", " ").Replace("\n", " ");
+                if (start.Length > 40) start = start[..40];
+                return BadRequest(new { error = $"Invalid groupList JSON: {ex.Message} The text received starts with: {start}  groupList must be the array of groups: [ {{ ... }}, {{ ... }} ]." });
             }
             if (list == null || list.Count == 0)
                 return BadRequest(new { error = "groupList is empty." });
