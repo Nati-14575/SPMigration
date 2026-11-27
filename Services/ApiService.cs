@@ -208,14 +208,19 @@ public class ApiService
     /// <summary>
     /// Sends a JSON body with the given method (POST, PATCH, PUT...) to an arbitrary IAM URL, logging in / refreshing when needed.
     /// </summary>
+    private static readonly JsonSerializerOptions _sendJson = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+    };
+
+    /// <summary>The JSON text SendJsonAsync sends for this payload (also used to record what was sent).</summary>
+    public static string ToJson(object payload) => JsonSerializer.Serialize(payload, _sendJson);
+
     public async Task<(bool Success, int StatusCode, string Body)> SendJsonAsync(HttpMethod method, string url, object? payload)
     {
         // A null payload sends no body (GET).
-        var json = payload == null ? null : JsonSerializer.Serialize(payload, new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-        });
+        var json = payload == null ? null : ToJson(payload);
 
         if (string.IsNullOrEmpty(_token) && !await LoginAsync())
             return (false, 401, $"Login to IAM failed: {LastLoginError}");

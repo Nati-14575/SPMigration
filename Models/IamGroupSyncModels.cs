@@ -15,6 +15,9 @@ namespace SPMigration.Models
         public IFormFile? Mapping { get; set; }
     }
 
+    /// <summary>One call made to IAM: what was sent and what came back. The Authorization header is never recorded.</summary>
+    public record IamCallTrace(string Step, string Method, string Url, string? Body, int? HttpStatus, string? Response, bool Cached = false);
+
     public static class IamGroupSyncFailures
     {
         public const string InvalidName = "InvalidName";
@@ -51,6 +54,8 @@ namespace SPMigration.Models
         public int MembersSent { get; set; }
         public string? MemberReason { get; set; }
         public List<string> Warnings { get; set; } = new();
+        /// <summary>The calls made to IAM for this group (position lookup, create): the exact request and the answer.</summary>
+        public List<IamCallTrace> Calls { get; set; } = new();
     }
 
     public class IamGroupSyncReport

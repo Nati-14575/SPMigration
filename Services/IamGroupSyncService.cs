@@ -82,6 +82,7 @@ public class IamGroupSyncService
                 foreach (var (candidate, source) in candidates)
                 {
                     last = await _positions.LookupAsync(candidate);
+                    if (last.Trace != null) result.Calls.Add(last.Trace);
                     if (last.Outcome == PositionLookupOutcome.Found)
                     {
                         result.PositionName = candidate; result.PositionSource = source; result.PositionId = last.Id;
@@ -174,9 +175,12 @@ public class IamGroupSyncService
                 ["positionId"] = result.PositionId,
                 ["parentGroupId"] = null
             };
+            var bodyJson = ApiService.ToJson(body);
             var (ok, status, text) = await _api.PostJsonAsync(createUrl, body);
             result.HttpStatus = status;
             result.Response = text.Length > 2000 ? text[..2000] : text;
+            result.Calls.Add(new IamCallTrace("CreateGroup", "POST", createUrl, bodyJson, status, result.Response));
+            _logger.LogInformation("[iam] POST {Url} body={Body} -> {Status}", createUrl, bodyJson, status);
 
             if (ok) { result.Status = "Created"; return; }
 
@@ -203,6 +207,7 @@ public class IamGroupSyncService
             result.Status = "Failed";
             result.Category = IamGroupSyncFailures.CreateRequestError;
             result.Reason = ex.Message;
+            result.Calls.Add(new IamCallTrace("CreateGroup", "POST", createUrl, null, null, ex.Message));
             failedGroups.Add(g);
         }
     }

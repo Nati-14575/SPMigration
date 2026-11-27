@@ -1,8 +1,8 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 
 public enum PositionLookupOutcome { Found, NotFound, Ambiguous, Error }
 
-public record PositionLookupResult(PositionLookupOutcome Outcome, string? Id, string? Detail, int? HttpStatus = null);
+public record PositionLookupResult(PositionLookupOutcome Outcome, string? Id, string? Detail, int? HttpStatus = null, SPMigration.Models.IamCallTrace? Trace = null);
 
 /// <summary>
 /// Asks the IAM position lookup API for the id of a position name:
@@ -27,7 +27,7 @@ public class IamPositionResolver
 
     public async Task<PositionLookupResult> LookupAsync(string name)
     {
-        if (_cache.TryGetValue(name, out var cached)) return cached;
+        if (_cache.TryGetValue(name, out var cached)) return cached with { Trace = cached.Trace == null ? null : cached.Trace with { Cached = true } };
         var result = await LookupCoreAsync(name);
         if (result.Outcome != PositionLookupOutcome.Error) _cache[name] = result; // a failed call may work next time
         return result;
@@ -39,21 +39,28 @@ public class IamPositionResolver
         if (string.IsNullOrEmpty(url))
             return new PositionLookupResult(PositionLookupOutcome.Error, null, "IamGroups:PositionLookupUrl is not configured.");
 
+        var payload = new { names = new[] { name } };
+        var bodyJson = ApiService.ToJson(payload);
+        SPMigration.Models.IamCallTrace Trace(int? status, string? response) =>
+            new("PositionLookup", "POST", url, bodyJson, status, response is { Length: > 2000 } ? response[..2000] : response);
+
         try
         {
-            var answer = await _api.SendJsonAsync(HttpMethod.Post, url, new { names = new[] { name } });
+            var answer = await _api.SendJsonAsync(HttpMethod.Post, url, payload);
+            _logger.LogInformation("[iam] POST {Url} body={Body} -> {Status}", url, bodyJson, answer.StatusCode);
+            var trace = Trace(answer.StatusCode, answer.Body);
 
             if (!answer.Success)
             {
                 var shown = answer.Body.Length > 300 ? answer.Body[..300] : answer.Body;
-                return new PositionLookupResult(PositionLookupOutcome.Error, null, $"IAM answered {answer.StatusCode}: {shown}", answer.StatusCode);
+                return new PositionLookupResult(PositionLookupOutcome.Error, null, $"IAM answered {answer.StatusCode}: {shown}", answer.StatusCode, trace);
             }
-            return ParseBody(answer.Body, name, answer.StatusCode);
+            return ParseBody(answer.Body, name, answer.StatusCode) with { Trace = trace };
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
         {
             _logger.LogWarning(ex, "Position lookup failed for {Name}", name);
-            return new PositionLookupResult(PositionLookupOutcome.Error, null, ex.Message);
+            return new PositionLookupResult(PositionLookupOutcome.Error, null, ex.Message, null, Trace(null, ex.Message));
         }
     }
 
