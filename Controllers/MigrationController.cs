@@ -642,40 +642,40 @@ namespace SPMigration.Controllers
         }
 
         /// <summary>
-        /// Creates every group in IAM and adds their AD members (multipart/form-data). groups = the list of groups as JSON text, the
-        /// GroupsList.json array: [ { "name", "path", "description", "level", "guid" } ]. Optional file = the user mapping
-        /// (mapping.json, [ { "prevUserName", "currentUserName" } ]). Position per group: the mapping of the last segment of its path is
-        /// looked up in IAM first, else that segment itself. Groups IAM already has are not failures and still get their members.
-        /// The unit is IamGroups:UnitId from appsettings.json. dryRun=true (default) sends nothing; it reports positions and member lists.
+        /// Creates every group in IAM and adds their AD members (multipart/form-data). Fields: dryRun (default true), download,
+        /// groupList = the GroupsList.json array as JSON text, mapping = the optional mapping file ([ { "prevUserName", "currentUserName" } ]).
+        /// Position per group: the mapping of the last segment of its path is looked up in IAM first, else that segment itself.
+        /// Groups IAM already has are not failures and still get their members. The unit is IamGroups:UnitId from appsettings.json.
+        /// dryRun=true sends nothing; the report shows positions and members.
         /// </summary>
         [HttpPost("iam-groups-with-members")]
         public async Task<IActionResult> CreateIamGroupsWithMembers(
             [FromServices] IamGroupSyncService sync,
-            [FromForm] string groups,
-            IFormFile? file = null,
-            [FromQuery] bool dryRun = true,
-            [FromQuery] bool download = false,
+            [FromForm] IamGroupsSyncRequest request,
             CancellationToken ct = default)
         {
-            if (string.IsNullOrWhiteSpace(groups))
-                return BadRequest(new { error = "Send the list of groups as the 'groups' field (a JSON array)." });
+            if (string.IsNullOrWhiteSpace(request?.GroupList))
+                return BadRequest(new { error = "groupList is required (the GroupsList.json array as JSON text)." });
 
             List<GroupItem>? list;
             try
             {
-                list = JsonSerializer.Deserialize<List<GroupItem>>(groups,
+                list = JsonSerializer.Deserialize<List<GroupItem>>(request.GroupList,
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true, AllowTrailingCommas = true });
             }
             catch (JsonException ex)
             {
-                return BadRequest(new { error = $"Invalid groups JSON: {ex.Message}" });
+                return BadRequest(new { error = $"Invalid groupList JSON: {ex.Message}" });
             }
             if (list == null || list.Count == 0)
-                return BadRequest(new { error = "The groups list is empty." });
+                return BadRequest(new { error = "groupList is empty." });
 
-            var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
+            var (userMappings, mappingError) = await ReadUserMappingsAsync(request.Mapping);
             if (mappingError != null)
                 return mappingError;
+
+            var dryRun = request.DryRun;
+            var download = request.Download;
 
             try
             {

@@ -1,5 +1,20 @@
+﻿using Microsoft.AspNetCore.Http;
+
 namespace SPMigration.Models
 {
+    /// <summary>Form of iam-groups-with-members (multipart/form-data).</summary>
+    public class IamGroupsSyncRequest
+    {
+        /// <summary>true (default when omitted) sends nothing to IAM and reports what would be done.</summary>
+        public bool DryRun { get; set; } = true;
+        /// <summary>true returns the report as a JSON file.</summary>
+        public bool Download { get; set; }
+        /// <summary>The GroupsList.json array, as JSON text.</summary>
+        public string GroupList { get; set; } = string.Empty;
+        /// <summary>Optional: the mapping file, [ { "prevUserName", "currentUserName" } ].</summary>
+        public IFormFile? Mapping { get; set; }
+    }
+
     public static class IamGroupSyncFailures
     {
         public const string InvalidName = "InvalidName";
