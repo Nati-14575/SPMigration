@@ -422,17 +422,22 @@ namespace SPMigration.Controllers
         }
 
         // Parses the "ids" form field: JSON such as {"ids":[9141,9174]} (a bare array [9141,9174] also works).
-        // The GroupsList.json array. Also accepts the usual paste variations: an invisible BOM or whitespace in front, the array wrapped in
-        // an object ({ "groupList": [...] } or { "groups": [...] }), or the array pasted as a quoted JSON string.
+        // The GroupsList.json array. Also accepts what a multipart form can turn it into: Swagger UI sends each item of a pasted array as its
+        // own "groupList" part and ASP.NET joins the parts with commas ({...},{...}), so text starting with { is wrapped into an array.
+        // Other paste variations work too: an invisible BOM or whitespace in front, the array wrapped in an object
+        // ({ "groupList": [...] } or { "groups": [...] }), or the array pasted as a quoted JSON string.
         private static List<GroupItem>? ParseGroupList(string text, int depth = 0)
         {
             text = text.Trim().TrimStart('\uFEFF').Trim();
+            if (text.StartsWith('{')) text = "[" + text + "]";
+
             using var doc = JsonDocument.Parse(text, new JsonDocumentOptions { AllowTrailingCommas = true });
             var root = doc.RootElement;
 
-            if (root.ValueKind == JsonValueKind.Object)
+            // A single object that wraps the list.
+            if (root.ValueKind == JsonValueKind.Array && root.GetArrayLength() == 1 && root[0].ValueKind == JsonValueKind.Object)
             {
-                foreach (var prop in root.EnumerateObject())
+                foreach (var prop in root[0].EnumerateObject())
                 {
                     if (prop.Name.Equals("groupList", StringComparison.OrdinalIgnoreCase) || prop.Name.Equals("groups", StringComparison.OrdinalIgnoreCase))
                     {
