@@ -642,29 +642,28 @@ namespace SPMigration.Controllers
         }
 
         /// <summary>
-        /// Creates every group of GroupsList.json in IAM and adds their AD members (multipart/form-data: groups = GroupsList.json, optional
-        /// mapping = mapping.json). Position per group: the mapping of the last segment of its path, else that segment itself, looked up in IAM.
-        /// Groups IAM already has are not failures and still get their members. dryRun=true (default) sends nothing; it reports positions
-        /// and member lists. unitId overrides IamGroups:UnitId.
+        /// Creates every group in IAM and adds their AD members (multipart/form-data). groups = the list of groups as JSON text, the
+        /// GroupsList.json array: [ { "name", "path", "description", "level", "guid" } ]. Optional file = the user mapping
+        /// (mapping.json, [ { "prevUserName", "currentUserName" } ]). Position per group: the mapping of the last segment of its path is
+        /// looked up in IAM first, else that segment itself. Groups IAM already has are not failures and still get their members.
+        /// The unit is IamGroups:UnitId from appsettings.json. dryRun=true (default) sends nothing; it reports positions and member lists.
         /// </summary>
         [HttpPost("iam-groups-with-members")]
         public async Task<IActionResult> CreateIamGroupsWithMembers(
             [FromServices] IamGroupSyncService sync,
-            IFormFile groups,
-            IFormFile? mapping = null,
-            [FromQuery] string? unitId = null,
+            [FromForm] string groups,
+            IFormFile? file = null,
             [FromQuery] bool dryRun = true,
             [FromQuery] bool download = false,
             CancellationToken ct = default)
         {
-            if (groups == null || groups.Length == 0)
-                return BadRequest(new { error = "Attach GroupsList.json as 'groups'." });
+            if (string.IsNullOrWhiteSpace(groups))
+                return BadRequest(new { error = "Send the list of groups as the 'groups' field (a JSON array)." });
 
             List<GroupItem>? list;
             try
             {
-                using var reader = new StreamReader(groups.OpenReadStream());
-                list = JsonSerializer.Deserialize<List<GroupItem>>(await reader.ReadToEndAsync(ct),
+                list = JsonSerializer.Deserialize<List<GroupItem>>(groups,
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true, AllowTrailingCommas = true });
             }
             catch (JsonException ex)
@@ -672,15 +671,15 @@ namespace SPMigration.Controllers
                 return BadRequest(new { error = $"Invalid groups JSON: {ex.Message}" });
             }
             if (list == null || list.Count == 0)
-                return BadRequest(new { error = "The groups file contains no groups." });
+                return BadRequest(new { error = "The groups list is empty." });
 
-            var (userMappings, mappingError) = await ReadUserMappingsAsync(mapping);
+            var (userMappings, mappingError) = await ReadUserMappingsAsync(file);
             if (mappingError != null)
                 return mappingError;
 
             try
             {
-                var report = await sync.RunAsync(list, userMappings, unitId, dryRun, ct);
+                var report = await sync.RunAsync(list, userMappings, null, dryRun, ct);
 
                 if (download)
                 {

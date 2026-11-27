@@ -27,7 +27,7 @@ public class IamGroupSyncService
         var createUrl = _config["IamGroups:CreateGroupUrl"]?.Trim();
         if (!dryRun)
         {
-            if (string.IsNullOrEmpty(unitId)) throw new InvalidOperationException("unitId is required when dryRun=false (query parameter, or IamGroups:UnitId).");
+            if (string.IsNullOrEmpty(unitId)) throw new InvalidOperationException("IamGroups:UnitId is not configured in appsettings.json (required when dryRun=false).");
             if (string.IsNullOrEmpty(createUrl)) throw new InvalidOperationException("IamGroups:CreateGroupUrl is not configured.");
             if (!_positions.IsConfigured) throw new InvalidOperationException("IamGroups:PositionLookupUrl is not configured.");
         }
