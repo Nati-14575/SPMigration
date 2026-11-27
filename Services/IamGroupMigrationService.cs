@@ -92,7 +92,7 @@ public class IamGroupMigrationService
                .Distinct(StringComparer.OrdinalIgnoreCase).ToList();
 
     // Amharic description when present, otherwise fall back to the English name.
-    private static LocalizedName ToName(string name, string? description) => new()
+    internal static LocalizedName ToName(string name, string? description) => new()
     {
         En = name.Trim(),
         Am = !string.IsNullOrWhiteSpace(description) && Regex.IsMatch(description, @"[ሀ-፿]")

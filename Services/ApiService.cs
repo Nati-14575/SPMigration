@@ -208,9 +208,10 @@ public class ApiService
     /// <summary>
     /// Sends a JSON body with the given method (POST, PATCH, PUT...) to an arbitrary IAM URL, logging in / refreshing when needed.
     /// </summary>
-    public async Task<(bool Success, int StatusCode, string Body)> SendJsonAsync(HttpMethod method, string url, object payload)
+    public async Task<(bool Success, int StatusCode, string Body)> SendJsonAsync(HttpMethod method, string url, object? payload)
     {
-        var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions
+        // A null payload sends no body (GET).
+        var json = payload == null ? null : JsonSerializer.Serialize(payload, new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
@@ -221,10 +222,8 @@ public class ApiService
 
         async Task<HttpResponseMessage> SendAsync()
         {
-            using var request = new HttpRequestMessage(method, url)
-            {
-                Content = new StringContent(json, Encoding.UTF8, "application/json")
-            };
+            using var request = new HttpRequestMessage(method, url);
+            if (json != null) request.Content = new StringContent(json, Encoding.UTF8, "application/json");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
             return await _httpClient.SendAsync(request);
         }

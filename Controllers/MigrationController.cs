@@ -642,6 +642,70 @@ namespace SPMigration.Controllers
         }
 
         /// <summary>
+        /// Creates every group of GroupsList.json in IAM and adds their AD members (multipart/form-data: groups = GroupsList.json, optional
+        /// mapping = mapping.json). Position per group: the mapping of the last segment of its path, else that segment itself, looked up in IAM.
+        /// Groups IAM already has are not failures and still get their members. dryRun=true (default) sends nothing; it reports positions
+        /// and member lists. unitId overrides IamGroups:UnitId.
+        /// </summary>
+        [HttpPost("iam-groups-with-members")]
+        public async Task<IActionResult> CreateIamGroupsWithMembers(
+            [FromServices] IamGroupSyncService sync,
+            IFormFile groups,
+            IFormFile? mapping = null,
+            [FromQuery] string? unitId = null,
+            [FromQuery] bool dryRun = true,
+            [FromQuery] bool download = false,
+            CancellationToken ct = default)
+        {
+            if (groups == null || groups.Length == 0)
+                return BadRequest(new { error = "Attach GroupsList.json as 'groups'." });
+
+            List<GroupItem>? list;
+            try
+            {
+                using var reader = new StreamReader(groups.OpenReadStream());
+                list = JsonSerializer.Deserialize<List<GroupItem>>(await reader.ReadToEndAsync(ct),
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true, AllowTrailingCommas = true });
+            }
+            catch (JsonException ex)
+            {
+                return BadRequest(new { error = $"Invalid groups JSON: {ex.Message}" });
+            }
+            if (list == null || list.Count == 0)
+                return BadRequest(new { error = "The groups file contains no groups." });
+
+            var (userMappings, mappingError) = await ReadUserMappingsAsync(mapping);
+            if (mappingError != null)
+                return mappingError;
+
+            try
+            {
+                var report = await sync.RunAsync(list, userMappings, unitId, dryRun, ct);
+
+                if (download)
+                {
+                    var bytes = JsonSerializer.SerializeToUtf8Bytes(report, new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                    });
+                    return File(bytes, "application/json", dryRun ? "iam-groups-sync-dryrun.json" : "iam-groups-sync-report.json");
+                }
+                return Ok(report);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ IAM groups with members failed");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+        /// <summary>
         /// Takes existing IAM groups (the array the IAM groups API returns), reads each group's members from the AD service
         /// and sends { "unitKey": unitKey, "groupKey": key, "usernames": [usernames + nested group keys] } to IamGroups:GroupMembersUrl,
         /// one request per group. unitKey is MinIO:UnitKey from appsettings. dryRun=true (default) sends nothing and returns the
