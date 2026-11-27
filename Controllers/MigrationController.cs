@@ -423,7 +423,7 @@ namespace SPMigration.Controllers
 
         // Parses the "ids" form field: JSON such as {"ids":[9141,9174]} (a bare array [9141,9174] also works).
         // The GroupsList.json array. Also accepts what a multipart form can turn it into: Swagger UI sends each item of a pasted array as its
-        // own "groupList" part and ASP.NET joins the parts with commas ({...},{...}), so text starting with { is wrapped into an array.
+        // own "groupList" part and the endpoint joins the parts with commas ({...},{...}), so text starting with { is wrapped into an array.
         // Other paste variations work too: an invisible BOM or whitespace in front, the array wrapped in an object
         // ({ "groupList": [...] } or { "groups": [...] }), or the array pasted as a quoted JSON string.
         private static List<GroupItem>? ParseGroupList(string text, int depth = 0)
@@ -685,17 +685,21 @@ namespace SPMigration.Controllers
             [FromForm] IamGroupsSyncRequest request,
             CancellationToken ct = default)
         {
-            if (string.IsNullOrWhiteSpace(request?.GroupList))
+            // Swagger UI sends each item of a pasted array as its own "groupList" part, and model binding keeps only the first part of a
+            // string property. Read every part and join them with commas: {...},{...} is turned back into an array by ParseGroupList.
+            var parts = Request.Form["groupList"].Where(v => !string.IsNullOrWhiteSpace(v)).Select(v => v!).ToList();
+            var groupListText = parts.Count > 0 ? string.Join(",", parts) : request?.GroupList;
+            if (string.IsNullOrWhiteSpace(groupListText))
                 return BadRequest(new { error = "groupList is required (the GroupsList.json array as JSON text)." });
 
             List<GroupItem>? list;
             try
             {
-                list = ParseGroupList(request.GroupList);
+                list = ParseGroupList(groupListText);
             }
             catch (JsonException ex)
             {
-                var start = request.GroupList.Trim().Replace("\r", " ").Replace("\n", " ");
+                var start = groupListText.Trim().Replace("\r", " ").Replace("\n", " ");
                 if (start.Length > 40) start = start[..40];
                 return BadRequest(new { error = $"Invalid groupList JSON: {ex.Message} The text received starts with: {start}  groupList must be the array of groups: [ {{ ... }}, {{ ... }} ]." });
             }
