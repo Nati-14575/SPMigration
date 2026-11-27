@@ -154,6 +154,7 @@ public class IamGroupSyncService
                 case "Exists": report.Exists++; break;
                 case "Skipped": report.Skipped++; break;
                 case "Failed": report.Failed++; break;
+                case "DryRun": report.Ready++; break;
             }
             if (r.Category != null) report.ProblemSummary[r.Category] = report.ProblemSummary.GetValueOrDefault(r.Category) + 1;
         }
@@ -161,6 +162,10 @@ public class IamGroupSyncService
         if (!dryRun) WriteFiles(report, failedGroups);
         return report;
     }
+
+    // IAM's message for a group that is already there: '972b42fd-..., ministry-of-agriculture' is already in use for Unit Id, Key.
+    private static readonly System.Text.RegularExpressions.Regex AlreadyInUse =
+        new(@"'(?<unit>[^',]*),\s*(?<key>[^']+)'\s+is already in use", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
     private async Task CreateAsync(IamGroupSyncResult result, GroupItem g, string name, string unitId, string createUrl, List<GroupItem> failedGroups)
     {
@@ -184,13 +189,22 @@ public class IamGroupSyncService
 
             if (ok) { result.Status = "Created"; return; }
 
-            // "Already exists" is not a failure: the group is there, so it still gets its members.
+            // "Already exists" is not a failure: the group is there, so it still gets its members. IAM answers 400 with
+            // "'<unitId>, <key>' is already in use for Unit Id, Key."; the key in that message is the one the members are added to.
+            var inUse = AlreadyInUse.Match(text);
             if (status == 409 || (status is 400 or 422 &&
-                    (text.Contains("already exist", StringComparison.OrdinalIgnoreCase) ||
+                    (inUse.Success ||
+                     text.Contains("already exist", StringComparison.OrdinalIgnoreCase) ||
                      text.Contains("duplicate", StringComparison.OrdinalIgnoreCase))))
             {
                 result.Status = "Exists";
                 result.Reason = "IAM already has a group with this key.";
+                var keyFromIam = inUse.Success ? inUse.Groups["key"].Value.Trim() : string.Empty;
+                if (keyFromIam.Length > 0 && !keyFromIam.Equals(result.Key, StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Warnings.Add($"IAM reports the key '{keyFromIam}' (sent '{result.Key}'); the members are added to '{keyFromIam}'.");
+                    result.Key = keyFromIam;
+                }
                 return;
             }
 

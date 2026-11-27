@@ -67,6 +67,8 @@ namespace SPMigration.Models
         public int Exists { get; set; }
         public int Failed { get; set; }
         public int Skipped { get; set; }
+        /// <summary>Dry run only: groups that passed every check and would be created. Created + Exists + Ready + Failed + Skipped = Total.</summary>
+        public int Ready { get; set; }
         public Dictionary<string, int> ProblemSummary { get; set; } = new();
         public List<IamGroupSyncResult> Results { get; set; } = new();
         /// <summary>The member step in full (its own report and retry file are written on a real run).</summary>
